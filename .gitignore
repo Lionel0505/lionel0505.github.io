@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.astro/
+test-results/
+playwright-report/
+.env
+.DS_Store
+
+# Matière de travail, jamais publiée.
+# .unwanted/sources/ contient les CV maîtres de trois personnes, avec leurs
+# numéros de téléphone et adresses personnelles. Le dépôt est destiné à devenir
+# public (GitHub Pages) : ces fichiers ne doivent jamais y entrer.
+.unwanted/
+*.stackdump
