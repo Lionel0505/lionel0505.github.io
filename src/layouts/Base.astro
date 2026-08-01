@@ -1,0 +1,52 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: 'fr' | 'en';
+  path?: string;
+}
+
+const { title, description, lang = 'fr', path } = Astro.props as Props;
+const canonical = path ? new URL(path, Astro.site) : undefined;
+---
+
+<!doctype html>
+<!-- data-theme is hardcoded: without JS the site is light, and the token block
+     is never duplicated into a prefers-color-scheme copy that can drift. -->
+<html lang={lang} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    <!-- The h1 carries the LCP: only Bricolage is preloaded so it does not
+         contend for bandwidth with the two families that do not gate paint. -->
+    <link rel="preload" href="/fonts/Bricolage.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Blocking: sets the theme before first paint, so there is no flash. -->
+    <script is:inline>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem("theme");
+        } catch (e) {}
+        var sys = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        var d = document.documentElement;
+        d.dataset.theme = stored === "light" || stored === "dark" ? stored : sys;
+        d.dataset.themePref = stored || "system";
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">{lang === "fr" ? "Aller au contenu" : "Skip to content"}</a>
+    <div class="grid-bg"></div>
+    <div id="grain"></div>
+    <slot />
+    <script>
+      import "../scripts/theme.ts";
+    </script>
+  </body>
+</html>

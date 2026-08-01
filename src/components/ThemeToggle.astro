@@ -1,0 +1,29 @@
+---
+const { labelPrefix } = Astro.props as { labelPrefix: string };
+---
+
+<button id="theme-toggle" class="chip" type="button" data-label-prefix={labelPrefix} aria-label={labelPrefix}>⌁</button>
+
+<style>
+  .chip {
+    font-family: var(--ffm);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--bd);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--tx2);
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-grid;
+    place-items: center;
+    transition:
+      border-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .chip:hover {
+    border-color: var(--tx);
+    color: var(--tx);
+  }
+</style>

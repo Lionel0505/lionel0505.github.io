@@ -1,11 +1,13 @@
 ---
+import ThemeToggle from '../components/ThemeToggle.astro';
+import Base from '../layouts/Base.astro';
 ---
 
-<html lang="fr">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>Lionel Ratovo</title>
-	</head>
-	<body></body>
-</html>
+<Base title="Lionel Ratovo" description="Portfolio de Lionel Ratovo." lang="fr" path="/">
+  <header class="wrap">
+    <ThemeToggle labelPrefix="Thème" />
+  </header>
+  <main id="main" class="wrap">
+    <h1>Lionel Ratovo</h1>
+  </main>
+</Base>
