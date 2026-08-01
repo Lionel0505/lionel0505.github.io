@@ -57,12 +57,14 @@ const year = new Date().getFullYear();
   btn?.addEventListener(
     'click',
     () => {
-      const parts = ['261', '34', '21', '137', '98'];
-      const display = `(+${parts[0]}) ${parts.slice(1).join(' ')}`;
+      // Obfuscation contre les moissonneurs, pas un secret : qui lit la source le
+      // trouve en dix secondes, et c'est très bien. Ce qui compte est qu'aucune
+      // suite de chiffres reconstituable ne parte dans le HTML indexé.
+      const tel = atob('KzI2MSAzNCAyMSAxMzcgOTg=').split(' ');
       const a = document.createElement('a');
-      a.href = `tel:+${parts.join('')}`;
+      a.href = `tel:${tel.join('')}`;
       a.rel = 'nofollow';
-      a.textContent = display;
+      a.textContent = `(${tel[0]}) ${tel.slice(1).join(' ')}`;
       a.className = 'mono phone-live';
       btn.replaceWith(a);
     },
