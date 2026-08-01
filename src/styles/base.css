@@ -1,11 +1,21 @@
 /*
  * Weight axis only. Nothing in the design uses wdth or opsz.
- * Each woff2 is a Google-subsetted variable font (single wght axis),
- * fetched via the CSS2 `text=` parameter so the subset is scoped to the
- * exact glyphs this site needs (ASCII + French latin-ext + guillemets,
- * nbsp, ellipsis, curly apostrophe, euro) instead of the full latin-ext
- * block. unicode-range below matches the real cmap of each file: verified
- * with fontTools against œ à ç é è ê î ô û and their uppercase forms.
+ * Each woff2 is Google's standard "latin" subset (the plain CSS2 query,
+ * no text=/subset= override), one file per family, chosen for stability:
+ * it is a fixed named subset, not a snapshot of today's copy, so a future
+ * case study can use any character in it without silently falling back to
+ * a system font. latin-ext was dropped: it does not add any French
+ * character latin already lacks (every French diacritic is in Latin-1
+ * Supplement, and œ/Œ sit at U+0152-0153, inside latin's own range), it
+ * only adds Central/Eastern European letters this site never uses, and it
+ * costs real KB for zero benefit here. unicode-range below is copied
+ * verbatim from Google's response for the latin block: U+0000-00FF,
+ * U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+ * U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+ * U+FEFF, U+FFFD. Verified with fontTools against the full set the design
+ * actually uses: œ à ç é è ê î ô û (and uppercase), & @ · – ’ « » … €.
+ * `→` (U+2192) and `∝` (U+221D) fall outside this range and fall back to
+ * a system font by design ("2024 →", "AIRE ∝ DURÉE"); accepted, not a bug.
  */
 @font-face {
   font-family: "Archivo";
@@ -13,14 +23,8 @@
   font-weight: 400 600;
   font-display: swap;
   unicode-range:
-    U+20-22, U+27-29, U+2B-3B, U+3F, U+41-5B, U+5D, U+61-7A, U+A0, U+AB, U+BB,
-    U+C0-C4, U+C7-CF, U+D1-D6, U+D9-DD, U+E0-E4, U+E7-EF, U+F1-F6, U+F9-FD, U+FF, U+106-109,
-    U+11C-11D, U+122-125, U+128-129, U+134-137, U+139-13C, U+143-146, U+152-157, U+15A-15F,
-    U+162-163, U+168-169, U+174-17A, U+1D7-1D8, U+1DB-1DC, U+1F4-1F5, U+1F8-1F9, U+228-229,
-    U+300-303, U+308, U+327, U+1E08-1E09, U+1E10-1E11, U+1E26-1E29, U+1E2E-1E31, U+1E3E-1E3F,
-    U+1E4C-1E4F, U+1E54-1E55, U+1E78-1E79, U+1E7C-1E7D, U+1E80-1E85, U+1E8C-1E8D, U+1E90-1E91,
-    U+1E97, U+1EA4-1EA7, U+1EAA-1EAB, U+1EBC-1EC1, U+1EC4-1EC5, U+1ED0-1ED3, U+1ED6-1ED7,
-    U+1EF2-1EF3, U+1EF8-1EF9, U+2019, U+2026, U+20AC;
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
   font-family: "Bricolage Grotesque";
@@ -28,14 +32,8 @@
   font-weight: 700 800;
   font-display: swap;
   unicode-range:
-    U+20-22, U+27-29, U+2B-3B, U+3F, U+41-5B, U+5D, U+61-7A, U+A0, U+AB, U+BB,
-    U+C0-C4, U+C7-CF, U+D1-D6, U+D9-DD, U+E0-E4, U+E7-EF, U+F1-F6, U+F9-FD, U+FF, U+106-109,
-    U+11C-11D, U+122-125, U+128-129, U+134-137, U+139-13C, U+143-146, U+152-157, U+15A-15F,
-    U+162-163, U+168-169, U+174-17A, U+1D7-1D8, U+1DB-1DC, U+1F4-1F5, U+1F8-1F9, U+228-229,
-    U+300-303, U+308, U+327, U+1E08-1E09, U+1E10-1E11, U+1E26-1E29, U+1E2E-1E31, U+1E3E-1E3F,
-    U+1E4C-1E4F, U+1E54-1E55, U+1E78-1E79, U+1E7C-1E7D, U+1E80-1E85, U+1E8C-1E8D, U+1E90-1E91,
-    U+1E97, U+1EA4-1EA7, U+1EAA-1EAB, U+1EBC-1EC1, U+1EC4-1EC5, U+1ED0-1ED3, U+1ED6-1ED7,
-    U+1EF2-1EF3, U+1EF8-1EF9, U+2019, U+2026, U+20AC;
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
   font-family: "JetBrains Mono";
@@ -43,14 +41,8 @@
   font-weight: 500 700;
   font-display: swap;
   unicode-range:
-    U+20-22, U+27-29, U+2B-3B, U+3F, U+41-5B, U+5D, U+61-7A, U+A0, U+AB, U+BB,
-    U+C0-C4, U+C7-CF, U+D1-D6, U+D9-DD, U+E0-E4, U+E7-EF, U+F1-F6, U+F9-FD, U+FF, U+106-109,
-    U+11C-11D, U+122-125, U+128-129, U+134-137, U+139-13C, U+143-146, U+152-157, U+15A-15F,
-    U+162-163, U+168-169, U+174-17A, U+1D7-1D8, U+1DB-1DC, U+1F4-1F5, U+1F8-1F9, U+228-229,
-    U+300-303, U+308, U+327, U+1E08-1E09, U+1E10-1E11, U+1E26-1E29, U+1E2E-1E31, U+1E3E-1E3F,
-    U+1E4C-1E4F, U+1E54-1E55, U+1E78-1E79, U+1E7C-1E7D, U+1E80-1E85, U+1E8C-1E8D, U+1E90-1E91,
-    U+1E97, U+1EA4-1EA7, U+1EAA-1EAB, U+1EBC-1EC1, U+1EC4-1EC5, U+1ED0-1ED3, U+1ED6-1ED7,
-    U+1EF2-1EF3, U+1EF8-1EF9, U+2019, U+2026, U+20AC;
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 *,
