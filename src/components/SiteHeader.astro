@@ -8,7 +8,7 @@ const base = lang === 'fr' ? '' : '/en';
 ---
 
 <header>
-  <div class="hdr">
+  <div class="hdr wrap">
     <a class="sig" href={`${base}/`}>Ratovo <i>S. M.</i> Lionel</a>
     <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
       <a href={`${base}/#qui`}>{s.nav.who}</a>
@@ -36,9 +36,6 @@ const base = lang === 'fr' ? '' : '/en';
     justify-content: space-between;
     gap: 1rem;
     min-height: 58px;
-    max-width: var(--max);
-    margin-inline: auto;
-    padding-inline: var(--gut);
   }
   .sig {
     font-family: var(--ffm);
@@ -83,8 +80,18 @@ const base = lang === 'fr' ? '' : '/en';
     transform-origin: left;
   }
   @media (max-width: 800px) {
-    nav a:not(.sig) {
+    /* Scrolling already serves as the nav for who/offer/cases on this
+       one-page site, so hiding those three anchors costs a mobile visitor
+       almost nothing. Contact is the one exception: it's the whole
+       conversion path, and making someone scroll four sections to find it
+       is the one place hiding a link would actually hurt. */
+    nav a:not([href$="#contact"]) {
       display: none;
+    }
+    nav a[href$="#contact"] {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
     }
   }
 </style>
