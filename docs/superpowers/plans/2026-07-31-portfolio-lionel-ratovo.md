@@ -770,7 +770,18 @@ Same shape, English strings. TypeScript enforces the shape:
 
 ```ts
 import type fr from './fr';
-const en: typeof fr = {
+
+// `fr` porte `as const`, donc `typeof fr` impose des types litteraux : ecrit
+// tel quel, `const en: typeof fr` exige que chaque chaine anglaise soit
+// EXACTEMENT la chaine francaise, et `astro check` sort 49 erreurs. On elargit
+// chaque feuille a `string` pour ne verifier que la forme, pas le contenu.
+type Widen<T> = T extends readonly (infer U)[]
+  ? Widen<U>[]
+  : T extends object
+    ? { [K in keyof T]: Widen<T[K]> }
+    : string;
+
+const en: Widen<typeof fr> = {
   nav: { who: 'Who I am', offer: 'What I offer', cases: 'Work', contact: 'Contact' },
   skip: 'Skip to content',
   themeLabel: 'Theme',
