@@ -113,6 +113,9 @@ export function fitLabel(P, cx, cy, nom, sub) {
   const bw = extent(P, cy, 1) * 0.88;
   const bh = extent(P, cx, 0);
   const size = (t) => bw / (t.length * CW);
+  // Le plancher à 6,4 px prime sur la largeur : sous ce corps le libellé n'est
+  // plus lisible, alors on préfère déborder un peu que rendre illisible. Aucune
+  // parcelle actuelle n'y touche — toutes butent sur le plafond.
   const fs = Math.max(6.4, Math.min(11.5, size(nom)));
   const ss = Math.max(5.2, Math.min(fs * 0.79, size(sub)));
   return { fs, ss, tight: bh < fs * 3.6 }; // trop plat pour deux lignes

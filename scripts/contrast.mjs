@@ -2,6 +2,7 @@
 // Verifies every text token against the worst-case surface of its theme.
 // Reads src/styles/tokens.css so the check can never drift from the tokens.
 import { readFileSync } from 'node:fs';
+import { MISSIONS } from '../src/lib/plate.mjs';
 
 const css = readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8');
 
@@ -66,5 +67,34 @@ for (const theme of ['light', 'dark']) {
     }
   }
 }
+// La planche cadastrale pose son texte sur l'aplat de chaque parcelle, pas sur
+// --bg : la couleur du rôle composée à son opacité. Sans ce bloc, un aplat plus
+// dense ou une nouvelle mission peut faire tomber le libellé sous 4,5:1 sans
+// que rien ne le signale — c'est exactement ce qui était arrivé.
+const compose = (bg, fg, a) =>
+  '#' +
+  rgb(bg)
+    .map((v, i) => Math.round(v * (1 - a) + rgb(fg)[i] * a))
+    .map((v) => v.toString(16).padStart(2, '0'))
+    .join('');
+
+for (const theme of ['light', 'dark']) {
+  const t = tokensFor(theme);
+  for (const m of MISSIONS) {
+    if (!t[m.role]) {
+      console.error(`FAIL ${theme}: missing token --${m.role} (parcelle ${m.id})`);
+      failed++;
+      continue;
+    }
+    const wash = compose(t.bg, t[m.role], Number(m.op));
+    const r = ratio(t.tx, wash);
+    const ok = r >= 4.5;
+    if (!ok) failed++;
+    console.log(
+      `${ok ? 'ok  ' : 'FAIL'} ${theme.padEnd(5)} --tx on aplat ${m.id} (--${m.role} @ ${m.op}): ${r.toFixed(2)} (need 4.5)`,
+    );
+  }
+}
+
 console.log(failed ? `\n${failed} contrast failure(s)` : '\nAll contrast pairs pass WCAG AA');
 process.exit(failed ? 1 : 0);

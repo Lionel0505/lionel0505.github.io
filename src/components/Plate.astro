@@ -161,7 +161,9 @@ const parcels = buildPlate().map((p) => {
     stroke-width: 2.4;
   }
   .line.div {
-    stroke: var(--tx2);
+    /* --tx2, not --tx, would drop to 2.5:1 over the darkest washes. The
+       division reads lighter than the boundary by its width, not its ink. */
+    stroke: var(--tx);
     stroke-width: 1.1;
   }
   .plbl {
@@ -178,8 +180,10 @@ const parcels = buildPlate().map((p) => {
     opacity: 1;
   }
   .plbl.sub {
+    /* Le sous-titre est posé sur l'aplat de sa parcelle, pas sur --bg :
+       --tx2 y tombe à 2,48:1. La hiérarchie tient au corps et à la graisse.
+       `pnpm run contrast` mesure maintenant ces surfaces composées. */
     font-size: 8.6px;
-    fill: var(--tx2);
     font-weight: 400;
     letter-spacing: 0.07em;
   }
