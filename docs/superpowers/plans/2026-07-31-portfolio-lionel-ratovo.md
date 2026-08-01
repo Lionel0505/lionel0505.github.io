@@ -1178,7 +1178,10 @@ const parcels = buildPlate().map(p => {
 ---
 <div class="plate">
   <svg viewBox="-16 -18 632 556" role="img" aria-label={s.plate.alt}>
-    <g class="tick" id="ticks" opacity="0">
+    {/* Etat au repos = etat VISIBLE. La tache 11 cache pour reveler, dans
+        son bloc garde. Sans JavaScript, « AIRE ∝ DUREE » doit rester lisible :
+        c'est la mention qui explique la planche entiere. */}
+    <g class="tick" id="ticks">
       <path d="M-10 8 L-10 -10 L8 -10"/><path d="M592 -10 L610 -10 L610 8"/>
       <path d="M610 512 L610 530 L592 530"/><path d="M8 530 L-10 530 L-10 512"/>
     </g>
@@ -1211,7 +1214,7 @@ const parcels = buildPlate().map(p => {
       <path class="line outer" stroke="var(--or)"
             d={`M${pts(parcels.find(p => p.id === 'sif').poly).replaceAll(' ', ' L')} Z`} />
     </g>
-    <g id="annos" opacity="0">
+    <g id="annos">
       <path class="tick" d="M34,518 v-26 l-6 9 m6-9 l6 9"/>
       <text class="anno" x="46" y="515">N</text>
       <text class="anno" x="82" y="515">{s.plate.scale}</text>
@@ -1661,6 +1664,8 @@ git commit -m "feat: case study pages with per-case SVG diagrams"
 - Produces: scroll-driven animation for `.rv`, `#chain i`, `.plate svg`, `.sec-head h2`, `.auth-list > span`, `.cell`, `.of::before`, `.th-items > span`, `.dg-l`, `.door::before`, `header`
 
 - [ ] **Step 1: Write `motion.css`**
+
+**The resting state of every element is its visible state.** The motion layer hides in order to reveal, and it does so only inside the guarded block below. Nothing outside that block may ship an element at `opacity: 0`: with JavaScript off, with reduced motion on, or in a browser without scroll timelines, that element is simply gone. Task 6's plate annotations were caught shipping that way, and `AIRE ∝ DURÉE` is the line that explains the whole plate.
 
 Copy the entire `@media (prefers-reduced-motion:no-preference) { @supports (animation-timeline: view()) { … } }` block verbatim from `docs/superpowers/reference/preview.html`. The animation ranges were tuned against real scroll measurements; do not adjust them.
 

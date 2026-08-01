@@ -14,7 +14,12 @@ const parcels = buildPlate().map((p) => {
 
 <div class="plate">
   <svg viewBox="-16 -18 632 556" role="img" aria-label={s.plate.alt}>
-    <g class="tick" id="ticks" opacity="0">
+    {/* Etat au repos = etat VISIBLE. La couche de mouvement (tache 11) part
+        de la et cache pour reveler, a l'interieur de son bloc garde par
+        prefers-reduced-motion et @supports. Coder opacity="0" ici rendrait
+        la fleche de nord et « AIRE ∝ DUREE » invisibles sans JavaScript, or
+        c'est cette mention qui explique toute la planche. */}
+    <g class="tick" id="ticks">
       <path d="M-10 8 L-10 -10 L8 -10"></path><path d="M592 -10 L610 -10 L610 8"></path>
       <path d="M610 512 L610 530 L592 530"></path><path d="M8 530 L-10 530 L-10 512"></path>
     </g>
@@ -82,7 +87,7 @@ const parcels = buildPlate().map((p) => {
         d={`M${pts((parcels.find((p) => p.id === 'sif') as (typeof parcels)[number]).poly as [number, number][]).replaceAll(' ', ' L')} Z`}
       ></path>
     </g>
-    <g id="annos" opacity="0">
+    <g id="annos">
       <path class="tick" d="M34,518 v-26 l-6 9 m6-9 l6 9"></path>
       <text class="anno" x="46" y="515">N</text>
       <text class="anno" x="82" y="515">{s.plate.scale}</text>
