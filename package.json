@@ -11,8 +11,9 @@
     "format": "biome check --write .",
     "contrast": "node scripts/contrast.mjs",
     "test": "playwright test",
-    "verify": "npm run lint && npm run check && npm run build"
+    "verify": "pnpm run lint && pnpm run check && pnpm run build"
   },
+  "packageManager": "pnpm@11.5.2",
   "dependencies": {
     "astro": "^7.1.6"
   },
@@ -23,9 +24,5 @@
     "@tailwindcss/vite": "^4.3.3",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
-  },
-  "allowScripts": {
-    "sharp@0.35.3": true,
-    "esbuild@0.28.1": true
   }
 }

@@ -1,0 +1,6 @@
+# pnpm 11 ne lit plus les reglages depuis le champ "pnpm" de package.json.
+# pnpm bloque par defaut les scripts d'installation des dependances : seules
+# celles listees ici ont le droit de s'executer. esbuild y lie son binaire de
+# plateforme, dont Vite depend pour builder le site.
+allowBuilds:
+  esbuild: true

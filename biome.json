@@ -9,7 +9,7 @@
       "!.superpowers",
       "!docs",
       "!.unwanted",
-      "!package-lock.json"
+      "!pnpm-lock.yaml"
     ]
   },
   "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
