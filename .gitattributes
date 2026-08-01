@@ -1,0 +1,9 @@
+# core.autocrlf est à true sur cette machine, et Biome exige du LF. Sans cette
+# ligne, un fichier réécrit par un outil Windows revient en CRLF et fait tomber
+# la porte de qualité pour une raison sans rapport avec le changement. C'est
+# arrivé deux fois pendant l'implémentation.
+* text=auto eol=lf
+*.woff2 binary
+*.png binary
+*.jpg binary
+*.pdf binary
