@@ -370,7 +370,7 @@ git commit -m "feat: colour tokens with mechanical WCAG AA verification"
 
 - [ ] **Step 1: Download the fonts, weight axis only**
 
-Google already serves subset `woff2` files. Ask for `latin-ext`, then take what its CSS points at. No subsetting tool, no build step.
+Google already serves subset `woff2` files. Take the **`latin`** block from its CSS. No subsetting tool, no build step, and **no `text=` parameter**.
 
 ```bash
 mkdir -p public/fonts
@@ -382,7 +382,11 @@ curl -s -H "User-Agent: Mozilla/5.0 Chrome/120" \
 
 **Request the `wght` axis only.** The mock-up uses `font-stretch` nowhere and `opsz` nowhere: those axes were dead weight, left over from an earlier design where Archivo set the headings. Each axis dropped removes 20 to 40 KB, and fonts are the single biggest item in the 220 KB page budget.
 
-**The subset must include latin-ext.** French needs `œ à ç é è ê î ô û`. A latin-only subset renders tofu on "Côte d'Ivoire".
+**Take the standard `latin` subset, not `latin-ext` and not a custom one.** Google's `latin` range is `U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD`. It covers every French diacritic, `œ` at U+0153, and the punctuation this design leans on: `&` `@` `·` `–` `’` `«»` `…` `€`.
+
+A subset cut to the day's copy via the CSS2 `text=` parameter is smaller and **wrong**: it ties the font files to a snapshot of the text, so the next case study silently reintroduces fallback glyphs. That is exactly what happened on the first attempt at this task, and `&`, `@`, `·` and `–` all went missing from a page whose entire visual argument is typographic.
+
+`→` (U+2192) and `∝` (U+221D) fall outside the range and render in the system font. Accepted, and documented so nobody rediscovers it as a bug.
 
 - [ ] **Step 2: Write the `@font-face` block and base styles in `src/styles/base.css`**
 
@@ -485,7 +489,7 @@ Then check the weight:
 ```bash
 du -ch public/fonts/*.woff2 | tail -1
 ```
-Expected: **under 90 KB total.** Above that, an unwanted axis or the full unicode range slipped back in.
+Expected: **under 110 KB total** (measured: 105 KiB). Above that, an unwanted axis slipped back in.
 
 - [ ] **Step 5: Commit**
 

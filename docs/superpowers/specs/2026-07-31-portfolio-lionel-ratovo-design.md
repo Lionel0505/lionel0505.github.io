@@ -208,9 +208,11 @@ Trois familles, chacune avec un rôle distinct. Le pont métier ↔ technique re
 
 **Un seul axe par police.** `font-stretch` et `opsz` ne sont utilisés nulle part : demander `wdth` ou `opsz` chargerait de 20 à 40 Ko par axe pour rien. Les polices étant le premier poste du budget de page, c'est le gain de performance le plus important du projet.
 
-**Chargement** : polices auto-hébergées en `woff2` (fichiers déjà sous-ensemblés servis par Google), sous-ensemble latin + latin-ext (le français a besoin de `œ`, `à`, `ç`, `é`, `è`, `ê`, `î`, `ô`, `û`), `font-display: swap`, et **préchargement de Bricolage seul** puisque le `h1` porte le LCP.
+**Chargement** : polices auto-hébergées en `woff2`, **sous-ensemble `latin` standard de Google**, un fichier par famille, `font-display: swap`, et **préchargement de Bricolage seul** puisque le `h1` porte le LCP.
 
-**Budget : moins de 90 Ko pour les trois familles.** Au-delà, un axe non désiré ou la plage Unicode complète est revenu.
+**Pas de `latin-ext`, et surtout pas de sous-ensemble sur mesure.** La plage `latin` de Google couvre déjà tout le français, `œ` compris (U+0153), plus `&`, `@`, `·`, `–`, `’`, `«»`, `…` et `€`. Un sous-ensemble taillé sur le texte du jour, via le paramètre `text=`, produit des fichiers plus légers mais lie les polices à un instantané de la copie : la première étude de cas ajoutée réintroduit le défaut en silence. `→` et `∝` restent hors plage et tombent sur la police système, ce qui est assumé : deux glyphes géométriques, écart imperceptible.
+
+**Budget : moins de 110 Ko pour les trois familles** (mesuré : 105 Kio). Au-delà, un axe non désiré est revenu. Le budget était à 90 Ko tant que l'on croyait le sous-ensemble sur mesure viable ; 23 Ko payés une fois, mis en cache ensuite, est le juste prix pour supprimer une classe entière de panne silencieuse.
 
 **Aucun appel à Google Fonts en production** : c'est une fuite d'adresses IP vers un tiers et un coût de connexion. La maquette y fait appel ; le site non.
 
