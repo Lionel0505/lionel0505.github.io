@@ -1627,6 +1627,8 @@ git commit -m "feat: case study pages with per-case SVG diagrams"
 
 Copy the entire `@media (prefers-reduced-motion:no-preference) { @supports (animation-timeline: view()) { … } }` block verbatim from `docs/superpowers/reference/preview.html`. The animation ranges were tuned against real scroll measurements; do not adjust them.
 
+**Do not copy the `@media (prefers-reduced-motion: reduce)` reset block.** It already lives in `src/styles/base.css`, next to the transitions it governs. Task 3's review caught that the split had left it ownerless: the mock-up carried it in one stylesheet, and neither this task nor Task 3 had claimed it. Duplicating it here would give two copies to keep in step.
+
 - [ ] **Step 2: Write `motion.ts` — fallback only**
 
 ```ts

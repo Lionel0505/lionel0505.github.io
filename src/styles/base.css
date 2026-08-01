@@ -223,3 +223,18 @@ a {
     repeating-linear-gradient(to bottom, currentColor 0 1px, transparent 1px 36px);
   mask-image: radial-gradient(ellipse 130% 70% at 62% 6%, #000 22%, transparent 72%);
 }
+
+/* Reduced motion, declared here because this file is where the transitions
+   above are declared. motion.css gates the scroll timelines separately, but
+   the theme fade and the button hovers live in base.css and would otherwise
+   be governed by nobody. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
