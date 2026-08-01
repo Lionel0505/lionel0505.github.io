@@ -144,7 +144,9 @@ header{ position:sticky; top:0; z-index:40; border-bottom:1px solid var(--bd);
        transition:border-color .25s var(--ease), color .25s var(--ease); }
 .chip:hover{ border-color:var(--tx); color:var(--tx); }
 .chip b{ color:var(--or-t); font-weight:700; }
-@media (max-width:800px){ .hdr nav a:not(.chip){ display:none; } }
+/* Sous 800 px, seul Contact survit : le defilement fait la navigation, mais
+   joindre Lionel doit rester a une touche. */
+@media (max-width:800px){ .hdr nav a:not(.chip):not([href="#contact"]){ display:none; } }
 
 /* ============================================================
    HERO

@@ -908,7 +908,18 @@ const base = lang === 'fr' ? '' : '/en';
                  transform: scaleX(0); transform-origin: right; transition: transform .4s var(--ease); }
   nav a:hover { color: var(--tx); }
   nav a:hover::after { transform: scaleX(1); transform-origin: left; }
-  @media (max-width: 800px) { nav a:not(.sig) { display: none; } }
+  /* Sous 800 px on ne garde qu'un lien : Contact. Le defilement fait la
+     navigation sur une page unique de quatre sections, donc masquer les
+     ancres ne coute presque rien. Sauf pour une : joindre Lionel est tout
+     le chemin de conversion, et le faire defiler quatre sections pour la
+     trouver est le seul endroit ou le masquage fait mal. Sur une page
+     d'etude de cas, la signature ramene deja a l'accueil.
+     Un menu hamburger pour trois ancres serait plus de machinerie que le
+     probleme n'en merite ; une barre a defilement horizontal cache les
+     liens derriere un geste que personne ne decouvre. */
+  @media (max-width: 800px) {
+    nav a:not(.sig):not([href$="#contact"]) { display: none; }
+  }
 </style>
 ```
 
