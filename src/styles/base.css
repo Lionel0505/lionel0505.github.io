@@ -1,0 +1,233 @@
+/*
+ * Weight axis only. Nothing in the design uses wdth or opsz.
+ * Each woff2 is a Google-subsetted variable font (single wght axis),
+ * fetched via the CSS2 `text=` parameter so the subset is scoped to the
+ * exact glyphs this site needs (ASCII + French latin-ext + guillemets,
+ * nbsp, ellipsis, curly apostrophe, euro) instead of the full latin-ext
+ * block. unicode-range below matches the real cmap of each file: verified
+ * with fontTools against œ à ç é è ê î ô û and their uppercase forms.
+ */
+@font-face {
+  font-family: "Archivo";
+  src: url("/fonts/Archivo.woff2") format("woff2-variations");
+  font-weight: 400 600;
+  font-display: swap;
+  unicode-range:
+    U+20-22, U+27-29, U+2B-3B, U+3F, U+41-5B, U+5D, U+61-7A, U+A0, U+AB, U+BB,
+    U+C0-C4, U+C7-CF, U+D1-D6, U+D9-DD, U+E0-E4, U+E7-EF, U+F1-F6, U+F9-FD, U+FF, U+106-109,
+    U+11C-11D, U+122-125, U+128-129, U+134-137, U+139-13C, U+143-146, U+152-157, U+15A-15F,
+    U+162-163, U+168-169, U+174-17A, U+1D7-1D8, U+1DB-1DC, U+1F4-1F5, U+1F8-1F9, U+228-229,
+    U+300-303, U+308, U+327, U+1E08-1E09, U+1E10-1E11, U+1E26-1E29, U+1E2E-1E31, U+1E3E-1E3F,
+    U+1E4C-1E4F, U+1E54-1E55, U+1E78-1E79, U+1E7C-1E7D, U+1E80-1E85, U+1E8C-1E8D, U+1E90-1E91,
+    U+1E97, U+1EA4-1EA7, U+1EAA-1EAB, U+1EBC-1EC1, U+1EC4-1EC5, U+1ED0-1ED3, U+1ED6-1ED7,
+    U+1EF2-1EF3, U+1EF8-1EF9, U+2019, U+2026, U+20AC;
+}
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/Bricolage.woff2") format("woff2-variations");
+  font-weight: 700 800;
+  font-display: swap;
+  unicode-range:
+    U+20-22, U+27-29, U+2B-3B, U+3F, U+41-5B, U+5D, U+61-7A, U+A0, U+AB, U+BB,
+    U+C0-C4, U+C7-CF, U+D1-D6, U+D9-DD, U+E0-E4, U+E7-EF, U+F1-F6, U+F9-FD, U+FF, U+106-109,
+    U+11C-11D, U+122-125, U+128-129, U+134-137, U+139-13C, U+143-146, U+152-157, U+15A-15F,
+    U+162-163, U+168-169, U+174-17A, U+1D7-1D8, U+1DB-1DC, U+1F4-1F5, U+1F8-1F9, U+228-229,
+    U+300-303, U+308, U+327, U+1E08-1E09, U+1E10-1E11, U+1E26-1E29, U+1E2E-1E31, U+1E3E-1E3F,
+    U+1E4C-1E4F, U+1E54-1E55, U+1E78-1E79, U+1E7C-1E7D, U+1E80-1E85, U+1E8C-1E8D, U+1E90-1E91,
+    U+1E97, U+1EA4-1EA7, U+1EAA-1EAB, U+1EBC-1EC1, U+1EC4-1EC5, U+1ED0-1ED3, U+1ED6-1ED7,
+    U+1EF2-1EF3, U+1EF8-1EF9, U+2019, U+2026, U+20AC;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono.woff2") format("woff2-variations");
+  font-weight: 500 700;
+  font-display: swap;
+  unicode-range:
+    U+20-22, U+27-29, U+2B-3B, U+3F, U+41-5B, U+5D, U+61-7A, U+A0, U+AB, U+BB,
+    U+C0-C4, U+C7-CF, U+D1-D6, U+D9-DD, U+E0-E4, U+E7-EF, U+F1-F6, U+F9-FD, U+FF, U+106-109,
+    U+11C-11D, U+122-125, U+128-129, U+134-137, U+139-13C, U+143-146, U+152-157, U+15A-15F,
+    U+162-163, U+168-169, U+174-17A, U+1D7-1D8, U+1DB-1DC, U+1F4-1F5, U+1F8-1F9, U+228-229,
+    U+300-303, U+308, U+327, U+1E08-1E09, U+1E10-1E11, U+1E26-1E29, U+1E2E-1E31, U+1E3E-1E3F,
+    U+1E4C-1E4F, U+1E54-1E55, U+1E78-1E79, U+1E7C-1E7D, U+1E80-1E85, U+1E8C-1E8D, U+1E90-1E91,
+    U+1E97, U+1EA4-1EA7, U+1EAA-1EAB, U+1EBC-1EC1, U+1EC4-1EC5, U+1ED0-1ED3, U+1ED6-1ED7,
+    U+1EF2-1EF3, U+1EF8-1EF9, U+2019, U+2026, U+20AC;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: var(--ff);
+  font-size: clamp(0.96rem, 0.93rem + 0.17vw, 1.045rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition:
+    background 0.45s var(--ease),
+    color 0.45s var(--ease);
+}
+
+/* Suppresses the cross-fade smear during a theme switch. */
+.no-tr,
+.no-tr *,
+.no-tr *::before,
+.no-tr *::after {
+  transition: none !important;
+  animation-duration: 0.001ms !important;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--ffd);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.03;
+}
+h1 {
+  font-size: clamp(2.1rem, 1.15rem + 3.5vw, 3.85rem);
+  line-height: 1;
+  letter-spacing: -0.038em;
+  font-weight: 760;
+  text-wrap: balance;
+}
+h2 {
+  font-size: clamp(1.6rem, 1.05rem + 1.9vw, 2.6rem);
+}
+h3 {
+  font-size: clamp(1.08rem, 0.98rem + 0.48vw, 1.32rem);
+  letter-spacing: -0.022em;
+}
+p {
+  margin: 0;
+  max-width: 64ch;
+}
+
+.lead {
+  font-size: clamp(1rem, 0.95rem + 0.42vw, 1.2rem);
+  color: var(--tx2);
+  line-height: 1.52;
+  max-width: 48ch;
+}
+.mono {
+  font-family: var(--ffm);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tx2);
+}
+a {
+  color: var(--or-t);
+  text-decoration: none;
+}
+.wrap {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.btn {
+  font: inherit;
+  font-size: 0.895rem;
+  font-weight: 560;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.3rem;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  min-height: 44px;
+  transition:
+    background 0.24s var(--ease),
+    border-color 0.24s var(--ease),
+    transform 0.24s var(--ease),
+    box-shadow 0.24s var(--ease);
+}
+.btn-1 {
+  background: var(--or-t);
+  color: var(--bg);
+}
+.btn-1:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in oklab, var(--or) 34%, transparent);
+}
+.btn-2 {
+  background: transparent;
+  color: var(--tx);
+  border-color: var(--bd2);
+}
+.btn-2:hover {
+  border-color: var(--tx);
+  background: color-mix(in oklab, var(--tx) 5%, transparent);
+  transform: translateY(-2px);
+}
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--or-t);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.skip {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+}
+.skip:focus {
+  left: var(--gut);
+  top: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--tx);
+  border-radius: 3px;
+}
+
+#grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9996;
+  mix-blend-mode: var(--grain-mode);
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  color: var(--tx);
+  opacity: 0.045;
+  background:
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 36px),
+    repeating-linear-gradient(to bottom, currentColor 0 1px, transparent 1px 36px);
+  mask-image: radial-gradient(ellipse 130% 70% at 62% 6%, #000 22%, transparent 72%);
+}
