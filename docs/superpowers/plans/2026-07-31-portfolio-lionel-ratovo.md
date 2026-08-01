@@ -851,23 +851,38 @@ export const altPath = (path: string): string =>
 
 Ten lines with exactly one consumer do not need their own module. The number never appears in the served HTML.
 
+**Do not ship the number as digit fragments.** An array like
+`['261', '34', '21', '137', '98']` lands in the HTML and is found by anything
+that strips non-digits before matching, which is exactly what harvesters do.
+It is the appearance of the protection without the protection. Encode it, and
+say plainly in a comment that this is obfuscation and not secrecy: whoever
+reads the source finds it in ten seconds, and that is fine. What matters is
+that no reconstructable digit run ships in an indexed page.
+
 ```astro
 <script>
-
-```ts
-const btn = document.getElementById('phone-reveal');
-btn?.addEventListener('click', () => {
-  const parts = ['261', '34', '21', '137', '98'];
-  const display = `(+${parts[0]}) ${parts.slice(1).join(' ')}`;
-  const a = document.createElement('a');
-  a.href = `tel:+${parts.join('')}`;
-  a.rel = 'nofollow';
-  a.textContent = display;
-  a.className = 'mono phone-live';
-  btn.replaceWith(a);
-}, { once: true });
+  const btn = document.getElementById('phone-reveal');
+  btn?.addEventListener(
+    'click',
+    () => {
+      // Obfuscation contre les moissonneurs, pas un secret.
+      const tel = atob('KzI2MSAzNCAyMSAxMzcgOTg=');   // "+261 XX XX XXX XX"
+      const a = document.createElement('a');
+      a.href = `tel:${tel.replace(/\s/g, '')}`;
+      a.rel = 'nofollow';
+      a.textContent = `(${tel.slice(0, 4)})${tel.slice(4)}`;
+      a.className = 'mono phone-live';
+      btn.replaceWith(a);
+    },
+    { once: true },
+  );
 </script>
 ```
+
+Verify with a **normalising** scan, not a shape-matching one: strip every
+non-digit from each file in `dist/`, then search; repeat stripping
+non-alphanumerics. A grep for the formatted number proves nothing about the
+forms you did not anticipate.
 
 - [ ] **Step 5: Write `SiteHeader.astro` and `SiteFooter.astro`**
 
