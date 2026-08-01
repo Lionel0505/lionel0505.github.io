@@ -1924,6 +1924,46 @@ test('CV downloads and the phone reveals on click', async ({ page }) => {
 });
 ```
 
+- [ ] **Step 1b: Write `scripts/js-budget.mjs`**
+
+The obvious guard, `find dist -name '*.js' | gzip | wc -c`, is **green by
+construction and therefore worse than no guard at all**: Astro inlines a script
+this small straight into the HTML, so `find` matches nothing and the check
+reports zero bytes forever. Measured on the real build, the shipped JavaScript
+is 1350 bytes gzipped, all of it inline.
+
+```js
+import assert from 'node:assert/strict';
+import { globSync, readFileSync } from 'node:fs';
+import { gzipSync } from 'node:zlib';
+
+const BUDGET = 6144;
+// Inline scripts count. They are the only ones this site ships today, and a
+// guard that misses them is a guard that can never fail.
+const INLINE = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g;
+
+let total = 0;
+for (const f of globSync('dist/**/*.html')) {
+  for (const [, body] of readFileSync(f, 'utf8').matchAll(INLINE)) {
+    total += gzipSync(body).length;
+  }
+}
+for (const f of globSync('dist/**/*.js')) total += gzipSync(readFileSync(f)).length;
+
+console.log(`JavaScript livre : ${total} octets gzip (budget ${BUDGET})`);
+assert.ok(total < BUDGET, `budget JavaScript depasse : ${total} > ${BUDGET}`);
+```
+
+Wire it into `package.json`:
+
+```json
+"budget": "node scripts/js-budget.mjs",
+"verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate && pnpm run budget"
+```
+
+Prove it can fail before trusting it: drop `BUDGET` to 100, confirm it exits
+non-zero and prints the real figure, then restore it.
+
 - [ ] **Step 2: Write `.github/workflows/ci.yml`**
 
 ```yaml
@@ -1947,9 +1987,7 @@ jobs:
       - name: No social links, no vanity metrics, no bare phone
         run: |
           ! grep -rqiE "linkedin\.com|github\.com/[Ll]ionel|XX XX XXX" dist/
-      - name: JavaScript budget
-        run: |
-          test "$(find dist -name '*.js' -exec gzip -c {} \; | wc -c)" -lt 6144
+      - run: pnpm run budget
 ```
 
 The two shell steps are the content and performance constraints enforced by CI rather than by discipline. They cost a second and catch the two regressions that would otherwise ship silently.
