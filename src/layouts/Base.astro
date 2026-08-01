@@ -1,4 +1,7 @@
 ---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { t } from '../i18n/utils';
 import '../styles/tokens.css';
 import '../styles/base.css';
 
@@ -11,6 +14,7 @@ interface Props {
 
 const { title, description, lang = 'fr', path } = Astro.props as Props;
 const canonical = path ? new URL(path, Astro.site) : undefined;
+const s = t(lang);
 ---
 
 <!doctype html>
@@ -41,10 +45,12 @@ const canonical = path ? new URL(path, Astro.site) : undefined;
     </script>
   </head>
   <body>
-    <a class="skip" href="#main">{lang === "fr" ? "Aller au contenu" : "Skip to content"}</a>
+    <a class="skip" href="#main">{s.skip}</a>
     <div class="grid-bg"></div>
     <div id="grain"></div>
+    <SiteHeader lang={lang} />
     <slot />
+    <SiteFooter lang={lang} />
     <script>
       import "../scripts/theme.ts";
     </script>

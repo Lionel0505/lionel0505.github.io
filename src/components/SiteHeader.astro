@@ -1,0 +1,90 @@
+---
+import { t, type Lang } from '../i18n/utils';
+import ThemeToggle from './ThemeToggle.astro';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const base = lang === 'fr' ? '' : '/en';
+---
+
+<header>
+  <div class="hdr">
+    <a class="sig" href={`${base}/`}>Ratovo <i>S. M.</i> Lionel</a>
+    <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
+      <a href={`${base}/#qui`}>{s.nav.who}</a>
+      <a href={`${base}/#offre`}>{s.nav.offer}</a>
+      <a href={`${base}/#cas`}>{s.nav.cases}</a>
+      <a href={`${base}/#contact`}>{s.nav.contact}</a>
+      <!-- LangSwitch lands here in Task 13, once src/components/LangSwitch.astro exists. -->
+      <ThemeToggle labelPrefix={s.themeLabel} />
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid var(--bd);
+    background: var(--mb);
+    backdrop-filter: blur(8px) saturate(1.2);
+  }
+  .hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 58px;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: var(--gut);
+  }
+  .sig {
+    font-family: var(--ffm);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--tx);
+  }
+  .sig i {
+    font-style: normal;
+    color: var(--tx2);
+    font-weight: 400;
+  }
+  nav {
+    display: flex;
+    gap: clamp(0.8rem, 2vw, 1.8rem);
+    align-items: center;
+  }
+  nav a {
+    color: var(--tx2);
+    font-size: 0.845rem;
+    font-weight: 500;
+    position: relative;
+    padding-block: 3px;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1.5px;
+    background: var(--or);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s var(--ease);
+  }
+  nav a:hover {
+    color: var(--tx);
+  }
+  nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  @media (max-width: 800px) {
+    nav a:not(.sig) {
+      display: none;
+    }
+  }
+</style>

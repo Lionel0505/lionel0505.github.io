@@ -52,6 +52,9 @@
 }
 html {
   -webkit-text-size-adjust: 100%;
+  /* Clears SiteHeader's sticky bar (58px, see SiteHeader.astro's .hdr) for
+     every in-page anchor jump, including the skip link's #main target. */
+  scroll-padding-top: 58px;
 }
 
 body {

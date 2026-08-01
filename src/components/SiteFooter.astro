@@ -1,0 +1,71 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="ftr wrap">
+    <p class="mono sig">© {year} Ratovo <i>S. M.</i> Lionel</p>
+    <button id="phone-reveal" class="mono reveal" type="button">{s.phone.reveal}</button>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--bd);
+  }
+  .ftr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.5rem;
+  }
+  .sig i {
+    font-style: normal;
+    color: var(--tx3);
+    font-weight: 400;
+  }
+  .reveal {
+    background: transparent;
+    border: 1px solid var(--bd2);
+    border-radius: 2px;
+    padding: 0.6rem 0.9rem;
+    min-height: 44px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .reveal:hover {
+    border-color: var(--tx);
+    color: var(--tx);
+  }
+  /* Created client-side after the reveal click, so it never carries this
+     component's scope attribute: styled with :global instead. */
+  :global(.phone-live) {
+    color: var(--tx);
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('phone-reveal');
+  btn?.addEventListener(
+    'click',
+    () => {
+      const parts = ['261', '34', '21', '137', '98'];
+      const display = `(+${parts[0]}) ${parts.slice(1).join(' ')}`;
+      const a = document.createElement('a');
+      a.href = `tel:+${parts.join('')}`;
+      a.rel = 'nofollow';
+      a.textContent = display;
+      a.className = 'mono phone-live';
+      btn.replaceWith(a);
+    },
+    { once: true },
+  );
+</script>
