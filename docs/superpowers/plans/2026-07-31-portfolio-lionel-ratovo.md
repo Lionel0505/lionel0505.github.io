@@ -323,7 +323,7 @@ Values are copied verbatim from spec §1.5. They were computed against the worst
   --bd:#CFC5A8; --bd2:#b8ae90;
   --sh:rgba(28,35,24,.10);
   --or:#C84E0A;   --tl:#1A9E93;   --yw:#D4A800;   --lv:#7B6EC8;
-  --or-t:#a64108; --tl-t:#126d65; --yw-t:#775e00; --lv-t:#61579e;
+  --or-t:#a64108; --tl-t:#116a62; --yw-t:#775e00; --lv-t:#61579e;
   --or-inv:#E8621A; --tl-inv:#2BBFB3;
   --mb:rgba(244,238,224,.90);
   --inv-bg:#1C2318; --inv-tx:#F4EEE0; --inv-tx2:#9E9880; --inv-bd:#3A4736;

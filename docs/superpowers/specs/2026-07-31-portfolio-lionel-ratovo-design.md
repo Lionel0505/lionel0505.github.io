@@ -164,7 +164,7 @@ Les valeurs `-t` sont **calculées contre le fond le plus défavorable de chaque
 --tx:#1C2318  --tx2:#685f52  --tx3:#b0a898   (tx3 : filets uniquement, jamais du texte)
 --bd:#CFC5A8  --bd2:#b8ae90
 --or:#C84E0A    --tl:#1A9E93    --yw:#D4A800    --lv:#7B6EC8
---or-t:#a64108  --tl-t:#126d65  --yw-t:#775e00  --lv-t:#61579e
+--or-t:#a64108  --tl-t:#116a62  --yw-t:#775e00  --lv-t:#61579e
 --or-inv:#E8621A  --tl-inv:#2BBFB3            (accents posés sur la surface inversée)
 --inv-bg:#1C2318  --inv-tx:#F4EEE0  --inv-tx2:#9E9880  --inv-bd:#3A4736
 ```
