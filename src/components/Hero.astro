@@ -1,0 +1,133 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { t, type Lang } from '../i18n/utils';
+import Plate from './Plate.astro';
+
+const { lang, portrait } = Astro.props as { lang: Lang; portrait?: ImageMetadata };
+const s = t(lang);
+---
+
+<div class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <div class="stagger" id="heroA">
+        <p class="status"><span class="dot"></span>{s.status}</p>
+      </div>
+      <div class="stagger" id="heroB">
+        <h1>{s.hero.title} <em>{s.hero.titleAccent}</em>.</h1>
+        <p class="lead">{s.hero.lead}</p>
+        <p class="meta">{s.hero.places.map((p) => <span>{p}</span>)}</p>
+        <div class="cta">
+          <a class="btn btn-1" href="/cv/CV_Lionel_Ratovo.pdf" download>{s.hero.ctaCv}</a>
+          <a class="btn btn-2" href="#contact">{s.hero.ctaContact}</a>
+        </div>
+      </div>
+    </div>
+    {
+      portrait ? (
+        <Image
+          src={portrait}
+          alt="Lionel Ratovo"
+          widths={[420, 840]}
+          sizes="(max-width: 960px) 90vw, 40vw"
+          loading="eager"
+        />
+      ) : (
+        <Plate lang={lang} />
+      )
+    }
+  </div>
+  {
+    portrait && (
+      <div class="plate-below">
+        <Plate lang={lang} />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .hero {
+    padding-block: clamp(1.6rem, 3.4vw, 2.9rem) clamp(1.4rem, 3vw, 2.2rem);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
+    gap: clamp(1.6rem, 4vw, 3.6rem);
+    align-items: center;
+  }
+  @media (max-width: 960px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 2.2rem;
+    }
+  }
+  .hero-grid img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 3px;
+  }
+  .plate-below {
+    margin-top: clamp(1.6rem, 4vw, 3.6rem);
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.15rem;
+    font-family: var(--ffm);
+    font-size: 0.635rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--tx2);
+    border: 1px solid var(--bd);
+    border-radius: 100px;
+    padding: 5px 11px 5px 9px;
+  }
+  .status .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--or);
+    flex: none;
+    animation: ping 2.6s var(--ease) infinite;
+  }
+  @keyframes ping {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in oklab, var(--or) 55%, transparent);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--or-t);
+  }
+  .lead {
+    margin-top: 1.15rem;
+  }
+  .meta {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.95rem;
+  }
+  .meta span {
+    font-family: var(--ffm);
+    font-size: 0.63rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--tx2);
+  }
+  .cta {
+    margin-top: 1.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+  }
+</style>
