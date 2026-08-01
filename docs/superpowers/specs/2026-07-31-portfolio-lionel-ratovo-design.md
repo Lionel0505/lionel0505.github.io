@@ -1,9 +1,11 @@
 # Portfolio Lionel Ratovo — super-PRD
 
-**Date** : 31 juillet 2026
+**Date** : 31 juillet 2026 · **révisé le 1er août 2026** après retours de Lionel
 **Statut** : conception validée, prêt pour le plan d'implémentation
-**Maquette de référence** : `docs/superpowers/reference/preview.html` (validée le 31/07/2026)
-**Sources factuelles** : `.unwanted/sources/` — 5 fichiers, seule autorité sur les faits
+**Maquette de référence** : `docs/superpowers/reference/preview.html` (v4, validée le 01/08/2026)
+**Sources factuelles** : `.unwanted/sources/`. Deux niveaux : les CV maîtres du 21/07/2026, et
+`RETOURS-LIONEL-2026-08-01.md` (repères `[F1]`–`[F12]`) **qui les emporte** partout où il les
+contredit. Là où le master est muet, on demande : on n'y comble pas les silences par déduction.
 
 ---
 
@@ -13,9 +15,11 @@
 |---|---|
 | Audiences | Recruteurs CDI/remote international · clients freelance · porte d'entrée NEXTRI · carte de visite |
 | Angle du récit | **Le pont métier ↔ technique** |
-| Réalisations | 3 études de cas rédigées, sans capture d'écran |
+| Plan de lecture | Quatre mouvements voulus par Lionel `[F9]` : qui je suis · ce que j'offre · ce que j'ai accompli · comment me contacter |
+| Planche | Aires **proportionnelles au temps passé** `[F10]`, calculées au build, pas dessinées |
+| Réalisations | 3 études de cas rédigées, sans capture d'écran : **SIF · data (GSK + Cartier) · webmastering (Mercedes-Benz)** |
 | Langues | Bilingue FR / EN, FR par défaut |
-| Stack | Astro + Tailwind, statique |
+| Stack | Astro 7 + Tailwind 4, statique |
 | Structure | Accueil + une page par étude de cas |
 | Statut affiché | « Ouvert aux opportunités », sans date |
 | Contact | Email en clair · CV PDF · téléphone révélé au clic · lien NEXTRI |
@@ -38,7 +42,7 @@ Elle vient de Lionel lui-même, via la note `[E2]` de son CV maître : *« plus 
 
 **Pourquoi cet angle plutôt qu'un autre.** Un backend de plus, il y en a des milliers. Quelqu'un qui tient l'atelier client *et* les 150 tables, beaucoup moins. L'angle sert les quatre audiences d'un coup : le recruteur y lit de la séniorité, le client un interlocuteur, NEXTRI son porte-parole. Et surtout il est **défendable en entretien**, ce que l'angle « ingénieur des systèmes critiques » n'aurait pas été : promettre un architecte système et livrer un lead applicatif est un écart qui se paie.
 
-**Le risque, et sa neutralisation.** Un recruteur purement technique peut lire « il code moins ». Chaque affirmation métier est donc ancrée dans un fait technique nommé : Drools, 9 schémas Oracle, APJ, AEM, Salesforce.
+**Le risque, et sa neutralisation.** Un recruteur purement technique peut lire « il code moins ». Chaque affirmation métier est donc ancrée dans un fait technique nommé : Drools, 9 schémas PostgreSQL, APJ, AEM, Salesforce.
 
 ## 1.2 Audiences
 
@@ -88,16 +92,22 @@ Ce que ça donne concrètement :
 
 Le hero n'affiche pas une photo mais **la carrière de Lionel dessinée en plan cadastral**. Une parcelle par mission, coloriée selon la nature du travail, exactement comme une planche cadastrale est coloriée par usage du sol.
 
-| Parcelle | Mission | Rôle de couleur |
-|---|---|---|
-| SIF · SIGFU | Côte d'Ivoire, 2024 → | Mission en cours |
-| Cartier | 2022 | Données |
-| GSK | 2023 | Données |
-| Mercedes-Benz | 2021 · 2022 | Production web |
-| BICI | 2021 | Reprise d'existant |
-| **Parcelle libre** | — | Cerclée en tireté |
+**L'aire de chaque parcelle vaut sa durée** `[F10]`. Ce n'est pas une métaphore décorative : c'est la seule façon de dessiner un parcours sans le maquiller.
 
-La parcelle libre est un **hameçon d'inachèvement** : un manque ouvert retient l'attention plus qu'un argumentaire. Au survol, elle affiche « → Votre projet » et devient un appel à l'action.
+| Parcelle | Mission | Mois | Rôle de couleur |
+|---|---|---:|---|
+| SIF · SIGFU | Côte d'Ivoire, 01/2024 → | 31 | Mission en cours |
+| GSK | 03/2023 → 01/2024 | 10 | Données |
+| Mercedes-Benz | 12/2021 → 09/2022 | 9 | Production web |
+| Cartier | 09/2022 → 03/2023 | 6 | Données |
+| BICI | 11/2021 → 12/2021 | 2 | Reprise d'existant |
+| **Parcelle libre** | les douze prochains mois | 12 | Cerclée en tireté |
+
+Cartier et GSK partagent le rôle « données » et se touchent : deux densités d'aplat les séparent (0,20 et 0,34), comme deux parcelles du même classement sur un vrai plan.
+
+**Le contour est fixe, les divisions sont calculées.** Le polygone extérieur est découpé par dichotomie sur la position de chaque droite, jusqu'à ce que l'aire découpée vaille la durée visée. Deux conséquences qui valent le code : la parcelle du SIF grossit d'elle-même tant que la mission dure, et corriger une date suffit à redessiner la planche. Les normales des droites sont inclinées et toutes différentes, sinon on obtient un treemap et non un plan cadastral.
+
+La parcelle libre est un **hameçon d'inachèvement** : un manque ouvert retient l'attention plus qu'un argumentaire. Elle est cotée à la même échelle que le travail réel, douze mois, et elle porte la passerelle NEXTRI `[F11]`, `[F12]` : « Seul · ou à trois avec NEXTRI ». Au survol, « → Votre projet ».
 
 ### Leviers d'attention
 
@@ -108,7 +118,8 @@ Appliqués honnêtement : aucun ne demande de mentir, tous s'appuient sur des fa
 | **Transfert d'autorité** | Bandeau typographique avec les vrais noms : Ministère de l'Urbanisme, GlaxoSmithKline, Cartier, Mercedes-Benz. L'actif le plus fort de la page. |
 | **Effet Von Restorff** | La planche : un objet unique, donc mémorisé. |
 | **La couleur porte du sens** | Quatre rôles nommés, pas de la décoration. |
-| **Effet Zeigarnik** | La parcelle libre. |
+| **Effet Zeigarnik** | La parcelle libre, qui porte aussi la passerelle NEXTRI. |
+| **Preuve croisée** | Chaque ligne de l'offre est prouvée par une mission **différente**. Règle mécanique, pas éditoriale : c'est elle qui empêche la page de redevenir un monologue sur le SIF. |
 | **Règle pic-fin** | Un pic (le plan qui se colorie) et une fin forte (contact inversé sur fond encre). |
 | **Ancrage** | Les chiffres défendables arrivent tôt et gros dans le cartouche. |
 | **Concrétude** | La spécificité crédibilise mieux que le superlatif. C'est déjà la doctrine des CV maîtres. |
@@ -117,7 +128,7 @@ Appliqués honnêtement : aucun ne demande de mentir, tous s'appuient sur des fa
 ### Ce qu'on s'interdit
 
 - La rangée « gros chiffre + petit label » (cliché SaaS).
-- Les grilles de cartes identiques : les trois volets d'Approche sont décalés, les études de cas ont des poids différents.
+- Les grilles de cartes identiques : les études de cas ont des poids délibérément dissemblables.
 - Le texte en dégradé, le glassmorphisme décoratif, les bordures latérales colorées.
 - Les tirets cadratins dans la copie du site.
 - Les petites étiquettes capitales traquées répétées au-dessus de chaque titre de section.
@@ -294,8 +305,8 @@ Contrat repris de NEXTRI (`next-themes` : `attribute="data-theme"`, `defaultThem
 └─ Contact ................. les deux portes (surface inversée)
 
 /cas/sif/                            /en/cas/sif/
-/cas/data-international/             /en/cas/data-international/
-/cas/reprise-existant/               /en/cas/reprise-existant/
+/cas/data/                           /en/cas/data/
+/cas/web/                            /en/cas/web/
 /404                                 (servi par GitHub Pages)
 ```
 
@@ -318,28 +329,49 @@ Contrat repris de NEXTRI (`next-themes` : `attribute="data-theme"`, `defaultThem
 
 *Le hero à deux visages* : le composant accepte un portrait optionnel. Sans photo, la colonne droite reçoit la planche ; avec photo, la planche descend en pleine largeur sous le hero et le portrait prend sa place. **Aucune refonte le jour où la photo arrive.**
 
-**Bandeau d'autorité.** Sur `--bg2`, bordé haut et bas. Quatre noms en Bricolage Grotesque, surmontés chacun d'une étiquette mono de contexte. Opacité 0,62 au repos, 1 et `--or-t` au survol.
+### 01 · Qui je suis
 
-**Cartouche.** Bloc-titre bordé de 1,5 px. Six cellules :
+**Deux paragraphes**, pas une biographie : ce sur quoi il travaille, puis ce qu'il vend vraiment (« ma force n'est pas la technique pure ») `[E2]`. La passerelle NEXTRI est ici, dès le premier mouvement `[F12]`, et non plus seulement en pied de page.
+
+**Cartouche.** Bloc-titre bordé de 1,5 px. **Portée unique : tout ce qu'il contient vaut pour la carrière entière.** C'était le défaut relevé par Lionel `[F8]` — l'ancien cartouche mêlait trois portées, et « 9 schémas » sans contexte ne veut rien dire. Les chiffres du SIF descendent dans son étude de cas.
 
 | Cellule | Valeur | Source |
 |---|---|---|
-| Expérience | **5 ans** | PROFIL |
-| Schémas Oracle | **9** | `[A2]` |
-| Tables · innola | **150** | `[A2]` |
-| Mise en service | Novembre 2024 | `[A1]`, `[A6]` |
+| En activité depuis | **2021** | Expériences |
+| Missions | **5** | Expériences |
 | Terrain | Côte d'Ivoire · Maurice · Madagascar | Expériences |
 | Formation | Master MIAGE · MBDS | `[D1]` |
+| Langues | Malagasy · Français · Anglais | `[D3]` |
+| Disponibilité | Ouvert aux opportunités | Décision |
 
-Les trois premières sont en Bricolage Grotesque 760 couleur `--or-t` : ce sont elles qui **ancrent** la perception d'échelle avant tout examen.
+« 2021 » et non « 5 ans » : novembre 2021 → août 2026 fait 4 ans et 9 mois, et une date de départ ne dérive jamais.
 
-**Approche.** Trois volets décalés sur une grille de 12 colonnes (5 / 5 / 6, décalages verticaux différents), chacun dans sa couleur de rôle, sans icônes.
+### 02 · Ce que j'offre
 
-**Études de cas.** Une majeure en deux colonnes avec son schéma collant, deux compactes côte à côte séparées par un filet. Poids délibérément dissemblables.
+Quatre prestations sur deux colonnes, chacune dans sa couleur de rôle, filet de 44 px en tête. Sous chaque prestation, un bloc **« sur le terrain »** : la preuve, tirée d'une mission différente à chaque fois.
+
+| Prestation | Preuve | Rôle |
+|---|---|---|
+| API et backend métier | SIF · règles Drools avant écriture | `--or` |
+| Modélisation et optimisation SQL | GSK · données marketing, milliers de lignes | `--tl` |
+| Reprise de l'existant | Cartier · flux Salesforce · BICI · quatre apps APJ | `--lv` |
+| Conduite technique | Mercedes-Benz · coordination de l'équipe de Madagascar | `--yw` |
+
+Remplace les trois volets « cadrer · construire · livrer », dont Lionel notait qu'ils décrivaient tous le SIF `[F5]`.
+
+### 03 · Ce que j'ai accompli
+
+**Bandeau d'autorité**, pleine largeur, en ouverture du mouvement. Sur `--bg2`, bordé haut et bas. Quatre noms en Bricolage Grotesque, surmontés chacun d'une étiquette mono de contexte. Opacité 0,62 au repos, 1 et `--or-t` au survol.
+
+**Études de cas.** Une majeure en deux colonnes avec son schéma collant, deux compactes côte à côte séparées par un filet. Poids délibérément dissemblables. Les chiffres du SIF vivent dans la majeure, en rangée de faits.
+
+**Le fil.** Un bloc bordé referme le mouvement : « reprendre l'existant » n'est pas un quatrième cas, c'est ce qui traverse les trois — SGFH → SIF, les flux Salesforce de Cartier, les quatre applications non documentées de BICI.
 
 **Parcours.** Frise verticale, un poste par entrée : intitulé, employeur, lieu, dates, puces sourcées. Formation et langues en fin.
 
-**Contact.** Surface inversée (`--inv-bg`). Deux portes bordées, chacune avec son filet de rôle qui pousse au défilement.
+### 04 · Comment me contacter
+
+Surface inversée (`--inv-bg`). Deux portes bordées, chacune avec son filet de rôle qui pousse au défilement.
 
 ## 2.4 Anatomie d'une étude de cas
 
@@ -359,29 +391,48 @@ Gabarit unique pour les trois :
 
 - **Client** : Ministère de l'Urbanisme, du Logement et du Cadre de Vie, Côte d'Ivoire, via IGN FI
 - **Période** : janvier 2024 → présent · **Équipe** : 9 développeurs, 3 testeurs
-- **Stack** : Java · Oracle · Drools · Angular
+- **Stack** : Java · PostgreSQL · Drools · ExtJS `[F1]`, `[F2]`
 - **Titre** : « Migrer un cadastre national sans arrêter le service »
 - **Enjeu** : le SGFH devait devenir le SIF, avec de nombreuses améliorations fonctionnelles
-- **Contrainte** : 9 schémas, dont `innola` à 150 tables et `public` à 59 ; dialogue avec les bases d'autres services de l'État ; chaque action CRUD passe par des règles métier validées via Drools
+- **Contrainte** : 9 schémas **PostgreSQL** `[F1]`, dont `innola` à 150 tables et `public` à 59 ; **lecture et écriture** dans les bases d'autres services de l'État `[F4]` ; chaque action CRUD passe par des règles métier validées via Drools
 - **Fait** : conception et développement des interfaces métier des gestionnaires fonciers et du portail public ouvert à plus de 100 usagers ; portage des attentes du client en atelier ; estimation des tâches et suivi du calendrier en appui au chef d'équipe
 - **Ce qui a tenu** : mise en production réussie en novembre 2024, qui était le défi du projet
-- **Schéma** : portail public + apps métier → Drools → Oracle 9 schémas → bases d'autres services
+- **Schéma** `[F2]`, `[F3]`, `[F4]` — redessiné d'après le croquis de Lionel. Le portail est une **application distincte**, pas un client du même backend :
+
+```
+PORTAIL SIGFU (public)              SIF
+  Angular                             ExtJS
+    ↓                                   ↓
+  NestJS  ←── lecture seule ────      API Java ⇄ Drools (métier)
+    ⇅         via les API SIF             ⇅
+  PostgreSQL (propre)                 PostgreSQL · 9 schémas
+                                          ⇅  lecture ET écriture
+                                    BDD autres services de l'État
+```
 
 ### Cas 2 — Comptes data internationaux
 
 - **Client** : RAPP IO Mauritius · **Période** : 2022 → 2024 · **Stack** : SQL · Salesforce
-- **Titre** : « Des données marketing pour deux maisons mondiales »
+- **Titre** : « Deux comptes data, des flux qu'on ne peut pas casser »
 - **GlaxoSmithKline** (mars 2023 – janvier 2024) : transformation et analyse des données marketing du groupe, optimisation de requêtes SQL dont les résultats portaient sur des milliers de lignes
 - **Cartier** (septembre 2022 – mars 2023) : reprise et maintien des traitements de préparation des données marketing des campagnes analytiques, dans les flux Salesforce existants
 
-> ⚠️ **Correction à appliquer** : la maquette dit « trois marques mondiales ». C'est faux — ce cas en couvre **deux**, Mercedes-Benz relevant du cas 3. Corriger à la rédaction.
+Deux marques, pas trois `[F6]`. Mercedes-Benz relève du cas 3 : c'est du webmastering, pas de la data.
 
-### Cas 3 — Reprise d'existant
+### Cas 3 — Webmastering et coordination
 
-- **Période** : 2021 → 2022 · **Stack** : Java (APJ) · AEM
-- **Titre** : « Reprendre l'existant, y compris ce qui n'est pas documenté »
-- **BICI** (novembre – décembre 2021) : évolutions backend et frontend sur quatre applications métier (SPAT Capitainerie, Fonds Routiers, Phô Restaurant, TeamTask) développées sous APJ, framework interne JEE de BICI, et déploiement des versions correspondantes ; support technique des utilisateurs en parallèle
-- **Mercedes-Benz** (décembre 2021 – septembre 2022, via RAPP IO) : production et publication de contenus web sous AEM ; coordination interne, avec un collègue, de l'équipe de Madagascar, la production étant répartie entre Maurice et Madagascar
+- **Client** : Mercedes-Benz via RAPP IO Mauritius · **Période** : décembre 2021 → septembre 2022 · **Stack** : AEM
+- **Titre** : « Publier du web à l'échelle d'un constructeur »
+- **Fait** `[B2]`, `[F6]` : production et publication de contenus web sous AEM ; coordination interne, avec un collègue, de l'équipe de Madagascar, la production étant répartie entre Maurice et Madagascar (4 équipes de 9 à 12 personnes, 3 à Maurice et 1 à Madagascar)
+- **Attention** : aucune production web **au sens du développement** à Maurice `[F7]`. La maquette v3 attribuait par erreur cette production à BICI ; c'est faux sur les deux plans.
+
+### La reprise d'existant n'est pas un cas, c'est un fil
+
+BICI ne tient pas une étude de cas : deux mois. Mais « reprendre l'existant » est l'une des trois compétences que Lionel revendique, et elle est vraie des **trois** missions. Elle devient donc un bloc transversal en clôture du mouvement 03, pas une quatrième page :
+
+- **SGFH → SIF** : migrer une application foncière en service, sans l'arrêter `[A1]`
+- **Cartier** : reprendre des flux Salesforce en place, sans les refaire `[B1]`
+- **BICI** : quatre applications sous APJ, framework interne JEE, sans documentation `[C1]`
 
 ## 2.6 États et cas limites
 
@@ -402,7 +453,7 @@ Gabarit unique pour les trois :
 
 | Couche | Choix | Raison |
 |---|---|---|
-| Framework | **Astro 5** | Site de contenu : zéro JS envoyé par défaut, collections typées natives, i18n natif |
+| Framework | **Astro 7** | Site de contenu : zéro JS envoyé par défaut, collections typées natives, i18n natif |
 | Styles | **Tailwind 4** | Jetons CSS en `@theme`, cohérent avec NEXTRI |
 | Langage | **TypeScript strict** | |
 | Framework UI | **aucun** | Rien sur cette page ne justifie React |
@@ -414,16 +465,17 @@ Gabarit unique pour les trois :
 
 ```
 src/
+├── content.config.ts             # collections Zod (Astro 7 : à la racine de src/)
 ├── content/
-│   ├── config.ts                 # collections Zod
-│   └── cases/ fr/{sif,data-international,reprise-existant}.md
-│               en/{sif,data-international,reprise-existant}.md   ← mêmes slugs
+│   └── cases/ fr/{sif,data,web}.md
+│               en/{sif,data,web}.md   ← mêmes slugs
 ├── components/
 │   ├── Hero.astro                # portrait optionnel
 │   ├── Plate.astro               # la planche parcellaire
 │   ├── Cartouche.astro
 │   ├── AuthorityBand.astro
-│   ├── Approach.astro
+│   ├── Offer.astro               # 02 · les quatre prestations
+│   ├── Thread.astro              # le fil « reprendre l'existant »
 │   ├── CaseCard.astro            # cas majeur ; les mineurs sont inline
 │   ├── CaseDiagram.astro         # schéma par cas
 │   ├── Timeline.astro
@@ -436,6 +488,7 @@ src/
 │   ├── cas/[slug].astro
 │   └── en/… (miroir)
 ├── i18n/ fr.ts · en.ts · utils.ts
+├── lib/ plate.mjs                  # découpe proportionnelle de la planche
 ├── scripts/ theme.ts · motion.ts · smooth-scroll.ts
 └── styles/ tokens.css · base.css · motion.css
 public/
@@ -450,9 +503,8 @@ Collections Astro typées par Zod. **Un champ manquant casse le build, pas la pa
 
 ```ts
 const cases = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/cases' }),
   schema: z.object({
-    slug: z.string(),
     order: z.number(),
     role: z.enum(['or', 'tl', 'yw', 'lv']),      // couleur de rôle
     client: z.string(),
@@ -466,6 +518,21 @@ const cases = defineCollection({
 ```
 
 `sourceRefs` est **obligatoire et non vide**. C'est la règle de contenu n°6 rendue mécanique : on ne peut pas publier une étude de cas sans déclarer d'où viennent ses faits.
+
+**Les parcelles ne sont pas dans cette collection.** Elles ont besoin d'une durée, pas d'un corps de texte, et deux d'entre elles (BICI, la parcelle libre) n'ont pas de page. Une constante typée dans `src/lib/plate.mjs` suffit :
+
+```ts
+export const MISSIONS = [
+  { id:'bici', mois:2,  role:'lv', op:.30 },
+  { id:'merc', mois:9,  role:'yw', op:.32 },
+  { id:'cart', mois:6,  role:'tl', op:.20 },
+  { id:'gsk',  mois:10, role:'tl', op:.34 },
+  { id:'sif',  mois:31, role:'or', op:.32 },
+  { id:'free', mois:12, role:'tx', op:.045 },
+] as const;
+```
+
+`op` sépare Cartier de GSK, qui partagent le rôle « données » et sont mitoyennes. Les libellés vivent dans `i18n/`, pas ici : la planche est bilingue.
 
 ## 3.4 Internationalisation
 
@@ -581,14 +648,18 @@ Les jalons ① à ④ produisent un site **livrable en français**. L'anglais es
 
 ## Annexe A — Traçabilité
 
-Chaque fait affiché renvoie à `CV_Lionel_Ratovo_MASTER.md` ou à ses réponses de questionnaire.
+Chaque fait affiché renvoie à `CV_Lionel_Ratovo_MASTER.md`, à ses réponses de questionnaire, ou à `RETOURS-LIONEL-2026-08-01.md` pour les repères `[F*]`.
 
 | Affiché | Source |
 |---|---|
 | Technical Project Lead · Backend & Data Engineer | frontmatter |
-| 5 ans d'expérience | PROFIL |
+| En activité depuis 2021 | Expériences |
 | Migration SGFH → SIF, MEP novembre 2024 | `[A1]`, `[A6]` |
-| 9 schémas, `innola` 150 tables, `public` 59 | `[A2]` |
+| 9 schémas **PostgreSQL**, `innola` 150 tables, `public` 59 | `[A2]`, `[F1]` |
+| Portail SIGFU distinct, lecture seule via API | `[F2]`, `[F3]` |
+| Lecture et écriture vers les autres services de l'État | `[F4]` |
+| Mercedes-Benz = webmastering, pas data | `[F6]` |
+| Aires des parcelles ∝ durées | `[F10]` |
 | Drools sur chaque action CRUD | `[A2]` |
 | Portail public, plus de 100 usagers | EXPÉRIENCE |
 | Équipe de 9 développeurs et 3 testeurs | `[A3]`, `[B4]` |
@@ -602,6 +673,10 @@ Chaque fait affiché renvoie à `CV_Lionel_Ratovo_MASTER.md` ou à ses réponses
 | Anglais professionnel, écrit et oral technique | `[D3]` |
 
 **Faits volontairement absents** : la latence « ~2 s » du SIF (`[A2]`, non mesurée, indéfendable en entretien) ; tout niveau d'anglais chiffré (`[D4]`) ; toute référence client de NEXTRI (aucune n'existe).
+
+**Faits retirés le 01/08/2026 parce qu'ils étaient inventés**, non parce qu'ils étaient sensibles : « Oracle » comme moteur du SIF (le master ne nomme aucun moteur, la valeur a été déduite de la liste de compétences) ; Angular dans la stack du SIF ; la production web attribuée à BICI ; le portail branché sur le même backend que les applications métier. Les quatre venaient de la rédaction, pas des sources.
+
+**Trois vérifications en attente de Lionel** : le trou d'août 2025 à avril 2026 mentionné dans `sources/README.md` sans nom de porteur (s'il est de lui, la parcelle du SIF perd 8 mois) ; sa présence physique à Maurice ; la tenue de la promesse « réponse sous 24 heures ».
 
 ## Annexe B — Hors périmètre
 

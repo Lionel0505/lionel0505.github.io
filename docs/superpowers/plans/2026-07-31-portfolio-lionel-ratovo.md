@@ -4,13 +4,16 @@
 
 **Goal:** Build a bilingual static portfolio site for Lionel Ratovo that argues one thesis — he translates complex business needs into systems that hold in production — using a cadastral-plan visual system in place of the screenshots his confidential work forbids.
 
-**Architecture:** Astro 5 static site, zero UI framework, zero runtime dependencies. Content lives in Zod-typed collections (one Markdown file per case per language) so a missing field breaks the build rather than the live page. French is the default locale with no prefix; English lives under `/en/` and falls back to French when absent, so the site ships in French alone. Three motion layers — an entry animation, CSS scroll-driven timelines, and a hand-rolled damped scroll — each independently disabled by `prefers-reduced-motion`.
+**Architecture:** Astro 7 static site, zero UI framework, zero runtime dependencies. Content lives in Zod-typed collections (one Markdown file per case per language) so a missing field breaks the build rather than the live page. French is the default locale with no prefix; English lives under `/en/` and falls back to French when absent, so the site ships in French alone. Three motion layers — an entry animation, CSS scroll-driven timelines, and a hand-rolled damped scroll — each independently disabled by `prefers-reduced-motion`.
 
-**Tech Stack:** Astro 5 · Tailwind 4 · TypeScript (strict) · Biome · Playwright · Node 20+ · GitHub Actions → GitHub Pages
+**Tech Stack:** Astro 7 · Tailwind 4 (via `@tailwindcss/vite`) · TypeScript (strict) · Biome · Playwright · GitHub Actions → GitHub Pages
 
 **Spec:** `docs/superpowers/specs/2026-07-31-portfolio-lionel-ratovo-design.md`
-**Visual reference:** `docs/superpowers/reference/preview.html` (validated 2026-07-31 — the source of truth for tokens, geometry, and motion values)
-**Fact sources:** `.unwanted/sources/CV_Lionel_Ratovo_MASTER.md` — the only authority on facts
+**Visual reference:** `docs/superpowers/reference/preview.html` (**v4, validated 2026-08-01 by Lionel** — the source of truth for tokens, plate geometry, diagrams, and motion values)
+**Fact sources:** `.unwanted/sources/`. Two tiers: the master CVs of 21/07/2026, and
+`RETOURS-LIONEL-2026-08-01.md` (markers `[F1]`–`[F12]`) **which overrides them** wherever they
+disagree. Where the master is silent, ask — do not infer. Four claims in the v3 mock-up came from
+inference, not sources, and all four were wrong.
 
 ---
 
@@ -24,13 +27,20 @@ Every task's requirements implicitly include this section.
 3. No fictional projects, no invented repos, **no social links whatsoever** — Lionel has neither GitHub nor LinkedIn, by choice.
 4. Nothing implying NEXTRI has delivered client projects. It has delivered none.
 5. No vanity counters ("+120 projects", "98% satisfaction").
-6. Every displayed fact traces to `CV_Lionel_Ratovo_MASTER.md` via a non-empty `sourceRefs` array.
+6. Every displayed fact traces to a source file via a non-empty `sourceRefs` array.
+7. **The SIF database is PostgreSQL, never Oracle** `[F1]`. The SIF interface is ExtJS; Angular belongs to the SIGFU portal, which is a separate application with its own PostgreSQL `[F2]`.
+8. **Mercedes-Benz is webmastering, not data** `[F6]`. Two data brands (GSK, Cartier), one web brand.
+9. **Parcel areas are proportional to time spent** `[F10]`. The plate is computed, never hand-drawn.
 
 **Copy rules:**
 - Site copy contains **no em dashes** (`—`) and no `--`. Use commas, colons, semicolons, periods, or parentheses.
 - French copy uses `·` as a separator, never `—`.
 
 **Technical constraints:**
+- **Astro 7.** Not 5. Two API changes bind every content task: collections use `loader: glob(...)` (there is no `type: 'content'`), the config file is `src/content.config.ts` (not `src/content/config.ts`), and rendering is `await render(entry)` imported from `astro:content` (not `entry.render()`).
+- **Tailwind 4 via `@tailwindcss/vite`.** `@astrojs/tailwind` is the v3 integration and cannot install Tailwind 4.
+- Astro 7 compiles templates with the Rust compiler, which rejects unclosed tags. Malformed markup is a build error, not a warning.
+- **pnpm, not npm.** The lockfile is `pnpm-lock.yaml`; `package-lock.json` must never reappear. pnpm 11 no longer reads the `pnpm` field in `package.json`: dependency settings live in `pnpm-workspace.yaml`. pnpm blocks dependency install scripts by default and **exits 1** when it blocks one, so any package needing a build script must be listed under `allowBuilds` there or CI fails at install.
 - **Zero runtime dependencies.** No Lenis, no GSAP, no animation library, no UI framework.
 - **Zero external CDN requests.** Fonts are self-hosted. No Google Fonts in production.
 - **Zero trackers, zero analytics.**
@@ -41,6 +51,8 @@ Every task's requirements implicitly include this section.
 
 **Token values are fixed.** Copy verbatim from the spec §1.5. Do not re-derive by eye.
 
+**Page order is fixed** `[F9]`: hero → 01 Qui je suis → 02 Ce que j'offre → autorité → 03 Ce que j'ai accompli → 04 Comment me contacter.
+
 ---
 
 ## File Structure
@@ -48,7 +60,10 @@ Every task's requirements implicitly include this section.
 | File | Responsibility |
 |---|---|
 | `astro.config.mjs` | Site/base URL, i18n routing, integrations |
+| `pnpm-workspace.yaml` | pnpm settings. `allowBuilds` lives here, not in `package.json`. |
 | `scripts/contrast.mjs` | WCAG AA verification of every token pair. Runs in CI. |
+| `src/lib/plate.mjs` | Parcel geometry: durations in, polygons out. Runs at build time only. |
+| `scripts/plate-check.mjs` | Asserts each parcel's area matches its duration. Runs in CI. |
 | `src/styles/tokens.css` | The two theme blocks. Single source of colour truth. |
 | `src/styles/base.css` | Reset, typography scale, layout primitives |
 | `src/styles/motion.css` | Scroll-driven timelines, gated by support + reduced-motion |
@@ -59,21 +74,22 @@ Every task's requirements implicitly include this section.
 | `src/components/Hero.astro` | Thesis, CTAs, and either the plate or a portrait |
 | `src/components/Cartouche.astro` | The six traced facts, in title-block form |
 | `src/components/AuthorityBand.astro` | Real client names, large |
-| `src/components/Approach.astro` | The three staggered panels |
+| `src/components/Offer.astro` | The four services, each proved by a different mission |
+| `src/components/Thread.astro` | The cross-case « reprendre l'existant » block |
 | `src/components/CaseCard.astro` | The major case card. Minor cards are inline in `index.astro`. |
 | `src/components/CaseDiagram.astro` | Per-case SVG schematic, dispatched by id |
 | `src/components/Timeline.astro` | Career frieze |
 | `src/components/ContactFork.astro` | The two doors, on the inverted surface |
 | `src/components/ThemeToggle.astro` · `LangSwitch.astro` | Header controls |
 | `src/layouts/Base.astro` · `Case.astro` | Page shells |
-| `src/content/config.ts` | Zod schemas. `sourceRefs` enforcement lives here. |
+| `src/content.config.ts` | Zod schemas and the glob loader. `sourceRefs` enforcement lives here. |
 | `src/i18n/{fr,en}.ts` · `utils.ts` | UI dictionary and locale helpers |
 | `tests/*.spec.ts` | Four Playwright scenarios |
 
 **Testing philosophy for this project.** There is no business logic to unit-test; a content site's unit tests would be theatre. The real verification harness is three-fold, and every task below ends in at least one of them:
 - `node scripts/contrast.mjs` — accessibility, mechanically checkable
-- `npx playwright test` — the four flows that break silently
-- `npm run build && npx astro check` — type and schema integrity
+- `pnpm exec playwright test` — the four flows that break silently
+- `pnpm run build && pnpm exec astro check` — type and schema integrity
 
 No unit tests, no link checker, no Lighthouse in CI. Each was weighed and cut: see Tasks 10, 14 and 15 for the reasoning.
 
@@ -85,18 +101,25 @@ No unit tests, no link checker, no Lighthouse in CI. Each was weighed and cut: s
 - Create: `package.json`, `astro.config.mjs`, `tsconfig.json`, `biome.json`, `.gitignore`, `src/pages/index.astro`
 
 **Interfaces:**
-- Produces: `npm run build` (static output to `dist/`), `npm run check`, `npm run lint`
+- Produces: `pnpm run build` (static output to `dist/`), `pnpm run check`, `pnpm run lint`
 
 - [ ] **Step 1: Initialise the repository**
 
 ```bash
 cd E:/Dev/lionel-ratovo-portfolio
 git init
-npm create astro@latest . -- --template minimal --typescript strict --no-install --no-git --skip-houston
-npm install
-npx astro add tailwind --yes
-npm install -D @biomejs/biome @playwright/test
+pnpm create astro@latest . --template minimal --typescript strict --no-install --no-git --skip-houston
+pnpm add astro@^7
+pnpm add -D tailwindcss@^4 @tailwindcss/vite @biomejs/biome @playwright/test @astrojs/check typescript
 ```
+
+Then pin the package manager so CI and every future contributor resolve the same tree:
+
+```bash
+pnpm config set --location project package-manager pnpm@11.5.2
+```
+
+or add `"packageManager": "pnpm@11.5.2"` to `package.json` by hand.
 
 - [ ] **Step 2: Write `.gitignore`**
 
@@ -116,7 +139,7 @@ playwright-report/
 
 ```js
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://lionelratovo.github.io',
@@ -129,22 +152,39 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false, fallbackType: 'rewrite' },
     fallback: { en: 'fr' },
   },
-  integrations: [tailwind({ applyBaseStyles: false })],
+  vite: { plugins: [tailwindcss()] },
 });
 ```
 
-`fallback: { en: 'fr' }` is what lets English arrive later without 404s.
+`fallback: { en: 'fr' }` with `fallbackType: 'rewrite'` is what lets English arrive later without 404s: a missing English page serves the French one at the English URL, rather than redirecting away from it.
+
+Tailwind 4 needs no `tailwind.config.js` and no `content` array. If one exists, delete it.
 
 - [ ] **Step 4: Write `biome.json`**
 
 ```json
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
-  "files": { "includes": ["src/**", "scripts/**", "tests/**"] },
+  "$schema": "https://biomejs.dev/schemas/2.5.6/schema.json",
+  "files": {
+    "includes": [
+      "**",
+      "!dist",
+      "!node_modules",
+      "!.astro",
+      "!.superpowers",
+      "!docs",
+      "!.unwanted",
+      "!pnpm-lock.yaml"
+    ]
+  },
   "formatter": { "enabled": true, "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 },
-  "linter": { "enabled": true, "rules": { "recommended": true } }
+  "javascript": { "formatter": { "quoteStyle": "single" } },
+  "linter": { "enabled": true, "rules": { "recommended": true } },
+  "assist": { "actions": { "source": { "organizeImports": "off" } } }
 }
 ```
+
+**Include everything, then subtract.** Listing `src`, `scripts` and `tests` by name looks tighter but fails the moment one of those directories does not exist yet, and it silently stops linting any directory added later. The exclusions are named individually so that `.unwanted/` and `.superpowers/` can never be walked: the first holds the master CVs of three real people, and this repository is going public.
 
 - [ ] **Step 5: Add scripts to `package.json`**
 
@@ -154,25 +194,36 @@ export default defineConfig({
     "dev": "astro dev",
     "build": "astro build",
     "check": "astro check",
-    "lint": "biome check src scripts tests",
-    "format": "biome check --write src scripts tests",
-    "contrast": "node scripts/contrast.mjs",
+    "lint": "biome check .",
+    "format": "biome check --write .",
     "test": "playwright test",
-    "verify": "npm run lint && npm run check && npm run build && npm run contrast"
-  }
+    "verify": "pnpm run lint && pnpm run check && pnpm run build"
+  },
+  "packageManager": "pnpm@11.5.2"
 }
 ```
 
+`contrast` is deliberately absent here: `scripts/contrast.mjs` does not exist until Task 2. **Task 2 adds `"contrast": "node scripts/contrast.mjs"` and extends `verify` to `... && pnpm run contrast`.** A `verify` that calls a missing file is a gate that is red from birth, which trains everyone to ignore it.
+
+- [ ] **Step 5b: Write `pnpm-workspace.yaml`**
+
+```yaml
+allowBuilds:
+  esbuild: true
+```
+
+pnpm blocks dependency install scripts by default and exits 1 when it blocks one, which would fail CI at the install step. esbuild links its platform binary in a `postinstall`, and Vite needs it to build. Nothing else in the tree requires one: do not add entries speculatively. If a later dependency needs one, pnpm will name it in the error.
+
 - [ ] **Step 6: Verify the gate runs**
 
-Run: `npm run build && npx astro check`
+Run: `pnpm run build && pnpm exec astro check`
 Expected: build succeeds, `astro check` reports `0 errors`.
 
 - [ ] **Step 7: Commit**
 
 ```bash
 git add -A
-git commit -m "chore: scaffold Astro 5 + Tailwind 4 + Biome + Playwright"
+git commit -m "chore: scaffold Astro 7 + Tailwind 4 + Biome + Playwright"
 ```
 
 ---
@@ -426,7 +477,7 @@ The `h1` is the largest contentful paint and it is set in Bricolage. Preload tha
 
 - [ ] **Step 4: Verify fonts load and no network request leaves the origin**
 
-Run: `npm run dev`, open `http://localhost:4321`, DevTools → Network, filter `Font`.
+Run: `pnpm run dev`, open `http://localhost:4321`, DevTools → Network, filter `Font`.
 Expected: three `woff2` requests, all from `localhost`. **Zero requests to `fonts.googleapis.com` or `fonts.gstatic.com`.** If any appear, a `<link>` survived from the mock-up; remove it.
 
 Then check the weight:
@@ -513,13 +564,13 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
   ],
-  webServer: { command: 'npm run dev', url: 'http://localhost:4321', reuseExistingServer: true },
+  webServer: { command: 'pnpm run dev', url: 'http://localhost:4321', reuseExistingServer: true },
 });
 ```
 
 - [ ] **Step 3: Run to verify it fails**
 
-Run: `npx playwright test tests/theme.spec.ts --project=chromium`
+Run: `pnpm exec playwright test tests/theme.spec.ts --project=chromium`
 Expected: FAIL — no `#theme-toggle`, no `data-theme` attribute.
 
 - [ ] **Step 4: Write `src/scripts/theme.ts`**
@@ -625,14 +676,14 @@ const { title, description, lang = 'fr' } = Astro.props;
 - [ ] **Step 7: Install the test browsers**
 
 ```bash
-npx playwright install chromium firefox
+pnpm exec playwright install chromium firefox
 ```
 
 **There is deliberately no `prefers-color-scheme` fallback block.** Copying the dark tokens into a media query duplicates every value, and a duplicated token drifts the first time someone edits one of the two copies. `data-theme="light"` in the markup means a visitor without JavaScript gets the light theme, which passes AA in full. That costs OS-dark to a fraction of a percent of visitors and removes fifteen lines that can silently disagree with themselves.
 
 - [ ] **Step 8: Run to verify it passes**
 
-Run: `npx playwright test tests/theme.spec.ts`
+Run: `pnpm exec playwright test tests/theme.spec.ts`
 Expected: 3 passed in chromium, 3 passed in firefox.
 
 - [ ] **Step 9: Commit**
@@ -658,26 +709,50 @@ git commit -m "feat: three-state theme system matching NEXTRI's next-themes cont
 
 ```ts
 export default {
-  nav: { approach: 'Approche', cases: 'Études de cas', path: 'Parcours', contact: 'Contact' },
+  nav: { who: 'Qui je suis', offer: "Ce que j'offre", cases: 'Réalisations', contact: 'Contact' },
   skip: 'Aller au contenu',
   themeLabel: 'Thème',
   status: 'Ouvert aux opportunités',
   hero: {
     title: 'Je traduis des besoins métier complexes en systèmes qui',
     titleAccent: 'tiennent',
-    lead: "Backend & Data Engineer, Technical Project Lead. Cinq ans sur un système d'information foncier national et des comptes data internationaux.",
-    places: ['Abidjan', 'Maurice', 'Antananarivo'],
+    // « au total » est load-bearing : sans lui, la phrase se lit comme cinq ans
+    // sur le seul SIF, ce que Lionel a relevé [F8].
+    lead: "Backend & Data Engineer, Technical Project Lead. Près de cinq ans au total : un système d'information foncier national, deux comptes data internationaux, de la production web.",
+    places: ['Antananarivo', 'Abidjan', 'Maurice'],
     ctaCv: 'Télécharger le CV',
     ctaContact: 'Me contacter',
   },
+  // La planche : géométrie dans plate.mjs, mots ici. Les deux ne se mélangent pas.
+  plate: {
+    alt: "Plan parcellaire du parcours. L'aire de chaque parcelle est proportionnelle au temps passé : le SIF et le portail SIGFU en Côte d'Ivoire, les comptes data GSK et Cartier, la production web Mercedes-Benz, la reprise d'existant BICI, et une parcelle libre de douze mois ouverte au prochain projet.",
+    sheet: 'PLANCHE 01 · PARCOURS',
+    scale: 'AIRE ∝ DURÉE · LEVÉ 2021–2026',
+    total: '58 MOIS TRAVAILLÉS · 12 LIBRES',
+    hint: '→ Votre projet',
+    keys: [['or', 'Mission en cours'], ['tl', 'Données'], ['yw', 'Production web'], ['lv', "Reprise d'existant"]],
+    keyFree: 'Libre · 12 mois',
+    parcels: {
+      bici: { nom: 'BICI',            sub: '2021 · 2 mois' },
+      merc: { nom: 'Mercedes-Benz',   sub: '2021–2022 · 9 mois' },
+      cart: { nom: 'Cartier',         sub: '2022–2023 · 6 mois' },
+      gsk:  { nom: 'GSK',             sub: '2023–2024 · 10 mois' },
+      sif:  { nom: 'SIF · SIGFU',     sub: "Côte d'Ivoire · 2024 →" },
+      free: { nom: 'Parcelle libre',  sub: 'Seul · ou à trois avec NEXTRI' },
+    },
+  },
+  who: { heading: 'Qui je suis' },
+  offer: { heading: "Ce que j'offre", proof: 'Sur le terrain' },
   authority: { label: "Systèmes et comptes sur lesquels j'ai travaillé" },
   cartouche: {
-    label: 'Cartouche', place: 'Antananarivo · Madagascar',
-    experience: 'Expérience', schemas: 'Schémas Oracle', tables: 'Tables · innola',
-    live: 'Mise en service', field: 'Terrain', education: 'Formation',
+    label: 'Cartouche · parcours', place: 'Antananarivo · Madagascar',
+    since: 'En activité depuis', missions: 'Missions', field: 'Terrain',
+    education: 'Formation', languages: 'Langues', availability: 'Disponibilité',
   },
+  cases: { heading: "Ce que j'ai accompli", read: "Lire l'étude de cas", readShort: 'Lire' },
+  thread: { kicker: 'Un fil qui traverse les trois', heading: "Reprendre l'existant" },
   contact: {
-    heading: 'Deux portes',
+    heading: 'Comment me contacter',
     hiring: { kicker: 'Recrutement', title: 'Un poste à pourvoir ?' },
     project: { kicker: 'Prestation', title: 'Un projet à livrer ?' },
   },
@@ -692,25 +767,46 @@ Same shape, English strings. TypeScript enforces the shape:
 ```ts
 import type fr from './fr';
 const en: typeof fr = {
-  nav: { approach: 'Approach', cases: 'Case studies', path: 'Career', contact: 'Contact' },
+  nav: { who: 'Who I am', offer: 'What I offer', cases: 'Work', contact: 'Contact' },
   skip: 'Skip to content',
   themeLabel: 'Theme',
   status: 'Open to opportunities',
   hero: {
     title: 'I turn complex business needs into systems that',
     titleAccent: 'hold',
-    lead: 'Backend & Data Engineer, Technical Project Lead. Five years on a national land information system and international data accounts.',
-    places: ['Abidjan', 'Mauritius', 'Antananarivo'],
+    lead: 'Backend & Data Engineer, Technical Project Lead. Close to five years in total: a national land information system, two international data accounts, web production.',
+    places: ['Antananarivo', 'Abidjan', 'Mauritius'],
     ctaCv: 'Download CV', ctaContact: 'Get in touch',
   },
+  plate: {
+    alt: 'Parcel plan of the career. Each parcel\'s area is proportional to time spent: the SIF and SIGFU portal in Côte d\'Ivoire, the GSK and Cartier data accounts, Mercedes-Benz web production, BICI legacy work, and one free parcel of twelve months open to the next project.',
+    sheet: 'SHEET 01 · CAREER',
+    scale: 'AREA ∝ DURATION · SURVEYED 2021–2026',
+    total: '58 MONTHS WORKED · 12 FREE',
+    hint: '→ Your project',
+    keys: [['or', 'Current mission'], ['tl', 'Data'], ['yw', 'Web production'], ['lv', 'Legacy systems']],
+    keyFree: 'Free · 12 months',
+    parcels: {
+      bici: { nom: 'BICI',            sub: '2021 · 2 months' },
+      merc: { nom: 'Mercedes-Benz',   sub: '2021–2022 · 9 months' },
+      cart: { nom: 'Cartier',         sub: '2022–2023 · 6 months' },
+      gsk:  { nom: 'GSK',             sub: '2023–2024 · 10 months' },
+      sif:  { nom: 'SIF · SIGFU',     sub: "Côte d'Ivoire · 2024 →" },
+      free: { nom: 'Free parcel',     sub: 'Alone · or three with NEXTRI' },
+    },
+  },
+  who: { heading: 'Who I am' },
+  offer: { heading: 'What I offer', proof: 'In the field' },
   authority: { label: 'Systems and accounts I have worked on' },
   cartouche: {
-    label: 'Title block', place: 'Antananarivo · Madagascar',
-    experience: 'Experience', schemas: 'Oracle schemas', tables: 'Tables · innola',
-    live: 'Went live', field: 'Field', education: 'Education',
+    label: 'Title block · career', place: 'Antananarivo · Madagascar',
+    since: 'Working since', missions: 'Missions', field: 'Field',
+    education: 'Education', languages: 'Languages', availability: 'Availability',
   },
+  cases: { heading: 'What I have delivered', read: 'Read the case study', readShort: 'Read' },
+  thread: { kicker: 'A thread through all three', heading: 'Taking over what exists' },
   contact: {
-    heading: 'Two doors',
+    heading: 'How to reach me',
     hiring: { kicker: 'Hiring', title: 'A role to fill?' },
     project: { kicker: 'Consulting', title: 'A project to deliver?' },
   },
@@ -773,7 +869,8 @@ const base = lang === 'fr' ? '' : '/en';
   <div class="hdr">
     <a class="sig" href={`${base}/`}>Ratovo <i>S. M.</i> Lionel</a>
     <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
-      <a href={`${base}/#approche`}>{s.nav.approach}</a>
+      <a href={`${base}/#qui`}>{s.nav.who}</a>
+      <a href={`${base}/#offre`}>{s.nav.offer}</a>
       <a href={`${base}/#cas`}>{s.nav.cases}</a>
       <a href={`${base}/#contact`}>{s.nav.contact}</a>
       <LangSwitch lang={lang} />
@@ -810,7 +907,7 @@ const base = lang === 'fr' ? '' : '/en';
 
 Run:
 ```bash
-npm run build
+pnpm run build
 grep -rc "XX XX XXX" dist/ || echo "0 occurrences — correct"
 ```
 Expected: `0 occurrences — correct`. **If the number appears in `dist/`, the obfuscation has failed and must be fixed before proceeding.**
@@ -826,107 +923,297 @@ git commit -m "feat: page shell, i18n dictionary, phone reveal on click"
 
 ## Task 6: The cadastral plate
 
-The signature object. Geometry is fixed and copied verbatim from `docs/superpowers/reference/preview.html`; do not redraw it.
+The signature object. **Areas are proportional to time spent** (Global Constraint 9), so the
+geometry is computed, not drawn. It runs in Astro frontmatter, at build time: the browser receives
+static SVG and not one byte of geometry code.
+
+The reference implementation, already validated with Lionel, is in
+`docs/superpowers/reference/preview.html`. Port it; do not reinvent it.
 
 **Files:**
-- Create: `src/components/Plate.astro`
+- Create: `src/lib/plate.mjs`, `scripts/plate-check.mjs`, `src/components/Plate.astro`
+- Modify: `package.json`
 
 **Interfaces:**
-- Produces: `<Plate lang={Lang} />`, rendering `svg[role="img"]` with `.parcel[data-op]`, `#lines path`, `[data-lbl]`, `#ticks`, `#annos`, and `.plate-key`
+- Consumes: `t(lang)` (Task 5)
+- Produces: `HEX`, `MISSIONS`, `polyArea(P)`, `buildPlate()` from `src/lib/plate.mjs`;
+  `<Plate lang={Lang} />` rendering `svg[role="img"]` with `.parcel[data-op]`, `#lines path`,
+  `[data-lbl]`, `#ticks`, `#annos`, `.plate-key`.
+  `buildPlate()` returns `[{ id, role, op, poly, cx, cy, fs, ss, tight }]`, `poly` being an array
+  of `[x, y]` pairs.
 
-- [ ] **Step 1: Write the component with the exact geometry**
+**Why `.mjs` and not `.ts`:** the check script imports this module directly with plain `node`.
+Keeping it JavaScript avoids a loader, a build step, and a Node version floor, and `astro check`
+still infers everything from the literals.
 
-Node coordinates: `A(60,34) B(541,62) C(572,296) D(498,470) E(118,492) F(28,258)`. Interior nodes: `P(298,48) R(411,54) Q(288,240) V(424,267) W(158,249) X(277,386) S(270,483)`.
+- [ ] **Step 1: Write the failing check**
+
+`scripts/plate-check.mjs`. This is the one automated test in the project and it earns its place:
+a wrong bisection produces a plate that looks entirely plausible and lies about the career.
+
+```js
+import assert from 'node:assert/strict';
+import { HEX, MISSIONS, buildPlate, polyArea } from '../src/lib/plate.mjs';
+
+const total = MISSIONS.reduce((n, m) => n + m.mois, 0);
+const hex = polyArea(HEX);
+let covered = 0;
+
+for (const parcel of buildPlate()) {
+  const m = MISSIONS.find(x => x.id === parcel.id);
+  const got = polyArea(parcel.poly) / hex;
+  const want = m.mois / total;
+  assert.ok(
+    Math.abs(got - want) < 0.005,
+    `${parcel.id} occupe ${(got * 100).toFixed(2)} % de la planche, attendu ${(want * 100).toFixed(2)} %`,
+  );
+  covered += got;
+}
+
+assert.ok(Math.abs(covered - 1) < 0.005,
+  `les parcelles couvrent ${(covered * 100).toFixed(2)} % de la planche, attendu 100 %`);
+
+console.log(`planche : ${MISSIONS.length} parcelles, aires conformes aux durées`);
+```
+
+- [ ] **Step 2: Run it to verify it fails**
+
+Run: `node scripts/plate-check.mjs`
+Expected: FAIL with `Cannot find module '../src/lib/plate.mjs'`.
+
+- [ ] **Step 3: Write `src/lib/plate.mjs`**
+
+```js
+// Géométrie de la planche cadastrale.
+// Le contour est fixe, les divisions sont calculées : l'aire de chaque parcelle
+// vaut sa durée en mois. La parcelle du SIF grossit donc d'elle-même tant que la
+// mission dure, et corriger une date suffit à redessiner le plan.
+// Exécuté au build uniquement — la page ne reçoit que du SVG.
+
+export const HEX = [[60, 34], [541, 62], [572, 296], [498, 470], [118, 492], [28, 258]];
+
+// `mois` : durées pleines, source RETOURS-LIONEL-2026-08-01.md.
+// `op`   : Cartier et GSK partagent le rôle « données » et sont mitoyennes ;
+//          deux densités d'aplat les séparent, comme sur un vrai plan.
+export const MISSIONS = [
+  { id: 'bici', mois: 2,  role: 'lv', op: '.30' },
+  { id: 'merc', mois: 9,  role: 'yw', op: '.32' },
+  { id: 'cart', mois: 6,  role: 'tl', op: '.20' },
+  { id: 'gsk',  mois: 10, role: 'tl', op: '.34' },
+  { id: 'sif',  mois: 31, role: 'or', op: '.32' },
+  { id: 'free', mois: 12, role: 'tx', op: '.045' },
+];
+
+export function polyArea(P) {
+  let a = 0;
+  for (let i = 0, n = P.length; i < n; i++) {
+    const [x1, y1] = P[i], [x2, y2] = P[(i + 1) % n];
+    a += x1 * y2 - x2 * y1;
+  }
+  return Math.abs(a) / 2;
+}
+
+// Sutherland–Hodgman : ne garde que le demi-plan nx*x + ny*y <= d
+function clipHalf(P, nx, ny, d) {
+  const out = [], n = P.length;
+  for (let i = 0; i < n; i++) {
+    const A = P[i], B = P[(i + 1) % n];
+    const da = nx * A[0] + ny * A[1] - d, db = nx * B[0] + ny * B[1] - d;
+    if (da <= 0) out.push(A);
+    if ((da < 0 && db > 0) || (da > 0 && db < 0)) {
+      const t = da / (da - db);
+      out.push([A[0] + t * (B[0] - A[0]), A[1] + t * (B[1] - A[1])]);
+    }
+  }
+  return out;
+}
+
+// Coupe P en deux, la première part valant `frac` de l'aire. Dichotomie sur la
+// position de la droite : c'est ce qui rend la répartition exacte au lieu
+// d'approchée à l'œil.
+function splitPoly(P, nx, ny, frac) {
+  const target = polyArea(P) * frac;
+  let lo = -4000, hi = 4000;
+  for (let i = 0; i < 64; i++) {
+    const m = (lo + hi) / 2;
+    if (polyArea(clipHalf(P, nx, ny, m)) < target) lo = m; else hi = m;
+  }
+  const d = (lo + hi) / 2;
+  return [clipHalf(P, nx, ny, d), clipHalf(P, -nx, -ny, -d)];
+}
+
+function centroid(P) {
+  let a = 0, cx = 0, cy = 0;
+  for (let i = 0, n = P.length; i < n; i++) {
+    const [x1, y1] = P[i], [x2, y2] = P[(i + 1) % n], f = x1 * y2 - x2 * y1;
+    a += f; cx += (x1 + x2) * f; cy += (y1 + y2) * f;
+  }
+  a /= 2;
+  return [cx / (6 * a), cy / (6 * a)];
+}
+
+// Longueur de la corde du polygone en v : `along` vaut 0 pour une corde
+// verticale (hauteur disponible), 1 pour une corde horizontale (largeur).
+function extent(P, v, along) {
+  const a = along, b = 1 - along;
+  let lo = Infinity, hi = -Infinity;
+  for (let i = 0, n = P.length; i < n; i++) {
+    const A = P[i], B = P[(i + 1) % n];
+    if ((A[a] <= v && B[a] >= v) || (B[a] <= v && A[a] >= v)) {
+      const t = A[a] === B[a] ? 0 : (v - A[a]) / (B[a] - A[a]);
+      const c = A[b] + t * (B[b] - A[b]);
+      lo = Math.min(lo, c); hi = Math.max(hi, c);
+    }
+  }
+  return hi > lo ? hi - lo : 0;
+}
+
+// Le libellé s'ajuste à sa parcelle, mesuré au centre de gravité et non sur la
+// boîte englobante : sur une parcelle en biais la boîte promet une hauteur que
+// le polygone n'a pas, et le sous-titre passe par-dessus le trait de division.
+const CW = 0.62;   // largeur d'un caractère, en fraction du corps
+export function fitLabel(P, cx, cy, nom, sub) {
+  const bw = extent(P, cy, 1) * 0.88;
+  const bh = extent(P, cx, 0);
+  const size = t => bw / (t.length * CW);
+  const fs = Math.max(6.4, Math.min(11.5, size(nom)));
+  const ss = Math.max(5.2, Math.min(fs * 0.79, size(sub)));
+  return { fs, ss, tight: bh < fs * 3.6 };   // trop plat pour deux lignes
+}
+
+export function buildPlate() {
+  const w = id => MISSIONS.find(m => m.id === id).mois;
+
+  // Deux colonnes. À gauche les quatre missions courtes, empilées dans l'ordre
+  // chronologique ; à droite le SIF puis la parcelle libre. Les normales sont
+  // franchement inclinées et toutes différentes : sans ça on obtient un
+  // treemap, pas un plan cadastral.
+  const colL = w('bici') + w('merc') + w('cart') + w('gsk');
+  const colR = w('sif') + w('free');
+
+  const [L, R] = splitPoly(HEX, 1, 0.11, colL / (colL + colR));
+  const [bici, r1] = splitPoly(L, 0.13, 1, w('bici') / colL);
+  const [merc, r2] = splitPoly(r1, -0.10, 1, w('merc') / (colL - w('bici')));
+  const [cart, gsk] = splitPoly(r2, 0.07, 1, w('cart') / (w('cart') + w('gsk')));
+  const [sif, free] = splitPoly(R, -0.12, 1, w('sif') / colR);
+
+  const shapes = { bici, merc, cart, gsk, sif, free };
+  return MISSIONS.map(m => {
+    const poly = shapes[m.id];
+    const [cx, cy] = centroid(poly);
+    return { ...m, poly, cx, cy };
+  });
+}
+```
+
+- [ ] **Step 4: Run the check to verify it passes**
+
+Run: `node scripts/plate-check.mjs`
+Expected: `planche : 6 parcelles, aires conformes aux durées`
+
+Then wire it into the gate — `package.json`:
+
+```json
+"plate": "node scripts/plate-check.mjs",
+"verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate"
+```
+
+- [ ] **Step 5: Write `src/components/Plate.astro`**
+
+Labels live in `i18n/`, never in `plate.mjs`: the plate is bilingual, the geometry is not.
 
 ```astro
 ---
-import { type Lang } from '../i18n/utils';
+import { buildPlate, HEX } from '../lib/plate.mjs';
+import { fitLabel } from '../lib/plate.mjs';
+import { t, type Lang } from '../i18n/utils';
 const { lang } = Astro.props as { lang: Lang };
-const fr = lang === 'fr';
-const parcels = [
-  { pts: '60,34 298,48 288,240 28,258',                 fill: 'or', op: '.26', label: 'SIF · SIGFU',    sub: fr ? "Côte d'Ivoire · 2024 →" : "Côte d'Ivoire · 2024 →", x: 80,  y: 128 },
-  { pts: '298,48 411,54 424,267 288,240',               fill: 'tl', op: '.22', label: 'Cartier',        sub: '2022',        x: 311, y: 140 },
-  { pts: '411,54 541,62 572,296 424,267',               fill: 'tl', op: '.34', label: 'GSK',            sub: '2023',        x: 440, y: 150 },
-  { pts: '28,258 158,249 146,372 138,491 118,492',      fill: 'lv', op: '.26', label: 'BICI',           sub: '2021',        x: 74,  y: 344 },
-  { pts: '158,249 288,240 277,386 270,483 138,491 146,372', fill: 'yw', op: '.3', label: 'Mercedes-Benz', sub: '2021 · 2022', x: 172, y: 344 },
-  { pts: '277,386 520,418 498,470 270,483',             fill: 'tx', op: '.07', label: '',               sub: '',            x: 0,   y: 0 },
-];
-const keys = fr
-  ? [['or','Mission en cours'],['tl','Données'],['yw','Production web'],['lv',"Reprise d'existant"]]
-  : [['or','Current mission'],['tl','Data'],['yw','Web production'],['lv','Legacy systems']];
-const alt = fr
-  ? "Plan parcellaire du parcours : la parcelle du SIF ivoirien en orange, les comptes data GSK et Cartier en teal, la production web Mercedes-Benz en or, la reprise d'existant BICI en lavande, et une parcelle encore libre."
-  : 'Parcel plan of the career: the Ivorian SIF parcel in orange, the GSK and Cartier data accounts in teal, Mercedes-Benz web production in gold, BICI legacy work in lavender, and one parcel still free.';
+const s = t(lang);
+const pts = P => P.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+const parcels = buildPlate().map(p => {
+  const l = s.plate.parcels[p.id];
+  return { ...p, ...l, ...fitLabel(p.poly, p.cx, p.cy, l.nom, l.sub) };
+});
 ---
 <div class="plate">
-  <svg viewBox="-16 -18 632 556" role="img" aria-label={alt}>
+  <svg viewBox="-16 -18 632 556" role="img" aria-label={s.plate.alt}>
     <g class="tick" id="ticks" opacity="0">
       <path d="M-10 8 L-10 -10 L8 -10"/><path d="M592 -10 L610 -10 L610 8"/>
       <path d="M610 512 L610 530 L592 530"/><path d="M8 530 L-10 530 L-10 512"/>
     </g>
     <g id="washes">
       {parcels.map(p => (
-        <g class="pgroup">
-          <polygon class="parcel" points={p.pts} fill={`var(--${p.fill})`} data-op={p.op} />
-          {p.label && <text class="plbl" x={p.x} y={p.y} data-lbl>{p.label}</text>}
-          {p.sub && <text class="plbl sub" x={p.x} y={p.y + 17} data-lbl>{p.sub}</text>}
+        <g class="pgroup" id={p.id === 'free' ? 'free' : undefined}>
+          <polygon class="parcel" points={pts(p.poly)} fill={`var(--${p.role})`} data-op={p.op} />
+          {p.id === 'free' && <polygon class="free-ring" points={pts(p.poly)} />}
+          <g class={p.id === 'free' ? 'free-main' : undefined}>
+            <text class="plbl" x={p.cx} y={p.tight ? p.cy + p.fs * 0.34 : p.cy - p.fs * 0.32}
+                  text-anchor="middle" style={`font-size:${p.fs.toFixed(1)}px`} data-lbl>{p.nom}</text>
+            {!p.tight && (
+              <text class="plbl sub" x={p.cx} y={p.cy + p.fs * 0.32 + p.ss + 2}
+                    text-anchor="middle" style={`font-size:${p.ss.toFixed(1)}px`} data-lbl>{p.sub}</text>
+            )}
+          </g>
+          {p.id === 'free' && (
+            <text class="plbl free-hint" x={p.cx} y={p.cy + 3} text-anchor="middle"
+                  fill="var(--or-t)" style={`font-size:${p.fs.toFixed(1)}px`}>{s.plate.hint}</text>
+          )}
         </g>
       ))}
-      <g class="pgroup" id="free">
-        <polygon class="parcel" points="288,240 424,267 572,296 520,418 277,386" fill="var(--tx)" data-op=".04" />
-        <polygon class="free-ring" points="288,240 424,267 572,296 520,418 277,386" data-lbl />
-        <text class="plbl sub free-main" x="352" y="318" data-lbl>{fr ? 'Parcelle libre' : 'Free parcel'}</text>
-        <text class="plbl free-hint" x="352" y="320">{fr ? '→ Votre projet' : '→ Your project'}</text>
-      </g>
     </g>
     <g id="lines">
-      <path class="line div" d="M298,48 L288,240 L270,483"/>
-      <path class="line div" d="M28,258 L288,240 L572,296"/>
-      <path class="line div" d="M411,54 L424,267"/>
-      <path class="line div" d="M158,249 L146,372 L138,491"/>
-      <path class="line div" d="M277,386 L520,418"/>
-      <path class="line outer" d="M60,34 L541,62 L572,296 L498,470 L118,492 L28,258 Z"/>
-      <path class="line outer" d="M60,34 L298,48 L288,240 L28,258 Z" stroke="var(--or)"/>
+      {/* Le contour de chaque parcelle fait le trait de division. Les arêtes
+          partagées sont tracées deux fois : sans conséquence visuelle, et ça
+          évite de tenir un graphe d'adjacence pour rien. */}
+      {parcels.map(p => <path class="line div" d={`M${pts(p.poly).replaceAll(' ', ' L')} Z`} />)}
+      <path class="line outer" d={`M${pts(HEX).replaceAll(' ', ' L')} Z`} />
+      <path class="line outer" stroke="var(--or)"
+            d={`M${pts(parcels.find(p => p.id === 'sif').poly).replaceAll(' ', ' L')} Z`} />
     </g>
     <g id="annos" opacity="0">
-      <path class="tick" d="M452,516 h108 M452,511 v10 M479,513 v8 M506,513 v8 M533,513 v8 M560,511 v10"/>
-      <text class="anno" x="452" y="505">0</text><text class="anno" x="540" y="505">500 M</text>
-      <path class="tick" d="M34,518 v-26 l-6 9 m6-9 l6 9"/><text class="anno" x="46" y="515">N</text>
-      <text class="anno" x="146" y="515">ÉCH. 1:5000 · LEVÉ 2021–2026</text>
-      <text class="anno" x="452" y="-4">{fr ? 'PLANCHE 01 · PARCOURS' : 'SHEET 01 · CAREER'}</text>
+      <path class="tick" d="M34,518 v-26 l-6 9 m6-9 l6 9"/>
+      <text class="anno" x="46" y="515">N</text>
+      <text class="anno" x="82" y="515">{s.plate.scale}</text>
+      <text class="anno" x="366" y="515">{s.plate.total}</text>
+      <text class="anno" x="452" y="-4">{s.plate.sheet}</text>
     </g>
   </svg>
   <ul class="plate-key">
-    {keys.map(([k, v]) => <li><i style={`background:var(--${k})`}></i>{v}</li>)}
+    {s.plate.keys.map(([k, v]) => <li><i style={`background:var(--${k})`}></i>{v}</li>)}
+    <li><i class="free-key"></i>{s.plate.keyFree}</li>
   </ul>
 </div>
 ```
 
-Styles (scoped) copy `.parcel`, `.pgroup:hover`, `.line`, `.plbl`, `.anno`, `.tick`, `.free-ring`, `.plate-key` verbatim from `docs/superpowers/reference/preview.html`.
+Scoped styles copy `.parcel`, `.pgroup:hover`, `.line`, `.plbl`, `.anno`, `.tick`, `.free-ring`,
+`.free-key`, `.plate-key` verbatim from `docs/superpowers/reference/preview.html`.
 
-- [ ] **Step 2: Resolve risk #1 — the plate is unreadable at 390 px**
+- [ ] **Step 6: Resolve risk #1 — the plate is unreadable at 390 px**
 
-**This is mandatory in this task, not deferred.** Add to the scoped styles:
+**Mandatory in this task, not deferred.** Add to the scoped styles:
 
 ```css
 @media (max-width: 767px) {
   .plate { margin-inline: calc(var(--gut) * -1); }   /* full-bleed */
   .plbl.sub { display: none; }                        /* dates removed, names kept */
-  .plbl { font-size: 15px; }                          /* legible at small render size */
+  .plbl { font-size: 15px !important; }               /* écrase le corps calculé */
   .anno, #ticks { display: none; }                    /* sheet marks are noise here */
 }
 ```
 
-- [ ] **Step 3: Verify at three widths**
+The `!important` is load-bearing: the fitted size is an inline style, and only `!important` beats it.
 
-Run: `npm run dev`, then in DevTools check 390 px, 768 px, 1440 px.
-Expected at 390 px: the plate spans the full viewport width; the five mission names are readable; no date labels; no north arrow or scale bar; **no horizontal page scroll**.
+- [ ] **Step 7: Verify at three widths**
 
-- [ ] **Step 4: Commit**
+Run: `pnpm run dev`, then in DevTools check 390 px, 768 px, 1440 px.
+Expected at 390 px: the plate spans the full viewport width; the six parcel names are readable;
+no date labels; no north arrow; **no horizontal page scroll**.
+
+- [ ] **Step 8: Commit**
 
 ```bash
-git add src/components/Plate.astro
-git commit -m "feat: cadastral parcel plate with mobile full-bleed treatment"
+git add src/lib/plate.mjs scripts/plate-check.mjs src/components/Plate.astro package.json
+git commit -m "feat: cadastral plate with areas computed from mission durations"
 ```
 
 ---
@@ -978,6 +1265,8 @@ const s = t(lang);
 
 Four real names. **BICI is deliberately excluded**: a two-month mission does not carry authority, and a weak fifth name dilutes the four strong ones.
 
+The band no longer sits under the hero. It opens movement 03 (Task 8), immediately before the case studies, where the names introduce the work rather than interrupting the identity.
+
 ```astro
 ---
 const { lang } = Astro.props;
@@ -993,22 +1282,30 @@ const items = [
 
 - [ ] **Step 3: Write `Cartouche.astro`**
 
-Six cells. The first three carry `--or-t` in Bricolage Grotesque 760 — they anchor the perception of scale before any scrutiny.
+Six cells, **all of career-wide scope**. This is the fix for Lionel's second remark `[F8]`: the v3
+cartouche mixed three scopes in one row, and « 9 schémas » with no context means nothing. The SIF
+numbers move into the SIF case study (Task 9), where they have one.
 
 | Cell | Value | `sourceRef` |
 |---|---|---|
-| Expérience | 5 ans | PROFIL |
-| Schémas Oracle | 9 | A2 |
-| Tables · innola | 150 | A2 |
-| Mise en service | Novembre 2024 | A1, A6 |
+| En activité depuis | 2021 | EXPÉRIENCE |
+| Missions | 5 | EXPÉRIENCE |
 | Terrain | Côte d'Ivoire · Maurice · Madagascar | EXPÉRIENCE |
 | Formation | Master MIAGE · MBDS | D1 |
+| Langues | Malagasy · Français · Anglais | D3 |
+| Disponibilité | Ouvert aux opportunités | décision |
+
+The first two carry `--or-t` in Bricolage Grotesque 760 — they anchor the perception of scale
+before any scrutiny.
+
+**« 2021 », not « 5 ans ».** November 2021 to August 2026 is four years and nine months; a start
+date never drifts and never overstates.
 
 - [ ] **Step 4: Verify no forbidden pattern crept in**
 
 Run:
 ```bash
-npm run build
+pnpm run build
 grep -rnE "linkedin|github\.com/[Ll]ionel|satisfaction|projets réalisés" dist/ || echo "clean"
 ```
 Expected: `clean`. Global constraint 3 forbids social links; constraint 5 forbids vanity counters.
@@ -1022,25 +1319,45 @@ git commit -m "feat: hero with optional portrait, authority band, cartouche"
 
 ---
 
-## Task 8: Approach, timeline, contact fork, and the assembled French home page
+## Task 8: Offer, thread, timeline, contact fork, and the assembled French home page
 
 **Files:**
-- Create: `src/components/Approach.astro`, `src/components/Timeline.astro`, `src/components/ContactFork.astro`
+- Create: `src/components/Offer.astro`, `src/components/Thread.astro`, `src/components/Timeline.astro`, `src/components/ContactFork.astro`
 - Modify: `src/pages/index.astro`
 
 **Interfaces:**
 - Consumes: every component from Tasks 6–7
 - Produces: a complete French home page at `/`
 
-- [ ] **Step 1: Write `Approach.astro`** — three panels on a 12-column grid at spans 1/5, 7/5, 2/6, with vertical offsets, each carrying `--role` (text colour) and `--fill` (bar colour).
+- [ ] **Step 1: Write `Offer.astro`** — four services in a two-column grid, each carrying
+`--role` (text colour) and `--fill` (bar colour), with a 44 px rule that draws in on scroll.
 
-```
-CADRER      (lv)  M'asseoir dans l'atelier avant d'ouvrir l'éditeur
-CONSTRUIRE  (tl)  Des API et des modèles qui encaissent le réel
-LIVRER      (or)  Tenir le calendrier jusqu'à la mise en production
-```
+This replaces the three « cadrer · construire · livrer » panels. Lionel's objection `[F5]` was that
+all three described the SIF, so the page argued one mission and called it a method.
 
-Body copy verbatim from spec §2.3 / the mock-up. **Check every string for em dashes before committing.**
+**The binding rule: each service is proved by a different mission.** It is mechanical, not
+editorial — it is what keeps the page from sliding back into a monologue.
+
+| # | Service | Rôle | Preuve « sur le terrain » |
+|---|---|---|---|
+| 01 | API et backend métier | `or` | SIF · chaque écriture passe par un moteur de règles Drools avant d'atteindre la base |
+| 02 | Modélisation et optimisation SQL | `tl` | GSK · transformation et analyse des données marketing du groupe, requêtes optimisées dont les résultats portent sur des milliers de lignes |
+| 03 | Reprise de l'existant | `lv` | Cartier · flux Salesforce repris tels quels. BICI · quatre applications sous framework interne |
+| 04 | Conduite technique | `yw` | Mercedes-Benz · coordination interne de l'équipe de Madagascar, sur une production répartie entre deux pays |
+
+Body copy verbatim from `docs/superpowers/reference/preview.html`. **Check every string for em
+dashes before committing.**
+
+- [ ] **Step 1b: Write `Thread.astro`** — the bordered block that closes movement 03.
+
+« Reprendre l'existant » is not a fourth case study: BICI is two months and would not carry one.
+It is what runs through all three, which is the honest and stronger claim.
+
+| Chip | Rôle | Texte |
+|---|---|---|
+| SGFH → SIF | `or` | migrer une application foncière en service, sans l'arrêter |
+| Cartier | `tl` | reprendre des flux Salesforce en place, sans les refaire |
+| BICI | `lv` | quatre applications sous framework interne, sans documentation |
 
 - [ ] **Step 2: Write `Timeline.astro`** — four entries, facts from `CV_Lionel_Ratovo_MASTER.md`:
 
@@ -1057,11 +1374,24 @@ The project door reads: *"Je peux venir seul. Et si le chantier dépasse une per
 
 - [ ] **Step 4: Assemble `src/pages/index.astro`**
 
-Order: Hero → AuthorityBand → Cartouche → Approach → (cases placeholder) → Timeline → ContactFork.
+Order, fixed by Global Constraints `[F9]`:
+
+```
+Hero (planche incluse)
+01  Qui je suis      → paragraphes + Cartouche + lien NEXTRI
+02  Ce que j'offre   → Offer
+    AuthorityBand    → pleine largeur, ouvre le mouvement suivant
+03  Ce que j'ai accompli → cas (placeholder ici, remplis en tâche 10) + Thread + Timeline
+04  Comment me contacter → ContactFork
+```
+
+The NEXTRI bridge appears **twice**, and that is deliberate `[F12]`: once in movement 01 as part of
+who he is, once in movement 04 as the door. Lionel asked for it higher; a single mention at the
+bottom was the whole problem.
 
 - [ ] **Step 5: Verify the build and the whole gate**
 
-Run: `npm run verify`
+Run: `pnpm run verify`
 Expected: lint clean, `astro check` 0 errors, build succeeds, contrast passes.
 
 - [ ] **Step 6: Commit**
@@ -1076,20 +1406,25 @@ git commit -m "feat: approach, timeline, contact fork, French home page assemble
 ## Task 9: Content collections with enforced traceability
 
 **Files:**
-- Create: `src/content/config.ts`, `src/content/cases/fr/{sif,data-international,reprise-existant}.md`
+- Create: `src/content.config.ts`, `src/content/cases/fr/{sif,data,web}.md`
 
 **Interfaces:**
 - Produces: `getCollection('cases')` returning entries typed by the schema below. Consumed by Task 10.
 
 - [ ] **Step 1: Write the failing test — a case file missing `sourceRefs`**
 
-Create `src/content/cases/fr/sif.md` with frontmatter deliberately lacking `sourceRefs`, then write `src/content/config.ts`:
+Create `src/content/cases/fr/sif.md` with frontmatter deliberately lacking `sourceRefs`, then write `src/content.config.ts`.
+
+**The file path matters.** Astro 7 loads `src/content.config.ts`; the old `src/content/config.ts` is ignored silently, which looks exactly like a schema that is not being enforced.
 
 ```ts
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const cases = defineCollection({
-  type: 'content',
+  // Content Layer API. There is no `type: 'content'` in Astro 7.
+  // base is the cases directory, so an entry's id is "fr/sif" or "en/sif".
+  loader: glob({ pattern: '**/*.md', base: './src/content/cases' }),
   // Only fields that cannot be derived from somewhere else.
   //   lang    -> the fr/ or en/ directory already encodes it
   //   weight  -> order === 1 is the major case
@@ -1113,7 +1448,7 @@ export const collections = { cases };
 
 - [ ] **Step 2: Run to verify the build fails**
 
-Run: `npm run build`
+Run: `pnpm run build`
 Expected: FAIL with `cases → fr/sif: sourceRefs: Required`. **This failure is the feature.** A case cannot ship without declaring where its facts come from.
 
 - [ ] **Step 3: Write the three French case files**
@@ -1126,10 +1461,10 @@ order: 1
 role: or
 client: "Ministère de l'Urbanisme · Côte d'Ivoire"
 period: "2024 →"
-stack: ["Java", "Oracle", "Drools", "Angular"]
+stack: ["Java", "PostgreSQL", "Drools", "ExtJS"]
 title: "Migrer un cadastre national sans arrêter le service"
-teaser: "Le SGFH devait devenir le SIF. Neuf schémas, un portail ouvert à plus de cent usagers, et les bases d'autres services de l'État au bout du fil. La mise en production de novembre 2024 était le vrai défi du projet."
-sourceRefs: ["A1", "A2", "A3", "A4", "A6"]
+teaser: "Le SGFH devait devenir le SIF. Neuf schémas PostgreSQL, un portail public qui ne fait que lire, et les bases d'autres services de l'État qu'il faut à la fois consulter et alimenter. La mise en production de novembre 2024 était le vrai défi du projet."
+sourceRefs: ["A1", "A2", "A3", "A4", "A6", "F1", "F2", "F3", "F4"]
 ---
 
 ## L'enjeu
@@ -1138,9 +1473,13 @@ d'Information Foncier, avec de nombreuses améliorations fonctionnelles, pour le
 Ministère de l'Urbanisme, du Logement et du Cadre de Vie de Côte d'Ivoire.
 
 ## La contrainte
-Neuf schémas. Le principal, innola, compte 150 tables ; le schéma public, 59. Ils
-communiquent avec les bases d'autres services de l'État, et chaque action CRUD
-passe par des contraintes métier validées via Drools.
+Neuf schémas PostgreSQL. Le principal, innola, compte 150 tables ; le schéma
+public, 59. Le SIF lit et écrit dans les bases d'autres services de l'État, et
+chaque action CRUD passe par des contraintes métier validées via Drools.
+
+Le portail SIGFU est une application distincte, en Angular et NestJS, avec sa
+propre base. Il ne touche jamais celle du SIF : il tire ce dont il a besoin par
+les API du SIF, en lecture seule.
 
 ## Ce que j'ai fait
 Conçu et développé les interfaces des applications métier des gestionnaires
@@ -1158,24 +1497,40 @@ La mise en production de novembre 2024. C'était le défi du projet, et il est
 réussi.
 ```
 
-`data-international.md` — `order: 2`, `role: tl`, `sourceRefs: ["B1","B3"]`.
+`data.md` — `order: 2`, `role: tl`, `sourceRefs: ["B1","B3","F5","F6"]`,
+`client: "RAPP IO · GSK · Cartier"`, `period: "2022 · 2024"`,
+`stack: ["SQL", "Salesforce"]`.
 
-**Title: "Des données marketing pour deux maisons mondiales."** Two, not three. The mock-up said three; Mercedes-Benz belongs to case 3. This correction is mandatory.
+**Title: « Deux comptes data, des flux qu'on ne peut pas casser »** — two, not three. The v3
+mock-up said three; Mercedes-Benz is webmastering and owns case 3 `[F6]`. This correction is
+mandatory and CI guards it (Step 5).
 
-`reprise-existant.md` — `order: 3`, `role: lv`, `sourceRefs: ["B2","C1"]`. Covers BICI under the APJ internal JEE framework and Mercedes-Benz under AEM.
+`web.md` — `order: 3`, `role: yw`, `sourceRefs: ["B2","F6","F7"]`,
+`client: "RAPP IO · Mercedes-Benz"`, `period: "2021 · 2022"`, `stack: ["AEM"]`.
+
+**Title: « Publier du web à l'échelle d'un constructeur »**. Production and publication of web
+content under AEM, plus internal coordination of the Madagascar team with a colleague, on a
+production split between Mauritius and Madagascar.
+
+**Do not write that he did web production in Mauritius** `[F7]`. He did not, in development terms.
+The v3 mock-up attributed that work to BICI, which was wrong twice over: wrong mission, wrong
+nature of work.
+
+BICI gets no case file. Two months does not carry a case study, and « reprendre l'existant » is
+better served as the cross-case thread built in Task 8.
 
 - [ ] **Step 4: Run to verify the build passes**
 
-Run: `npm run build && npx astro check`
+Run: `pnpm run build && pnpm exec astro check`
 Expected: build succeeds, 0 errors.
 
 - [ ] **Step 5: Guard against the wrong count regressing**
 
 Run:
 ```bash
-grep -rn "trois marques" src/content/ && echo "REGRESSION" || echo "correct: two houses"
+grep -rniE "trois marques|three brands|oracle" src/content/ && echo "REGRESSION" || echo "clean"
 ```
-Expected: `correct: two houses`.
+Expected: `clean`. Two data brands, not three; PostgreSQL, not Oracle.
 
 - [ ] **Step 6: Commit**
 
@@ -1194,34 +1549,56 @@ git commit -m "feat: case collections with mandatory sourceRefs, three French ca
 
 **Interfaces:**
 - Consumes: `getCollection('cases')` (Task 9)
-- Produces: `/cas/sif/`, `/cas/data-international/`, `/cas/reprise-existant/`
+- Produces: `/cas/sif/`, `/cas/data/`, `/cas/web/`
 
 - [ ] **Step 1: Write `src/pages/cas/[slug].astro`**
 
 ```astro
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Case from '../../layouts/Case.astro';
 
 export async function getStaticPaths() {
   const all = await getCollection('cases', e => e.id.startsWith('fr/'));
-  return all.map(entry => ({ params: { slug: entry.id.replace(/^fr\//, '').replace(/\.md$/, '') }, props: { entry } }));
+  // entry.id is already extension-free and URL-friendly: "fr/sif" -> "sif"
+  return all.map(entry => ({ params: { slug: entry.id.replace(/^fr\//, '') }, props: { entry } }));
 }
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);   // not entry.render(), removed in Astro 6
 ---
 <Case lang="fr" entry={entry}><Content /></Case>
 ```
 
 - [ ] **Step 2: Write `CaseDiagram.astro`** — dispatch on the case slug, one SVG per case. No frontmatter field is needed: three cases, three slugs, three diagrams.
 
-The `sif` diagram is copied verbatim from `docs/superpowers/reference/preview.html`. **Critical:** accent colours must use `style="stroke:var(--or)"`, not `stroke="var(--or)"`. A presentation attribute loses to the `.dg-node` class rule, which is exactly the bug found in the mock-up on 31/07/2026.
+The `sif` diagram is copied verbatim from `docs/superpowers/reference/preview.html`, where it was
+redrawn from Lionel's own hand-drawn schema `[F2]`, `[F3]`, `[F4]`. It has three parts, and the
+relationships between them are the point:
+
+```
+PORTAIL SIGFU (public)              SIF
+  Angular                             ExtJS
+    ↓                                   ↓
+  NestJS  ←── lecture seule ────      API Java ⇄ Drools (métier)
+    ⇅         via les API SIF             ⇅
+  PostgreSQL (propre)                 PostgreSQL · 9 schémas
+                                          ⇅  lecture ET écriture
+                                    BDD autres services de l'État
+```
+
+**Do not draw the portal as a client of the SIF backend.** It is a separate application with its
+own database, and it reads the SIF through its API, read-only. The link to other State services
+runs **both ways**. The v3 diagram got both wrong.
+
+**Critical:** accent colours must use `style="stroke:var(--or)"`, not `stroke="var(--or)"`. A
+presentation attribute loses to the `.dg-node` class rule, which is exactly the bug found in the
+mock-up on 31/07/2026.
 
 - [ ] **Step 3: Write `CaseCard.astro`** for the major case only, and inline the two minor cards directly in `index.astro`. The minor card is six lines of markup with one consumer; a variant prop and a branch cost more than the duplication saves. Sort by `order`; `order === 1` is the major one.
 
 - [ ] **Step 4: Verify all three pages render**
 
-Run: `npm run build && ls dist/cas/*/index.html`
+Run: `pnpm run build && ls dist/cas/*/index.html`
 Expected: three files listed. Astro fails the build on a bad `getStaticPaths`, so a separate link checker earns nothing on ten hand-written, dictionary-driven links.
 
 - [ ] **Step 5: Commit**
@@ -1240,7 +1617,7 @@ git commit -m "feat: case study pages with per-case SVG diagrams"
 - Modify: `src/layouts/Base.astro`
 
 **Interfaces:**
-- Produces: scroll-driven animation for `.rv`, `#chain i`, `.plate svg`, `.sec-head h2`, `.auth-list > span`, `.cell`, `.step .hr`, `.dg-l`, `.door::before`, `header`
+- Produces: scroll-driven animation for `.rv`, `#chain i`, `.plate svg`, `.sec-head h2`, `.auth-list > span`, `.cell`, `.of::before`, `.th-items > span`, `.dg-l`, `.door::before`, `header`
 
 - [ ] **Step 1: Write `motion.css`**
 
@@ -1311,7 +1688,7 @@ test('reduced motion leaves all content visible', async ({ browser }) => {
 });
 ```
 
-Run: `npx playwright test tests/motion.spec.ts`
+Run: `pnpm exec playwright test tests/motion.spec.ts`
 Expected: both pass in chromium **and** firefox. Firefox exercises the `IntersectionObserver` fallback; if `.rv` elements are invisible there, the fallback is broken.
 
 - [ ] **Step 5: Commit**
@@ -1402,7 +1779,7 @@ test('wheel scrolling is damped, not instant', async ({ page }) => {
 });
 ```
 
-Run: `npx playwright test tests/motion.spec.ts --project=chromium`
+Run: `pnpm exec playwright test tests/motion.spec.ts --project=chromium`
 Expected: PASS, with well over 20 distinct frames. The measurement on 31/07/2026 gave **59** damped versus **2** native.
 
 - [ ] **Step 3: Commit**
@@ -1425,11 +1802,11 @@ git commit -m "feat: dependency-free damped scrolling, pointer-fine only"
 import { test, expect } from '@playwright/test';
 
 test('language switch lands on the equivalent page, never home', async ({ page }) => {
-  await page.goto('/cas/data-international/');
+  await page.goto('/cas/data/');
   await page.click('#lang-switch');
-  await expect(page).toHaveURL(/\/en\/cas\/data-international\/$/);
+  await expect(page).toHaveURL(/\/en\/cas\/data\/$/);
   await page.click('#lang-switch');
-  await expect(page).toHaveURL(/\/cas\/data-international\/$/);
+  await expect(page).toHaveURL(/\/cas\/data\/$/);
 });
 
 test('every page declares reciprocal hreflang', async ({ page }) => {
@@ -1448,7 +1825,7 @@ test('every page declares reciprocal hreflang', async ({ page }) => {
 
 - [ ] **Step 2: Run to verify it fails**
 
-Run: `npx playwright test tests/i18n.spec.ts --project=chromium`
+Run: `pnpm exec playwright test tests/i18n.spec.ts --project=chromium`
 Expected: FAIL — no `#lang-switch`, no `hreflang`.
 
 - [ ] **Step 3: Write `LangSwitch.astro`** using `altPath()` from Task 5, and emit `hreflang` links in `Base.astro`, with `x-default` pointing to the French URL.
@@ -1457,7 +1834,7 @@ Expected: FAIL — no `#lang-switch`, no `hreflang`.
 
 - [ ] **Step 5: Run to verify it passes**
 
-Run: `npx playwright test tests/i18n.spec.ts`
+Run: `pnpm exec playwright test tests/i18n.spec.ts`
 Expected: 2 passed on both browsers.
 
 - [ ] **Step 6: Commit**
@@ -1482,7 +1859,7 @@ git commit -m "feat: English locale with reciprocal hreflang and equivalent-page
 - [ ] **Step 1: Add `@astrojs/sitemap`**
 
 ```bash
-npx astro add sitemap --yes
+pnpm exec astro add sitemap --yes
 ```
 
 - [ ] **Step 2: Add JSON-LD to `Base.astro`**
@@ -1508,7 +1885,7 @@ GitHub Pages serves `404.html` for any unmatched path. Title, one line, and a li
 
 - [ ] **Step 4: Verify**
 
-Run: `npm run build && ls dist/sitemap-index.xml dist/404.html`
+Run: `pnpm run build && ls dist/sitemap-index.xml dist/404.html`
 Expected: both files listed.
 
 - [ ] **Step 5: Commit**
@@ -1551,15 +1928,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run check
-      - run: npm run build
-      - run: npm run contrast
-      - run: npx playwright install --with-deps chromium firefox
-      - run: npm test
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run check
+      - run: pnpm run build
+      - run: pnpm run contrast
+      - run: pnpm exec playwright install --with-deps chromium firefox
+      - run: pnpm test
       - name: No social links, no vanity metrics, no bare phone
         run: |
           ! grep -rqiE "linkedin\.com|github\.com/[Ll]ionel|XX XX XXX" dist/
@@ -1578,14 +1956,14 @@ The two shell steps are the content and performance constraints enforced by CI r
 
 - [ ] **Step 4: Run the full gate locally**
 
-Run: `npm run verify && npm test`
+Run: `pnpm run verify && pnpm test`
 Expected: everything green.
 
 Then one manual Lighthouse pass on the built site, against the spec budgets (≥ 95 on all four axes, LCP < 1.5 s, CLS < 0.02):
 
 ```bash
-npx --yes serve dist -l 4322 &
-npx --yes lighthouse http://localhost:4322 --preset=desktop --view
+pnpm dlx serve dist -l 4322 &
+pnpm dlx lighthouse http://localhost:4322 --preset=desktop --view
 ```
 
 - [ ] **Step 5: Commit and push**
