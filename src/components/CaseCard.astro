@@ -100,8 +100,11 @@ const facts = [
     color: var(--tx2);
     max-width: 45ch;
   }
+  /* Même condition que la grille à deux pistes : sans `:has()`, la carte
+     retombe sur une colonne et le schéma passe sous le texte, où le collage
+     n'aurait plus de sens. La règle se conditionne donc au même sélecteur. */
   @media (min-width: 901px) {
-    .dg-col {
+    .case-major:has(.dg-col) .dg-col {
       position: sticky;
       top: 96px;
     }
