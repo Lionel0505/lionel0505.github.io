@@ -277,7 +277,7 @@ main > section,
    here to avoid. Everything that belongs to one layout only — the two-column
    grid, the minor-card rules, the diagram — stays in its own component.
 
-   `.link` takes its colour from `--role` and falls back to the orange text
+   `.case-link` takes its colour from `--role` and falls back to the orange text
    token. Every role token it is ever set to (--or-t, --tl-t, --yw-t, --lv-t)
    is already checked against --bg, --bg2 and --bg3 by `pnpm run contrast`.
    ============================================================ */
@@ -297,7 +297,7 @@ main > section,
   color: var(--tx2);
   font-weight: 520;
 }
-.link {
+.case-link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -306,13 +306,13 @@ main > section,
   font-weight: 600;
   color: var(--role, var(--or-t));
 }
-.link .bar {
+.case-link .bar {
   width: 22px;
   height: 1.5px;
   background: currentColor;
   transition: width 0.38s var(--ease);
 }
-.link:hover .bar {
+.case-link:hover .bar {
   width: 40px;
 }
 

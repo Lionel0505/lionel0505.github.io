@@ -19,6 +19,12 @@ const d = entry.data;
 // dans le frontmatter parce qu'ils ne concernent que ce cas-ci, et que le
 // schéma de la collection ne garde que ce qui vaut pour les trois. Chacun est
 // repris tel quel du contenu de src/content/cases/fr/sif.md.
+//
+// Le rendu est donc conditionné au slug, et non à `order === 1` : le schéma
+// n'impose ni unicité de `order` ni lien entre `order` et le slug. Le jour où
+// un autre cas passe en tête, la page afficherait sinon les chiffres du SIF
+// sous le nom d'un autre client, en silence et sans que rien n'échoue.
+const isSif = slug === 'sif';
 const facts = [
   { v: '9', label: fr ? 'schémas PostgreSQL' : 'PostgreSQL schemas' },
   { v: '150', label: 'tables · ', em: 'innola' },
@@ -36,43 +42,53 @@ const facts = [
     </div>
     <h3>{d.title}</h3>
     <p>{d.teaser}</p>
-    <ul class="facts">
-      {
-        facts.map((f) => (
-          <li>
-            <b>{f.v}</b>
-            <span>
-              {f.label}
-              {f.em && <i>{f.em}</i>}
-            </span>
-          </li>
-        ))
-      }
-    </ul>
-    <a class="link" href={`${base}/cas/${slug}/`}>
+    {
+      isSif && (
+        <ul class="facts">
+          {facts.map((f) => (
+            <li>
+              <b>{f.v}</b>
+              <span>
+                {f.label}
+                {f.em && <i>{f.em}</i>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+    <a class="case-link" href={`${base}/cas/${slug}/`}>
       {s.cases.read}<span class="sr-only"> : {d.title}</span><i class="bar"></i>
     </a>
   </div>
-  {/* La colonne n'existe que parce que le SIF a un schéma. CaseDiagram ne rend
-      rien pour les deux autres cas, mais ils ne passent pas par ce composant :
-      aucune carte ne peut donc se retrouver avec une colonne vide. */}
-  <div class="dg-col">
-    <CaseDiagram slug={slug} lang={lang} />
-  </div>
+  {/* La colonne n'existe que parce que le SIF a un schéma, et elle est posée
+      sur la même condition que lui : sinon une carte majeure sans schéma
+      laisserait une piste de 0,92fr vide et écraserait le texte à côté. */}
+  {
+    isSif && (
+      <div class="dg-col">
+        <CaseDiagram slug={slug} lang={lang} />
+      </div>
+    )
+  }
 </article>
 
 <style>
   .case-major {
     display: grid;
-    grid-template-columns: 1fr 0.92fr;
+    /* Une seule piste par défaut, la seconde n'apparaît que si le schéma est
+       là. Écrit dans ce sens, un navigateur sans `:has()` retombe sur une
+       colonne pleine largeur, ce qui se lit ; l'inverse laisserait le texte
+       à 52 % de la largeur à côté d'un vide. */
+    grid-template-columns: 1fr;
     gap: clamp(1.5rem, 4vw, 3.2rem);
     align-items: center;
     border-top: 2.5px solid var(--tx);
     padding-top: 1.5rem;
   }
-  @media (max-width: 900px) {
-    .case-major {
-      grid-template-columns: 1fr;
+  @media (min-width: 901px) {
+    .case-major:has(.dg-col) {
+      grid-template-columns: 1fr 0.92fr;
     }
   }
   .case-major h3 {

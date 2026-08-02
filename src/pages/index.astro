@@ -87,7 +87,7 @@ const who2 = fr
               <p>{c.data.teaser}</p>
               {/* « Lire » seul donnerait trois liens au même nom sur la page :
                   le titre du cas complète le nom accessible sans encombrer. */}
-              <a class="link" href={`${base}/cas/${c.id.replace(/^fr\//, '')}/`}>
+              <a class="case-link" href={`${base}/cas/${c.id.replace(/^fr\//, '')}/`}>
                 {s.cases.readShort}
                 <span class="sr-only"> : {c.data.title}</span>
                 <i class="bar" />
@@ -162,7 +162,7 @@ const who2 = fr
     color: var(--tx2);
     max-width: 40ch;
   }
-  .cm .link {
+  .cm .case-link {
     margin-top: 0.85rem;
     font-size: 0.8rem;
   }
