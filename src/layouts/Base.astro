@@ -9,14 +9,39 @@ import '../styles/motion.css';
 interface Props {
   title: string;
   description?: string;
+  // Une seule prop, pas un système : la 404 est la seule page hors index.
+  // À `false`, elle retire la canonique et les trois hreflang, et ajoute
+  // `<meta name="robots" content="noindex">` (correction B).
+  indexable?: boolean;
 }
 
-const { title, description } = Astro.props as Props;
+const { title, description, indexable = true } = Astro.props as Props;
 const lang = (Astro.currentLocale ?? 'fr') as Lang;
 const s = t(lang);
 
 const { frPath, enPath } = bothPaths(Astro.url.pathname);
 const self = lang === 'en' ? enPath : frPath;
+
+/* ====== */
+// Personne unique, identique sur les huit pages : un nom et une adresse ne
+// se traduisent pas. Pas de `sameAs` : Lionel n'a aucun profil social, et en
+// inventer un serait un fait fabriqué (contrainte globale 3). Pas de
+// numéro de téléphone : il n'est jamais en clair dans le HTML servi
+// (SiteFooter.astro le décode au clic), et l'y mettre défairait cette
+// protection.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Lionel Ratovo',
+  jobTitle: 'Backend & Data Engineer, Technical Project Lead',
+  email: 'mailto:lionelratovo@gmail.com',
+  address: { '@type': 'PostalAddress', addressLocality: 'Antananarivo', addressCountry: 'MG' },
+  knowsLanguage: ['mg', 'fr', 'en'],
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: "Université Côte d'Azur" },
+    { '@type': 'CollegeOrUniversity', name: 'IT University' },
+  ],
+};
 ---
 
 <!doctype html>
@@ -28,15 +53,24 @@ const self = lang === 'en' ? enPath : frPath;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    <link rel="canonical" href={new URL(self, Astro.site)} />
-    <link rel="alternate" hreflang="fr" href={new URL(frPath, Astro.site)} />
-    <link rel="alternate" hreflang="en" href={new URL(enPath, Astro.site)} />
-    <!-- x-default vise le français : c'est la locale par défaut du site, et
-         c'est elle qui répond sur les URL sans préfixe. -->
-    <link rel="alternate" hreflang="x-default" href={new URL(frPath, Astro.site)} />
+    {
+      indexable ? (
+        <>
+          <link rel="canonical" href={new URL(self, Astro.site)} />
+          <link rel="alternate" hreflang="fr" href={new URL(frPath, Astro.site)} />
+          <link rel="alternate" hreflang="en" href={new URL(enPath, Astro.site)} />
+          {/* x-default vise le français : c'est la locale par défaut du site, et
+              c'est elle qui répond sur les URL sans préfixe. */}
+          <link rel="alternate" hreflang="x-default" href={new URL(frPath, Astro.site)} />
+        </>
+      ) : (
+        <meta name="robots" content="noindex" />
+      )
+    }
     <!-- The h1 carries the LCP: only Bricolage is preloaded so it does not
          contend for bandwidth with the two families that do not gate paint. -->
     <link rel="preload" href="/fonts/Bricolage.woff2" as="font" type="font/woff2" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} is:inline />
     <!-- Blocking: sets the theme before first paint, so there is no flash. -->
     <script is:inline>
       (function () {

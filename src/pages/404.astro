@@ -1,0 +1,41 @@
+---
+import { t } from '../i18n/utils';
+import Base from '../layouts/Base.astro';
+
+// GitHub Pages sert ce fichier, et lui seul, pour tout chemin inconnu, y
+// compris sous /en/ (relevé du 02/08/2026, correction B) : la page est
+// donc bilingue en elle-même plutôt que traduite par locale, et Astro la
+// rend ici en français (currentLocale indéfini hors réécriture i18n).
+const fr = t('fr');
+const en = t('en');
+---
+
+<Base title={`${fr.notFound.title} · ${en.notFound.title}`} indexable={false}>
+  <main id="main" class="nf">
+    <h1 class="mono nf-code">404</h1>
+    {
+      /* fr.notFound.home reste du texte, pas un lien : SiteHeader porte déjà
+         un lien vers "/" sur cette page (son logo), et un second ferait
+         deux liens vers la même cible. Le lien anglais, lui, n'existe nulle
+         part ailleurs sur cette page rendue en français : LangSwitch y
+         pointe vers /en/404/, pas vers /en/. */
+    }
+    <p>{fr.notFound.lead} {fr.notFound.home}.</p>
+    <p lang="en">
+      {en.notFound.lead} <a href="/en/">{en.notFound.home}</a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-block: clamp(3rem, 10vw, 6rem);
+  }
+  .nf-code {
+    color: var(--tx3);
+    margin-bottom: 0.4rem;
+  }
+</style>

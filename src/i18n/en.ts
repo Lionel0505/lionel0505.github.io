@@ -75,5 +75,10 @@ const en: Widen<typeof fr> = {
     project: { kicker: 'Consulting', title: 'A project to deliver?' },
   },
   phone: { reveal: 'Show the number' },
+  notFound: {
+    title: 'Page not found',
+    lead: 'This page does not exist.',
+    home: 'Back to home',
+  },
 };
 export default en;

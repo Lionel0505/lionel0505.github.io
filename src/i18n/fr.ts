@@ -66,4 +66,12 @@ export default {
     project: { kicker: 'Prestation', title: 'Un projet à livrer ?' },
   },
   phone: { reveal: 'Afficher le numéro' },
+  // Servie par GitHub Pages pour tout chemin inconnu, y compris sous /en/ :
+  // relevé du 02/08/2026 (correction B). Un seul fichier, donc une seule
+  // page qui porte les deux langues plutôt qu'une traduction par locale.
+  notFound: {
+    title: 'Page introuvable',
+    lead: "Cette page n'existe pas.",
+    home: "Retour à l'accueil",
+  },
 } as const;
