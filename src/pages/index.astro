@@ -36,7 +36,10 @@ const who2 = fr
     };
 ---
 
-<Base title="Lionel Ratovo" description="Portfolio de Lionel Ratovo.">
+<Base
+  title="Lionel Ratovo"
+  description={fr ? 'Portfolio de Lionel Ratovo.' : "Lionel Ratovo's portfolio."}
+>
   <main id="main">
     <Hero lang={lang} />
 

@@ -1,7 +1,7 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { t, type Lang } from '../i18n/utils';
+import { bothPaths, t, type Lang } from '../i18n/utils';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/motion.css';
@@ -15,12 +15,7 @@ const { title, description } = Astro.props as Props;
 const lang = (Astro.currentLocale ?? 'fr') as Lang;
 const s = t(lang);
 
-// Sur une route réécrite, Astro.url.pathname sert le chemin FRANÇAIS :
-// relevé le 02/08/2026, /en/cas/sif/ rend '/cas/sif/'. C'est donc le chemin
-// français qui est la donnée, et les deux autres s'en déduisent.
-// Lire la locale dans l'URL rendrait 'fr' sur les pages anglaises aussi.
-const frPath = Astro.url.pathname;
-const enPath = `/en${frPath}`;
+const { frPath, enPath } = bothPaths(Astro.url.pathname);
 const self = lang === 'en' ? enPath : frPath;
 ---
 

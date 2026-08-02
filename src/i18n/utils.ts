@@ -11,3 +11,14 @@ export const t = (lang: Lang) => DICT[lang];
 // les pages anglaises. Le second attendait le chemin courant, alors que le
 // seul chemin disponible est toujours le français. La locale vient
 // désormais uniquement de Astro.currentLocale (Base.astro, LangSwitch.astro).
+
+// Astro.url.pathname sert toujours le chemin FRANÇAIS, y compris sur une
+// page réécrite en anglais (relevé du 02/08/2026, correction A) : c'est donc
+// lui l'entrée, jamais l'inverse. Base.astro et LangSwitch.astro en avaient
+// chacun sa propre copie à trois lignes ; un seul point de calcul évite que
+// les deux divergent un jour (même réflexe que le commentaire sur les champs
+// dérivés de content.config.ts).
+export const bothPaths = (frPath: string): { frPath: string; enPath: string } => ({
+  frPath,
+  enPath: `/en${frPath}`,
+});
