@@ -1,7 +1,7 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { t } from '../i18n/utils';
+import { t, type Lang } from '../i18n/utils';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/motion.css';
@@ -9,13 +9,19 @@ import '../styles/motion.css';
 interface Props {
   title: string;
   description?: string;
-  lang?: 'fr' | 'en';
-  path?: string;
 }
 
-const { title, description, lang = 'fr', path } = Astro.props as Props;
-const canonical = path ? new URL(path, Astro.site) : undefined;
+const { title, description } = Astro.props as Props;
+const lang = (Astro.currentLocale ?? 'fr') as Lang;
 const s = t(lang);
+
+// Sur une route réécrite, Astro.url.pathname sert le chemin FRANÇAIS :
+// relevé le 02/08/2026, /en/cas/sif/ rend '/cas/sif/'. C'est donc le chemin
+// français qui est la donnée, et les deux autres s'en déduisent.
+// Lire la locale dans l'URL rendrait 'fr' sur les pages anglaises aussi.
+const frPath = Astro.url.pathname;
+const enPath = `/en${frPath}`;
+const self = lang === 'en' ? enPath : frPath;
 ---
 
 <!doctype html>
@@ -27,7 +33,12 @@ const s = t(lang);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="canonical" href={new URL(self, Astro.site)} />
+    <link rel="alternate" hreflang="fr" href={new URL(frPath, Astro.site)} />
+    <link rel="alternate" hreflang="en" href={new URL(enPath, Astro.site)} />
+    <!-- x-default vise le français : c'est la locale par défaut du site, et
+         c'est elle qui répond sur les URL sans préfixe. -->
+    <link rel="alternate" hreflang="x-default" href={new URL(frPath, Astro.site)} />
     <!-- The h1 carries the LCP: only Bricolage is preloaded so it does not
          contend for bandwidth with the two families that do not gate paint. -->
     <link rel="preload" href="/fonts/Bricolage.woff2" as="font" type="font/woff2" crossorigin />

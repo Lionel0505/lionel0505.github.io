@@ -8,18 +8,17 @@ import Hero from '../components/Hero.astro';
 import Offer from '../components/Offer.astro';
 import Thread from '../components/Thread.astro';
 import Timeline from '../components/Timeline.astro';
-import { t } from '../i18n/utils';
+import { t, type Lang } from '../i18n/utils';
 import Base from '../layouts/Base.astro';
 
-// lang/path are hardcoded French for now; Task 13 makes this locale-aware.
-const lang = 'fr' as const;
+const lang = (Astro.currentLocale ?? 'fr') as Lang;
 const s = t(lang);
 const fr = lang === 'fr';
 const base = fr ? '' : '/en';
 
 // `order` porte le classement, donc rien d'autre n'a à le porter : le cas
 // majeur est celui d'ordre 1, les mineurs sont ceux qui suivent.
-const cases = (await getCollection('cases', (e) => e.id.startsWith('fr/'))).sort(
+const cases = (await getCollection('cases', (e) => e.id.startsWith(`${lang}/`))).sort(
   (a, b) => a.data.order - b.data.order,
 );
 const [major, ...minors] = cases;
@@ -37,7 +36,7 @@ const who2 = fr
     };
 ---
 
-<Base title="Lionel Ratovo" description="Portfolio de Lionel Ratovo." lang="fr" path="/">
+<Base title="Lionel Ratovo" description="Portfolio de Lionel Ratovo.">
   <main id="main">
     <Hero lang={lang} />
 
@@ -87,7 +86,7 @@ const who2 = fr
               <p>{c.data.teaser}</p>
               {/* « Lire » seul donnerait trois liens au même nom sur la page :
                   le titre du cas complète le nom accessible sans encombrer. */}
-              <a class="case-link" href={`${base}/cas/${c.id.replace(/^fr\//, '')}/`}>
+              <a class="case-link" href={`${base}/cas/${c.id.replace(/^(?:fr|en)\//, '')}/`}>
                 {s.cases.readShort}
                 <span class="sr-only"> : {c.data.title}</span>
                 <i class="bar" />

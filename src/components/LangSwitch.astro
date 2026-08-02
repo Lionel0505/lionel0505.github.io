@@ -1,0 +1,48 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+const lang = (Astro.currentLocale ?? 'fr') as Lang;
+const s = t(lang);
+
+// Astro.url.pathname sert toujours le chemin FRANÇAIS, y compris sur une
+// page réécrite en anglais (relevé du 02/08/2026, correction A) : les deux
+// chemins se déduisent donc d'ici, comme dans Base.astro.
+const frPath = Astro.url.pathname;
+const enPath = `/en${frPath}`;
+const target = lang === 'fr' ? enPath : frPath;
+const targetLang: Lang = lang === 'fr' ? 'en' : 'fr';
+---
+
+{
+  /* Un <a>, pas un bouton : les huit pages sont statiques, un lien ne coûte
+     rien au budget JS. hreflang et lang portent la langue de DESTINATION,
+     pour qu'un lecteur d'écran prononce "EN"/"FR" dans la bonne langue. Le
+     nom accessible complet vient du dictionnaire de la locale courante, qui
+     décrit correctement la destination puisqu'il n'y a que deux locales. */
+}
+<a id="lang-switch" class="lang-switch" href={target} lang={targetLang} hreflang={targetLang}>
+  {targetLang.toUpperCase()}
+  <span class="sr-only"> · {s.langSwitch}</span>
+</a>
+
+<style>
+  .lang-switch {
+    font-family: var(--ffm);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--bd);
+    border-radius: 2px;
+    color: var(--tx2);
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-grid;
+    place-items: center;
+    transition:
+      border-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .lang-switch:hover {
+    border-color: var(--tx);
+    color: var(--tx);
+  }
+</style>

@@ -5,8 +5,9 @@ export type Lang = 'fr' | 'en';
 const DICT = { fr, en } as const;
 
 export const t = (lang: Lang) => DICT[lang];
-export const getLang = (url: URL): Lang => (url.pathname.startsWith('/en/') ? 'en' : 'fr');
-/** Same page in the other language. Case slugs are identical in both locales,
-    so there is no translation map, and therefore none that can go stale. */
-export const altPath = (path: string): string =>
-  path.startsWith('/en') ? path.replace(/^\/en/, '') || '/' : `/en${path}`;
+// getLang et altPath ont disparu à la tâche 13 : le premier lisait la locale
+// dans url.pathname, qui sert toujours le chemin FRANÇAIS sur une route
+// réécrite (relevé du 02/08/2026, correction A), donc il rendait "fr" sur
+// les pages anglaises. Le second attendait le chemin courant, alors que le
+// seul chemin disponible est toujours le français. La locale vient
+// désormais uniquement de Astro.currentLocale (Base.astro, LangSwitch.astro).

@@ -2,6 +2,7 @@ export default {
   nav: { who: 'Qui je suis', offer: "Ce que j'offre", cases: 'Réalisations', contact: 'Contact' },
   skip: 'Aller au contenu',
   themeLabel: 'Thème',
+  langSwitch: 'Version anglaise',
   status: 'Ouvert aux opportunités',
   hero: {
     title: 'Je traduis des besoins métier complexes en systèmes qui',

@@ -1,5 +1,6 @@
 ---
 import { t, type Lang } from '../i18n/utils';
+import LangSwitch from './LangSwitch.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
 const { lang } = Astro.props as { lang: Lang };
@@ -15,7 +16,7 @@ const base = lang === 'fr' ? '' : '/en';
       <a href={`${base}/#offre`}>{s.nav.offer}</a>
       <a href={`${base}/#cas`}>{s.nav.cases}</a>
       <a href={`${base}/#contact`}>{s.nav.contact}</a>
-      <!-- LangSwitch lands here in Task 13, once src/components/LangSwitch.astro exists. -->
+      <LangSwitch />
       <ThemeToggle labelPrefix={s.themeLabel} />
     </nav>
   </div>

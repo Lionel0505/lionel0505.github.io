@@ -18,12 +18,7 @@ const d = entry.data;
 // par la page : rien ici ne doit la rendre, aujourd'hui ou plus tard.
 ---
 
-<Base
-  title={`${d.title} · Lionel Ratovo`}
-  description={d.teaser}
-  lang={lang}
-  path={`${base}/cas/${slug}/`}
->
+<Base title={`${d.title} · Lionel Ratovo`} description={d.teaser}>
   {/* Base n'enveloppe pas son slot : chaque page pose son propre <main id="main">,
       et c'est lui que vise le lien d'évitement. */}
   <main id="main">
