@@ -14,13 +14,14 @@ const en = t('en');
   <main id="main" class="nf">
     <h1 class="mono nf-code">404</h1>
     {
-      /* fr.notFound.home reste du texte, pas un lien : SiteHeader porte déjà
-         un lien vers "/" sur cette page (son logo), et un second ferait
-         deux liens vers la même cible. Le lien anglais, lui, n'existe nulle
-         part ailleurs sur cette page rendue en français : LangSwitch y
-         pointe vers /en/404/, pas vers /en/. */
+      /* Les deux sorties sont des liens, et toutes deux dans le corps. Le
+         logo de l'en-tête ramène bien vers « / », mais c'est un élément de
+         navigation présent sur toutes les pages : sur celle-ci, la sortie
+         doit être là où le visiteur lit qu'il s'est perdu. Le lien anglais
+         n'existe de toute façon nulle part ailleurs ici, LangSwitch pointant
+         vers /en/404/ et non vers /en/. */
     }
-    <p>{fr.notFound.lead} {fr.notFound.home}.</p>
+    <p>{fr.notFound.lead} <a href="/">{fr.notFound.home}</a>.</p>
     <p lang="en">
       {en.notFound.lead} <a href="/en/">{en.notFound.home}</a>
     </p>

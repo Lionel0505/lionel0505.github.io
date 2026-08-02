@@ -23,8 +23,12 @@ test("la page d'erreur ne se présente pas comme un contenu indexable", async ({
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
   // Un seul fichier est servi pour toute URL inconnue, et il est rendu en
   // français : il doit donc porter les deux langues et les deux accueils.
-  await expect(page.locator('a[href="/"]')).toHaveCount(1);
-  await expect(page.locator('a[href="/en/"]')).toHaveCount(1);
+  // La portée est `main` et non le document : l'en-tête ramène déjà vers
+  // « / » par son logo sur toutes les pages, et compter à l'échelle du
+  // document ferait passer ce lien-là pour la sortie de secours française.
+  // C'est dans le corps de la page d'erreur que les deux doivent être.
+  await expect(page.locator('main a[href="/"]')).toHaveCount(1);
+  await expect(page.locator('main a[href="/en/"]')).toHaveCount(1);
 });
 
 test('le JSON-LD est valide et ne declare aucun profil social', async ({ page }) => {
