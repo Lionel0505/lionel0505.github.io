@@ -114,5 +114,10 @@ test('wheel scrolling is damped, not instant', async ({ page }) => {
   await page.mouse.wheel(0, 900);
   await page.waitForTimeout(1200);
   const frames: number[] = await page.evaluate(() => (window as any).__s);
-  expect(new Set(frames).size).toBeGreaterThan(20); // native scrolling yields 2
+  // Le seuil sépare deux régimes, il ne mesure pas une cadence. Relevé le
+  // 02/08/2026 : natif 2 positions distinctes, amorti 30 à 40 dans chromium,
+  // 17 à 20 dans un firefox sans tête que quatre workers se disputent. À 20,
+  // le test virait au rouge sur cette seule contention ; à 8 il garde un
+  // facteur 4 au-dessus du natif et un facteur 2 sous le pire amorti observé.
+  expect(new Set(frames).size).toBeGreaterThan(8);
 });
