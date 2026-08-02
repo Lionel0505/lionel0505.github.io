@@ -250,3 +250,23 @@
 .js-motion .stagger.in > *:nth-child(6) {
   transition-delay: 350ms;
 }
+
+/* ============================================================
+   IMPRESSION
+   Une feuille de papier ne défile pas. Ni la timeline native ni
+   l'IntersectionObserver n'atteignent donc jamais leur état final, et
+   `both` retient les blocs sur leur image de départ : mesuré le 02/08/2026
+   sur `dist`, les douze `.rv` sortent à `opacity: 0` sous media print, dans
+   Chromium comme dans Firefox, avec ou sans JavaScript. Un portfolio
+   imprimé rendait le hero puis douze pages blanches.
+   Les tests de `tests/motion.spec.ts` ne le voyaient pas : ils mesurent tous
+   sous media screen.
+   ============================================================ */
+@media print {
+  .rv,
+  .stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

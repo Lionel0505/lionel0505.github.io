@@ -88,3 +88,13 @@ test('avec JavaScript : toute la page finit révélée', async ({ page }) => {
   expect(await page.locator('.rv').count()).toBeGreaterThan(5);
   expect(await minOpacity(page)).toBeGreaterThan(0.99);
 });
+
+test("à l'impression : tout le contenu reste visible", async ({ page }) => {
+  await page.goto('/');
+  // Le papier ne défile pas : sans le repli de motion.css, `both` retient
+  // chaque bloc sur son image de départ et la page sort blanche. Les quatre
+  // tests ci-dessus mesurent tous sous media screen et laissaient passer ça.
+  await page.emulateMedia({ media: 'print' });
+  expect(await page.locator('.rv').count()).toBeGreaterThan(5);
+  expect(await minOpacity(page)).toBeGreaterThan(0.99);
+});
