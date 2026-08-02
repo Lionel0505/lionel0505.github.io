@@ -21,7 +21,14 @@ const en = t('en');
          n'existe de toute façon nulle part ailleurs ici, LangSwitch pointant
          vers /en/404/ et non vers /en/. */
     }
-    <p>{fr.notFound.lead} <a href="/">{fr.notFound.home}</a>.</p>
+    {
+      /* Les deux paragraphes déclarent leur langue, aucun ne l'hérite. Ce
+         fichier est rendu deux fois : en français à la racine, qui est le
+         seul rendu que GitHub Pages sert, et en anglais sous /en/404/ que
+         la réécriture produit au passage. Un paragraphe qui hériterait de
+         <html lang> serait donc juste d'un côté et faux de l'autre. */
+    }
+    <p lang="fr">{fr.notFound.lead} <a href="/">{fr.notFound.home}</a>.</p>
     <p lang="en">
       {en.notFound.lead} <a href="/en/">{en.notFound.home}</a>
     </p>
