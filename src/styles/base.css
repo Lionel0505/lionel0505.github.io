@@ -267,6 +267,55 @@ main > section,
   flex: none;
 }
 
+/* ============================================================
+   ÉTUDES DE CAS
+   Two primitives shared by the major case card (CaseCard.astro), the two
+   minor cards written inline in index.astro, and the case pages themselves
+   (Case.astro): five users across three files. Scoped styles cannot cross a
+   component boundary, so keeping them component-local would mean three copies
+   of the same declarations, which is exactly the drift `.sec-head` above is
+   here to avoid. Everything that belongs to one layout only — the two-column
+   grid, the minor-card rules, the diagram — stays in its own component.
+
+   `.link` takes its colour from `--role` and falls back to the orange text
+   token. Every role token it is ever set to (--or-t, --tl-t, --yw-t, --lv-t)
+   is already checked against --bg, --bg2 and --bg3 by `pnpm run contrast`.
+   ============================================================ */
+.case-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.3rem;
+  margin-bottom: 1.05rem;
+}
+.case-meta div {
+  display: flex;
+  gap: 0.42rem;
+  align-items: baseline;
+}
+.case-meta .v {
+  font-size: 0.78rem;
+  color: var(--tx2);
+  font-weight: 520;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.3rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--role, var(--or-t));
+}
+.link .bar {
+  width: 22px;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 0.38s var(--ease);
+}
+.link:hover .bar {
+  width: 40px;
+}
+
 /* Reduced motion, declared here because this file is where the transitions
    above are declared. motion.css gates the scroll timelines separately, but
    the theme fade and the button hovers live in base.css and would otherwise

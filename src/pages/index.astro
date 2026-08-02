@@ -1,6 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import AuthorityBand from '../components/AuthorityBand.astro';
 import Cartouche from '../components/Cartouche.astro';
+import CaseCard from '../components/CaseCard.astro';
 import ContactFork from '../components/ContactFork.astro';
 import Hero from '../components/Hero.astro';
 import Offer from '../components/Offer.astro';
@@ -13,6 +15,14 @@ import Base from '../layouts/Base.astro';
 const lang = 'fr' as const;
 const s = t(lang);
 const fr = lang === 'fr';
+const base = fr ? '' : '/en';
+
+// `order` porte le classement, donc rien d'autre n'a à le porter : le cas
+// majeur est celui d'ordre 1, les mineurs sont ceux qui suivent.
+const cases = (await getCollection('cases', (e) => e.id.startsWith('fr/'))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const [major, ...minors] = cases;
 
 const who2 = fr
   ? {
@@ -58,18 +68,33 @@ const who2 = fr
         <span class="n">03</span><h2>{s.cases.heading}</h2>
       </div>
 
-      <!-- Étude de cas SIF : contenu réel en tâche 10, via une collection de
-           contenu. Ce placeholder est volontairement visible, pas un div
-           vide, pour que la page se lise de bout en bout dès cette tâche. -->
-      <div class="case-pending">
-        <p class="mono">{fr ? 'Étude de cas · à venir' : 'Case study · coming soon'}</p>
-        <p>
-          {
-            fr
-              ? 'Le cas SIF, migrer un cadastre national sans arrêter le service, sera détaillé ici avec schéma et chiffres.'
-              : 'The SIF case, migrating a national land registry without stopping the service, will be detailed here with a diagram and figures.'
-          }
-        </p>
+      <CaseCard lang={lang} entry={major} />
+
+      {/* Les deux cas mineurs sont écrits ici, et pas dans un composant : six
+          lignes de balisage, un seul consommateur, et une prop de variante
+          aurait coûté plus que la duplication qu'elle évitait. */}
+      <div class="case-minor">
+        {
+          minors.map((c) => (
+            <article class="cm" style={`--role:var(--${c.data.role}-t);--fill:var(--${c.data.role})`}>
+              <div class="case-meta">
+                <div>
+                  <span class="mono">{c.data.client}</span>
+                  <span class="v">{c.data.period}</span>
+                </div>
+              </div>
+              <h3>{c.data.title}</h3>
+              <p>{c.data.teaser}</p>
+              {/* « Lire » seul donnerait trois liens au même nom sur la page :
+                  le titre du cas complète le nom accessible sans encombrer. */}
+              <a class="link" href={`${base}/cas/${c.id.replace(/^fr\//, '')}/`}>
+                {s.cases.readShort}
+                <span class="sr-only"> : {c.data.title}</span>
+                <i class="bar" />
+              </a>
+            </article>
+          ))
+        }
       </div>
 
       <Thread lang={lang} />
@@ -104,17 +129,41 @@ const who2 = fr
   .who a:hover {
     border-bottom-width: 2px;
   }
-  .case-pending {
-    border: 1px dashed var(--bd2);
-    border-radius: 3px;
-    padding: clamp(1.2rem, 2.6vw, 1.8rem);
-    margin-bottom: clamp(1.6rem, 3.6vw, 2.6rem);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  .case-minor {
+    margin-top: clamp(1.6rem, 3.6vw, 2.6rem);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
-  .case-pending p:last-child {
+  @media (max-width: 780px) {
+    .case-minor {
+      grid-template-columns: 1fr;
+    }
+  }
+  .cm {
+    border-top: 2.5px solid var(--fill);
+    padding: 1.3rem 1.5rem 1.4rem 0;
+  }
+  .cm:last-child {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--bd);
+  }
+  @media (max-width: 780px) {
+    .cm:last-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+  .cm h3 {
+    font-size: 1.05rem;
+    margin: 0.45rem 0 0.5rem;
+  }
+  .cm p {
+    font-size: 0.875rem;
     color: var(--tx2);
-    max-width: 60ch;
+    max-width: 40ch;
+  }
+  .cm .link {
+    margin-top: 0.85rem;
+    font-size: 0.8rem;
   }
 </style>

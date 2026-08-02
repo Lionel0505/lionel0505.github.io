@@ -1,0 +1,20 @@
+---
+import { getCollection, render } from 'astro:content';
+import Case from '../../layouts/Case.astro';
+
+export async function getStaticPaths() {
+  const all = await getCollection('cases', (e) => e.id.startsWith('fr/'));
+  // L'id d'une entrée est déjà sans extension et propre pour une URL :
+  // "fr/sif" -> "sif". La tâche 13 ajoutera /en/cas/[slug] à côté.
+  return all.map((entry) => ({
+    params: { slug: entry.id.replace(/^fr\//, '') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+// `render(entry)`, pas `entry.render()` : la méthode a disparu en Astro 6.
+const { Content } = await render(entry);
+---
+
+<Case lang="fr" entry={entry}><Content /></Case>

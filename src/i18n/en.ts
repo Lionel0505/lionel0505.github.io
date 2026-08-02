@@ -58,7 +58,15 @@ const en: Widen<typeof fr> = {
     languages: 'Languages',
     availability: 'Availability',
   },
-  cases: { heading: 'What I have delivered', read: 'Read the case study', readShort: 'Read' },
+  cases: {
+    heading: 'What I have delivered',
+    read: 'Read the case study',
+    readShort: 'Read',
+    back: 'Back to the work',
+    client: 'Client',
+    period: 'Period',
+    stack: 'Stack',
+  },
   thread: { kicker: 'A thread through all three', heading: 'Taking over what exists' },
   contact: {
     heading: 'How to reach me',

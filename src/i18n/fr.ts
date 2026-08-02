@@ -49,7 +49,15 @@ export default {
     languages: 'Langues',
     availability: 'Disponibilité',
   },
-  cases: { heading: "Ce que j'ai accompli", read: "Lire l'étude de cas", readShort: 'Lire' },
+  cases: {
+    heading: "Ce que j'ai accompli",
+    read: "Lire l'étude de cas",
+    readShort: 'Lire',
+    back: 'Retour aux réalisations',
+    client: 'Client',
+    period: 'Période',
+    stack: 'Stack',
+  },
   thread: { kicker: 'Un fil qui traverse les trois', heading: "Reprendre l'existant" },
   contact: {
     heading: 'Comment me contacter',

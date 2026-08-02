@@ -1,0 +1,128 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { t, type Lang } from '../i18n/utils';
+import CaseDiagram from './CaseDiagram.astro';
+
+// Le cas majeur seulement (order === 1). Les deux cas mineurs font six lignes
+// de balisage et n'ont qu'un seul consommateur : une prop de variante et sa
+// branche coûteraient plus cher que la duplication qu'elles éviteraient, donc
+// ils sont écrits directement dans index.astro.
+const { lang, entry } = Astro.props as { lang: Lang; entry: CollectionEntry<'cases'> };
+const s = t(lang);
+const fr = lang === 'fr';
+const base = fr ? '' : '/en';
+const slug = entry.id.replace(/^(?:fr|en)\//, '');
+const d = entry.data;
+
+// Les chiffres du SIF vivent ici, où le cas leur donne un contexte, et nulle
+// part ailleurs : hors de cette carte ils ne veulent rien dire. Ils ne sont pas
+// dans le frontmatter parce qu'ils ne concernent que ce cas-ci, et que le
+// schéma de la collection ne garde que ce qui vaut pour les trois. Chacun est
+// repris tel quel du contenu de src/content/cases/fr/sif.md.
+const facts = [
+  { v: '9', label: fr ? 'schémas PostgreSQL' : 'PostgreSQL schemas' },
+  { v: '150', label: 'tables · ', em: 'innola' },
+  { v: '100+', label: fr ? 'usagers du portail' : 'portal users' },
+  { v: '11/2024', label: fr ? 'mise en service' : 'go-live' },
+];
+---
+
+<article class="case-major">
+  <div>
+    <div class="case-meta">
+      <div><span class="mono">{s.cases.client}</span><span class="v">{d.client}</span></div>
+      <div><span class="mono">{s.cases.period}</span><span class="v">{d.period}</span></div>
+      <div><span class="mono">{s.cases.stack}</span><span class="v">{d.stack.join(' · ')}</span></div>
+    </div>
+    <h3>{d.title}</h3>
+    <p>{d.teaser}</p>
+    <ul class="facts">
+      {
+        facts.map((f) => (
+          <li>
+            <b>{f.v}</b>
+            <span>
+              {f.label}
+              {f.em && <i>{f.em}</i>}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="link" href={`${base}/cas/${slug}/`}>
+      {s.cases.read}<span class="sr-only"> : {d.title}</span><i class="bar"></i>
+    </a>
+  </div>
+  {/* La colonne n'existe que parce que le SIF a un schéma. CaseDiagram ne rend
+      rien pour les deux autres cas, mais ils ne passent pas par ce composant :
+      aucune carte ne peut donc se retrouver avec une colonne vide. */}
+  <div class="dg-col">
+    <CaseDiagram slug={slug} lang={lang} />
+  </div>
+</article>
+
+<style>
+  .case-major {
+    display: grid;
+    grid-template-columns: 1fr 0.92fr;
+    gap: clamp(1.5rem, 4vw, 3.2rem);
+    align-items: center;
+    border-top: 2.5px solid var(--tx);
+    padding-top: 1.5rem;
+  }
+  @media (max-width: 900px) {
+    .case-major {
+      grid-template-columns: 1fr;
+    }
+  }
+  .case-major h3 {
+    font-size: clamp(1.38rem, 1rem + 1.45vw, 2.1rem);
+    line-height: 1.1;
+  }
+  .case-major p {
+    margin-top: 0.85rem;
+    color: var(--tx2);
+    max-width: 45ch;
+  }
+  @media (min-width: 901px) {
+    .dg-col {
+      position: sticky;
+      top: 96px;
+    }
+  }
+
+  /* Chiffres d'un cas : ils ne valent qu'à côté du cas qui les explique */
+  .facts {
+    list-style: none;
+    margin: 1.3rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.9rem;
+  }
+  .facts li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+  .facts b {
+    font-family: var(--ffd);
+    font-size: 1.32rem;
+    font-weight: 760;
+    letter-spacing: -0.03em;
+    color: var(--or-t);
+    line-height: 1.1;
+  }
+  .facts span {
+    font-family: var(--ffm);
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tx2);
+  }
+  .facts i {
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+</style>
