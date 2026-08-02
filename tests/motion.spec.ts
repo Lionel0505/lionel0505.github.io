@@ -98,3 +98,21 @@ test("à l'impression : tout le contenu reste visible", async ({ page }) => {
   expect(await page.locator('.rv').count()).toBeGreaterThan(5);
   expect(await minOpacity(page)).toBeGreaterThan(0.99);
 });
+
+test('wheel scrolling is damped, not instant', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForTimeout(3500);
+  await page.evaluate(() => {
+    (window as any).__s = [];
+    const f = () => {
+      (window as any).__s.push(Math.round(scrollY));
+      if ((window as any).__s.length < 70) requestAnimationFrame(f);
+    };
+    requestAnimationFrame(f);
+  });
+  await page.mouse.move(700, 450);
+  await page.mouse.wheel(0, 900);
+  await page.waitForTimeout(1200);
+  const frames: number[] = await page.evaluate(() => (window as any).__s);
+  expect(new Set(frames).size).toBeGreaterThan(20); // native scrolling yields 2
+});
