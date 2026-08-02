@@ -16,8 +16,8 @@
        personnalisée est opaque pour ce replieur, donc `animation-timeline`
        reste une déclaration séparée, telle que les navigateurs l'exigent. */
     :root {
-      --tl-view: view();
-      --tl-scroll: scroll(root block);
+      --anim-tl-view: view();
+      --anim-tl-scroll: scroll(root block);
     }
 
     /* La chaîne d'arpenteur devient purement CSS : plus d'écouteur de scroll */
@@ -26,7 +26,7 @@
       transform-origin: left;
       transform: scaleX(0);
       animation: chain linear both;
-      animation-timeline: var(--tl-scroll);
+      animation-timeline: var(--anim-tl-scroll);
     }
     @keyframes chain {
       to {
@@ -37,7 +37,7 @@
     /* Révélations : jouées sur la position de défilement, pas sur un seuil */
     .rv {
       animation: rise linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
       animation-range: entry 6% cover 34%;
     }
     @keyframes rise {
@@ -54,7 +54,7 @@
     /* La planche dérive et pivote imperceptiblement pendant la traversée du hero */
     .plate svg {
       animation: plate linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
       animation-range: cover 0% cover 100%;
     }
     @keyframes plate {
@@ -69,7 +69,7 @@
     /* Bandeau d'autorité : chaque nom monte sur sa propre plage */
     .auth-list > span {
       animation: rise linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
       animation-range: entry 0% cover 40%;
     }
     .auth-list > span:nth-child(2) {
@@ -85,7 +85,7 @@
     /* Titres de section : essuyage au trait, comme un calque qu'on découvre */
     .sec-head h2 {
       animation: wipe linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
       animation-range: entry 10% cover 38%;
     }
     @keyframes wipe {
@@ -102,7 +102,7 @@
     /* Cartouche : les cellules se remplissent de gauche à droite */
     .cell {
       animation: cellIn linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
     }
     .cell:nth-child(1) {
       animation-range: entry 6% cover 26%;
@@ -137,7 +137,7 @@
     .of::before {
       transform: scaleX(0);
       animation: bar linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
       animation-range: entry 18% cover 52%;
       transition: none;
     }
@@ -148,7 +148,7 @@
     }
     .th-items > span {
       animation: rise linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
       animation-range: entry 8% cover 42%;
     }
     .th-items > span:nth-child(2) {
@@ -163,7 +163,7 @@
       stroke-dasharray: 120;
       stroke-dashoffset: 120;
       animation: draw linear both;
-      animation-timeline: var(--tl-view);
+      animation-timeline: var(--anim-tl-view);
       animation-range: entry 15% cover 55%;
     }
     @keyframes draw {
@@ -172,12 +172,13 @@
       }
     }
 
-    /* Deux portes : le filet de rôle pousse au défilement puis reste */
-    .door::before {
-      animation: bar linear both;
-      animation-timeline: var(--tl-view);
-      animation-range: entry 25% cover 65%;
-    }
+    /* .door::before n'entre pas dans ce bloc : sous timeline native, l'origine
+       d'animation qui piloterait son transform l'emporterait sur la règle
+       :hover (ContactFork.astro), seule porteuse du survol depuis que la
+       tâche 9 a retiré l'aplat de fond (contraste, voir ce fichier lignes
+       96-102). Passé le défilement de la section, le survol resterait inerte
+       en Chrome. La section contact porte déjà deux mouvements (.fork via
+       .rv, .sec-head h2 via wipe) : l'interaction prime sur cette fioriture. */
 
     /* En-tête : se compacte légèrement dès qu'on quitte le haut de page.
        body > header, pas header nu : Case.astro imbrique aussi un
@@ -185,7 +186,7 @@
        doit pas prendre cette ombre. */
     body > header {
       animation: shrink linear both;
-      animation-timeline: var(--tl-scroll);
+      animation-timeline: var(--anim-tl-scroll);
       animation-range: 0 160px;
     }
     @keyframes shrink {
@@ -198,7 +199,8 @@
   }
 }
 
-/* ---------- État caché, réservé aux navigateurs qui vont le révéler ----------
+/* ============================================================
+   ÉTAT CACHÉ, réservé aux navigateurs qui vont le révéler
    .js-motion est posée avant le premier rendu par le script bloquant du thème
    (Base.astro), et seulement si prefers-reduced-motion n'est pas "reduce".
    Sans elle, .rv et .stagger restent à l'état de repos visible déclaré par
@@ -206,7 +208,8 @@
    navigateur va le remontrer, que ce soit par la timeline native ci-dessus ou
    par le repli IntersectionObserver de motion.ts. Une seule classe suffit
    pour les deux : sous timeline native, `animation: rise … both` l'emporte
-   sur l'`opacity: 0` déclaré ici, donc `.in` n'a jamais besoin d'être posée. */
+   sur l'`opacity: 0` déclaré ici, donc `.in` n'a jamais besoin d'être posée.
+   ============================================================ */
 .js-motion .rv {
   opacity: 0;
   transform: translateY(16px);

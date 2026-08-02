@@ -1,7 +1,7 @@
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const native = CSS.supports('animation-timeline: view()') && !reduce;
 
-/* ---------- Repli : IntersectionObserver + scroll, pour les navigateurs sans
+/* Repli : IntersectionObserver + scroll, pour les navigateurs sans
    timelines de défilement natives. Si `native` est vrai, motion.css pilote
    tout et ce bloc ne fait rien de plus. */
 if (!native) {
@@ -20,6 +20,18 @@ if (!native) {
 
   const chain = document.querySelector<HTMLElement>('#chain i');
   if (chain) {
+    // transform, pas width : la contrainte globale n'anime que
+    // transform/opacity/clip-path/stroke-dashoffset/box-shadow. sync() posé
+    // hors de l'écouteur et appelé une première fois tout de suite, sinon
+    // une navigation arrière qui restaure un scroll profond laisse la barre
+    // à 0 % jusqu'au premier événement de scroll.
+    chain.style.width = '100%';
+    chain.style.transformOrigin = 'left';
+    const sync = () => {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      chain.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
+    };
+    sync();
     let ticking = false;
     addEventListener(
       'scroll',
@@ -27,8 +39,7 @@ if (!native) {
         if (ticking) return;
         ticking = true;
         requestAnimationFrame(() => {
-          const h = document.documentElement.scrollHeight - innerHeight;
-          chain.style.width = `${h > 0 ? (scrollY / h) * 100 : 0}%`;
+          sync();
           ticking = false;
         });
       },
@@ -37,13 +48,13 @@ if (!native) {
   }
 }
 
-/* ---------- Planche : le contour est déjà posé par Plate.astro (tâche 6) ;
-   ce script ne fait que jouer le tracé puis le coloriage, une fois au
-   chargement. Repris de la maquette de référence, moins splitHeading() (le
-   brief l'interdit : le h1 porte le LCP et est déjà dans #heroB, qui a
-   .stagger) et le mécanisme de rejeu qui ne servait qu'à son panneau de
-   démonstration. Les pages sans planche (les études de cas) laissent ces
-   listes vides : settle()/drawPlate() n'y font rien. */
+/* Planche : le contour est déjà posé par Plate.astro (tâche 6) ; ce script
+   ne fait que jouer le tracé puis le coloriage, une fois au chargement.
+   Repris de la maquette de référence, moins splitHeading() (le brief
+   l'interdit : le h1 porte le LCP et est déjà dans #heroB, qui a .stagger)
+   et le mécanisme de rejeu qui ne servait qu'à son panneau de démonstration.
+   Les pages sans planche (les études de cas) laissent ces listes vides :
+   settle()/drawPlate() n'y font rien. */
 const lines = [...document.querySelectorAll<SVGPathElement>('#lines path')];
 const labels = [...document.querySelectorAll<SVGElement>('[data-lbl]')];
 const parcels = [...document.querySelectorAll<SVGElement>('.parcel')];

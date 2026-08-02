@@ -1,13 +1,37 @@
 import { expect, type Page, test } from '@playwright/test';
 
 // Un seul ratio couvre les deux chemins : natif (scaleX sur une barre à
-// 100 %) comme repli (width en %). getBoundingClientRect intègre la
-// transformation, donc la largeur rendue est la même mesure dans les deux.
+// 100 %) comme repli (transform lui aussi, depuis la correction du filet de
+// layout). getBoundingClientRect intègre la transformation, donc la largeur
+// rendue est la même mesure dans les deux.
 const ratio = (page: Page) =>
   page.locator('#chain i').evaluate((el) => {
     const p = el.parentElement as HTMLElement;
     return el.getBoundingClientRect().width / p.getBoundingClientRect().width;
   });
+
+// toBeVisible() de Playwright ne regarde ni l'opacité ni la transformation :
+// un bloc à opacity:0 le satisfait. Or c'est exactement l'état que cette
+// tâche rend impossible, donc la mesure porte sur l'opacité calculée.
+const minOpacity = (page: Page) =>
+  page
+    .locator('.rv')
+    .evaluateAll((els) => Math.min(...els.map((el) => Number(getComputedStyle(el).opacity))));
+
+// Par paliers, et non d'un saut : un IntersectionObserver ne rapporte que ce
+// qui coupe le viewport à la frame suivante, donc un saut de 0 à 100 %
+// sauterait les blocs traversés au passage. La timeline native, elle, n'a
+// besoin d'aucun de ces paliers pour se tenir à jour ; on les garde quand
+// même ici pour que le même parcours vaille dans les deux moteurs.
+const scrollThrough = async (page: Page) => {
+  for (let i = 0; i <= 10; i++) {
+    await page.evaluate((p) => {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      scrollTo(0, h * p);
+    }, i / 10);
+    await page.waitForTimeout(180);
+  }
+};
 
 test('la chaîne suit la position de défilement', async ({ page }) => {
   await page.goto('/');
@@ -29,10 +53,8 @@ test('mouvement réduit : tout le contenu reste visible', async ({ browser }) =>
   const ctx = await browser.newContext({ reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   await page.goto('/');
-  const rv = page.locator('.rv');
-  // Sans ça la boucle passerait à vide le jour où .rv disparaît du balisage.
-  expect(await rv.count()).toBeGreaterThan(5);
-  for (const el of await rv.all()) await expect(el).toBeVisible();
+  expect(await page.locator('.rv').count()).toBeGreaterThan(5);
+  expect(await minOpacity(page)).toBeGreaterThan(0.99);
   await ctx.close();
 });
 
@@ -40,9 +62,29 @@ test('sans JavaScript : tout le contenu reste visible', async ({ browser }) => {
   const ctx = await browser.newContext({ javaScriptEnabled: false });
   const page = await ctx.newPage();
   await page.goto('/');
+  await expect(page.locator('#heroB > *').first()).toBeVisible();
   const rv = page.locator('.rv');
   expect(await rv.count()).toBeGreaterThan(5);
-  for (const el of await rv.all()) await expect(el).toBeVisible();
-  await expect(page.locator('#heroB > *').first()).toBeVisible();
+  // Sans JavaScript, .js-motion ne se pose jamais (elle vient du script
+  // bloquant) : rien ne dépend d'un script ici. Mais dans un moteur qui gère
+  // animation-timeline (Chrome/Edge), la révélation en bas de page reste
+  // gouvernée par la timeline CSS native, qui n'a besoin d'aucun JavaScript
+  // pour s'appliquer mais a bel et bien besoin d'un défilement réel pour
+  // atteindre son opacité finale : vérifié en isolation avant d'écrire ce
+  // test, `getComputedStyle` y montre `animationName: rise` et `opacity: 0`
+  // sur les blocs sous la ligne de flottaison, page chargée, className vide
+  // sur <html> (aucun script n'a tourné). Ce test défile donc la page avant
+  // de mesurer, exactement le geste d'un vrai visiteur sans JavaScript.
+  await scrollThrough(page);
+  expect(await minOpacity(page)).toBeGreaterThan(0.99);
   await ctx.close();
+});
+
+test('avec JavaScript : toute la page finit révélée', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForTimeout(1200);
+  await scrollThrough(page);
+  await page.waitForTimeout(1200);
+  expect(await page.locator('.rv').count()).toBeGreaterThan(5);
+  expect(await minOpacity(page)).toBeGreaterThan(0.99);
 });
