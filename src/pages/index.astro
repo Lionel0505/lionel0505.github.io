@@ -1,9 +1,116 @@
 ---
+import AuthorityBand from '../components/AuthorityBand.astro';
+import Cartouche from '../components/Cartouche.astro';
+import ContactFork from '../components/ContactFork.astro';
+import Hero from '../components/Hero.astro';
+import Offer from '../components/Offer.astro';
+import Thread from '../components/Thread.astro';
+import Timeline from '../components/Timeline.astro';
+import { t } from '../i18n/utils';
 import Base from '../layouts/Base.astro';
+
+// lang/path are hardcoded French for now; Task 13 makes this locale-aware.
+const lang = 'fr' as const;
+const s = t(lang);
+const fr = lang === 'fr';
+
+const who2 = fr
+  ? {
+      pre: "Ma force n'est pas la technique pure, et je ne la vends pas comme telle. C'est de comprendre ce que le métier demande vraiment, puis les contraintes techniques que ça implique. Je viens seul quand le chantier tient dans une personne. Quand il dépasse, nous sommes trois : ",
+      link: 'NEXTRI',
+      post: ", collectif d'ingénieurs à Antananarivo.",
+    }
+  : {
+      pre: 'My strength is not pure technique, and I do not sell it as such. It is understanding what the business actually needs, then the technical constraints that follow from it. I come alone when the job fits one person. When it does not, we are three: ',
+      link: 'NEXTRI',
+      post: ', a collective of engineers in Antananarivo.',
+    };
 ---
 
 <Base title="Lionel Ratovo" description="Portfolio de Lionel Ratovo." lang="fr" path="/">
-  <main id="main" class="wrap">
-    <h1>Lionel Ratovo</h1>
+  <main id="main">
+    <Hero lang={lang} />
+
+    <section id="qui" class="wrap">
+      <div class="sec-head">
+        <span class="n">01</span><h2>{s.who.heading}</h2>
+      </div>
+      <div class="who">
+        <p>
+          {
+            fr
+              ? "Lionel Ratovo, depuis Antananarivo. Je travaille sur des systèmes qu'on ne peut pas arrêter pour les réparer : un cadastre national en service, des flux de données marketing en production, des applications métier reprises sans documentation."
+              : 'Lionel Ratovo, based in Antananarivo. I work on systems that cannot be stopped to be fixed: a national land registry in service, marketing data pipelines in production, business applications taken over without documentation.'
+          }
+        </p>
+        <p>
+          {who2.pre}<a href="#contact">{who2.link}</a>{who2.post}
+        </p>
+      </div>
+      <Cartouche lang={lang} />
+    </section>
+
+    <Offer lang={lang} />
+    <AuthorityBand lang={lang} />
+
+    <section id="cas" class="wrap">
+      <div class="sec-head">
+        <span class="n">03</span><h2>{s.cases.heading}</h2>
+      </div>
+
+      <!-- Étude de cas SIF : contenu réel en tâche 10, via une collection de
+           contenu. Ce placeholder est volontairement visible, pas un div
+           vide, pour que la page se lise de bout en bout dès cette tâche. -->
+      <div class="case-pending">
+        <p class="mono">{fr ? 'Étude de cas · à venir' : 'Case study · coming soon'}</p>
+        <p>
+          {
+            fr
+              ? 'Le cas SIF, migrer un cadastre national sans arrêter le service, sera détaillé ici avec schéma et chiffres.'
+              : 'The SIF case, migrating a national land registry without stopping the service, will be detailed here with a diagram and figures.'
+          }
+        </p>
+      </div>
+
+      <Thread lang={lang} />
+      <Timeline lang={lang} />
+    </section>
+
+    <ContactFork lang={lang} />
   </main>
 </Base>
+
+<style>
+  .who {
+    max-width: 62ch;
+    margin-bottom: clamp(1.8rem, 3.6vw, 2.8rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+  }
+  .who p {
+    font-size: clamp(0.99rem, 0.95rem + 0.3vw, 1.12rem);
+    color: var(--tx2);
+    line-height: 1.62;
+    max-width: none;
+  }
+  .who a {
+    border-bottom: 1px solid color-mix(in oklab, var(--or) 45%, transparent);
+  }
+  .who a:hover {
+    border-bottom-color: var(--or);
+  }
+  .case-pending {
+    border: 1px dashed var(--bd2);
+    border-radius: 3px;
+    padding: clamp(1.2rem, 2.6vw, 1.8rem);
+    margin-bottom: clamp(1.6rem, 3.6vw, 2.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .case-pending p:last-child {
+    color: var(--tx2);
+    max-width: 60ch;
+  }
+</style>

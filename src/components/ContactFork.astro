@@ -1,0 +1,136 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const fr = lang === 'fr';
+const email = 'lionelratovo@gmail.com';
+
+// Porte « projet » : capacité, jamais référence. NEXTRI n'a livré aucun
+// projet client à ce jour, donc le texte dit « nous sommes trois », pas une
+// liste de réalisations. Global constraint 4 (aucun lien social) s'applique
+// aussi ici : pas de lien externe vers NEXTRI, seulement le même contact
+// direct que la porte « recrutement ».
+---
+
+<div class="invert">
+  <section id="contact" class="wrap">
+    <div class="sec-head">
+      <span class="n">04</span><h2>{s.contact.heading}</h2>
+    </div>
+    <div class="fork">
+      <div class="door" style="--role:var(--or-inv)">
+        <span class="mono">{s.contact.hiring.kicker}</span>
+        <h3>{s.contact.hiring.title}</h3>
+        <p>
+          {
+            fr
+              ? 'Le CV en deux pages, et une réponse sous 24 heures. Remote ou sur site, comme depuis 2021.'
+              : 'A two-page CV, and a reply within 24 hours. Remote or on-site, as I have since 2021.'
+          }
+        </p>
+        <a class="mailto" href={`mailto:${email}`}>{email}</a>
+      </div>
+      <div class="door" style="--role:var(--tl-inv)">
+        <span class="mono">{s.contact.project.kicker}</span>
+        <h3>{s.contact.project.title}</h3>
+        <p>
+          {
+            fr
+              ? "Je peux venir seul. Et si le chantier dépasse une personne, nous sommes trois : NEXTRI, collectif d'ingénieurs à Antananarivo."
+              : 'I can come alone. And if the project outgrows one person, we are three: NEXTRI, a collective of engineers in Antananarivo.'
+          }
+        </p>
+        <a class="mailto" href={`mailto:${email}`}>{email}</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  .invert {
+    background: var(--inv-bg);
+    color: var(--inv-tx);
+  }
+  .invert section {
+    padding-block: clamp(2.8rem, 5.5vw, 4.2rem);
+  }
+  .invert h2 {
+    color: var(--inv-tx);
+  }
+  .invert .sec-head .n {
+    color: var(--or-inv);
+  }
+  .fork {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--inv-bd);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  @media (max-width: 780px) {
+    .fork {
+      grid-template-columns: 1fr;
+    }
+  }
+  .door {
+    padding: clamp(1.5rem, 3.6vw, 2.5rem);
+    position: relative;
+    overflow: hidden;
+  }
+  .door + .door {
+    border-left: 1px solid var(--inv-bd);
+  }
+  @media (max-width: 780px) {
+    .door + .door {
+      border-left: 0;
+      border-top: 1px solid var(--inv-bd);
+    }
+  }
+  /* Hover-only accent, not a scroll reveal: it starts at scaleX(0) and grows
+     on :hover, a real CSS interaction with no JS dependency (same pattern as
+     SiteHeader's nav underline). All door content stays visible regardless.
+     Cette règle porte seule le survol : la maquette de référence éclaircit
+     aussi le fond de la porte (--inv-tx à 5 %), ce qui compose #272d22 en
+     thème clair et fait tomber --or-inv de 4,75:1 à 4,17:1 — sous AA, pour
+     le lien mailto qui est du vrai texte. Le fond ne bouge donc plus. */
+  .door::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: var(--role);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease);
+  }
+  .door:hover::before {
+    transform: scaleX(1);
+  }
+  .door .mono {
+    color: var(--role);
+  }
+  .door h3 {
+    margin: 0.6rem 0 0.55rem;
+    color: var(--inv-tx);
+  }
+  .door p {
+    color: var(--inv-tx2);
+    font-size: 0.895rem;
+    max-width: 33ch;
+  }
+  .door .mailto {
+    display: inline-block;
+    margin-top: 1.05rem;
+    font-family: var(--ffm);
+    font-size: 0.73rem;
+    letter-spacing: 0.04em;
+    color: var(--role);
+    border-bottom: 1px solid color-mix(in oklab, var(--role) 40%, transparent);
+    padding-bottom: 2px;
+    transition: border-color 0.25s var(--ease);
+  }
+  .door .mailto:hover {
+    border-bottom-color: var(--role);
+  }
+</style>
