@@ -94,11 +94,15 @@ const who2 = fr
     line-height: 1.62;
     max-width: none;
   }
+  /* --or-t et --tx2 ont beau différer de teinte, ils sont à 1,01:1 l'un de
+     l'autre en luminance : dans le fil du paragraphe, le lien NEXTRI ne se
+     distingue pas par la couleur. Le soulignement porte donc seul le repère
+     (WCAG G183) et doit être franc, pas un lavis à 45 %. */
   .who a {
-    border-bottom: 1px solid color-mix(in oklab, var(--or) 45%, transparent);
+    border-bottom: 1px solid var(--or-t);
   }
   .who a:hover {
-    border-bottom-color: var(--or);
+    border-bottom-width: 2px;
   }
   .case-pending {
     border: 1px dashed var(--bd2);

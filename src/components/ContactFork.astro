@@ -11,6 +11,12 @@ const email = 'lionelratovo@gmail.com';
 // liste de réalisations. Global constraint 4 (aucun lien social) s'applique
 // aussi ici : pas de lien externe vers NEXTRI, seulement le même contact
 // direct que la porte « recrutement ».
+//
+// La maquette de référence promet « une réponse sous 24 heures » et « le CV
+// en deux pages ». Les deux sont retirées : la première est une question
+// encore ouverte pour Lionel (RETOURS-LIONEL, « Ouvert »), la seconde décrit
+// un PDF que le dépôt ne contient pas. On ne comble pas un silence par
+// déduction, et on n'affirme rien de vérifiable qui soit faux.
 ---
 
 <div class="invert">
@@ -25,8 +31,8 @@ const email = 'lionelratovo@gmail.com';
         <p>
           {
             fr
-              ? 'Le CV en deux pages, et une réponse sous 24 heures. Remote ou sur site, comme depuis 2021.'
-              : 'A two-page CV, and a reply within 24 hours. Remote or on-site, as I have since 2021.'
+              ? 'Remote ou sur site, comme depuis 2021. Écrivez, je réponds.'
+              : 'Remote or on-site, as I have since 2021. Write, and I answer.'
           }
         </p>
         <a class="mailto" href={`mailto:${email}`}>{email}</a>

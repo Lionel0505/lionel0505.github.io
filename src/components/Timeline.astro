@@ -71,7 +71,10 @@ const entries = [
   }
   .tl-list li {
     display: grid;
-    grid-template-columns: 11rem 1fr;
+    /* 12,5rem, pas 11 : « Décembre 2021 – Janvier 2024 » et « Novembre 2021
+       – Décembre 2021 » passaient sur deux lignes. Les dates viennent du CV,
+       elles ne raccourciront pas. */
+    grid-template-columns: 12.5rem 1fr;
     gap: 0.25rem 1.3rem;
     padding: 0.85rem 0;
     border-bottom: 1px solid var(--bd);

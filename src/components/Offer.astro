@@ -122,6 +122,17 @@ const services = [
     height: 2px;
     background: var(--fill);
   }
+  /* `left: 0` vise la boîte de padding : dans la colonne de droite, le texte
+     est décalé de son padding-left et le trait restait collé au filet de
+     séparation, 30 px plus à gauche que le titre qu'il souligne. */
+  .of:nth-child(2n)::before {
+    left: clamp(1.2rem, 2.4vw, 1.9rem);
+  }
+  @media (max-width: 820px) {
+    .of:nth-child(2n)::before {
+      left: 0;
+    }
+  }
   .of .num {
     font-family: var(--ffm);
     font-size: 0.66rem;
