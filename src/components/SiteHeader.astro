@@ -86,11 +86,11 @@ const base = lang === 'fr' ? '' : '/en';
        almost nothing. Contact is the one exception: it's the whole
        conversion path, and making someone scroll four sections to find it
        is the one place hiding a link would actually hurt. LangSwitch stays
-       visible on mobile too, deliberately : it is the only route to the
+       visible on mobile too, deliberately: it is the only route to the
        other language, whereas the three hidden anchors stay reachable by
        scrolling. `#lang-switch` is excluded explicitly here even though the
        component's own scope id already keeps this selector from reaching
-       it (Astro scopes styles per component) : that protection would break
+       it (Astro scopes styles per component): that protection would break
        silently if LangSwitch were ever inlined into this file. */
     nav a:not([href$="#contact"]):not(#lang-switch) {
       display: none;
