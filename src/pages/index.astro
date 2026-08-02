@@ -42,10 +42,10 @@ const who2 = fr
     <Hero lang={lang} />
 
     <section id="qui" class="wrap">
-      <div class="sec-head">
+      <div class="sec-head rv">
         <span class="n">01</span><h2>{s.who.heading}</h2>
       </div>
-      <div class="who">
+      <div class="who rv">
         <p>
           {
             fr
@@ -64,7 +64,7 @@ const who2 = fr
     <AuthorityBand lang={lang} />
 
     <section id="cas" class="wrap">
-      <div class="sec-head">
+      <div class="sec-head rv">
         <span class="n">03</span><h2>{s.cases.heading}</h2>
       </div>
 
@@ -73,7 +73,7 @@ const who2 = fr
       {/* Les deux cas mineurs sont écrits ici, et pas dans un composant : six
           lignes de balisage, un seul consommateur, et une prop de variante
           aurait coûté plus que la duplication qu'elle évitait. */}
-      <div class="case-minor">
+      <div class="case-minor rv">
         {
           minors.map((c) => (
             <article class="cm" style={`--role:var(--${c.data.role}-t);--fill:var(--${c.data.role})`}>

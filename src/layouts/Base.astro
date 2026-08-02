@@ -4,6 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import { t } from '../i18n/utils';
 import '../styles/tokens.css';
 import '../styles/base.css';
+import '../styles/motion.css';
 
 interface Props {
   title: string;
@@ -41,10 +42,14 @@ const s = t(lang);
         var d = document.documentElement;
         d.dataset.theme = stored === "light" || stored === "dark" ? stored : sys;
         d.dataset.themePref = stored || "system";
+        // Posée avant le premier rendu : .rv et .stagger ne se cachent que pour
+        // un navigateur qui va effectivement les révéler (motion.css, tâche 11).
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("js-motion");
       })();
     </script>
   </head>
   <body>
+    <div id="chain"><i></i></div>
     <a class="skip" href="#main">{s.skip}</a>
     <div class="grid-bg"></div>
     <div id="grain"></div>
@@ -53,6 +58,9 @@ const s = t(lang);
     <SiteFooter lang={lang} />
     <script>
       import "../scripts/theme.ts";
+    </script>
+    <script>
+      import "../scripts/motion.ts";
     </script>
   </body>
 </html>
