@@ -1,53 +1,6 @@
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const native = CSS.supports('animation-timeline: view()') && !reduce;
 
-/* Repli : IntersectionObserver + scroll, pour les navigateurs sans
-   timelines de défilement natives. Si `native` est vrai, motion.css pilote
-   tout et ce bloc ne fait rien de plus. */
-if (!native) {
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          io.unobserve(e.target);
-        }
-      }
-    },
-    { threshold: 0.14, rootMargin: '0px 0px -6% 0px' },
-  );
-  for (const el of document.querySelectorAll('.rv')) io.observe(el);
-
-  const chain = document.querySelector<HTMLElement>('#chain i');
-  if (chain) {
-    // transform, pas width : la contrainte globale n'anime que
-    // transform/opacity/clip-path/stroke-dashoffset/box-shadow. sync() posé
-    // hors de l'écouteur et appelé une première fois tout de suite, sinon
-    // une navigation arrière qui restaure un scroll profond laisse la barre
-    // à 0 % jusqu'au premier événement de scroll.
-    chain.style.width = '100%';
-    chain.style.transformOrigin = 'left';
-    const sync = () => {
-      const h = document.documentElement.scrollHeight - innerHeight;
-      chain.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
-    };
-    sync();
-    let ticking = false;
-    addEventListener(
-      'scroll',
-      () => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          sync();
-          ticking = false;
-        });
-      },
-      { passive: true },
-    );
-  }
-}
-
 /* Planche : le contour est déjà posé par Plate.astro (tâche 6) ; ce script
    ne fait que jouer le tracé puis le coloriage, une fois au chargement.
    Repris de la maquette de référence, moins splitHeading() (le brief
@@ -137,4 +90,65 @@ function playHero() {
 // il s'exécute une fois le DOM analysé, ce qui suffit à getTotalLength(). Le
 // h1 porte le LCP et vit dans #heroB : attendre `load` (polices, images)
 // coûterait la métrique pour rien.
+//
+// Appelé aussi avant le repli, et non après. motion.css pose
+// `.js-motion .stagger > * { opacity: 0 }` et cette ligne est le seul chemin
+// qui en sort : contrairement à `.rv`, `.stagger` n'a ni chemin natif dans le
+// bloc `@supports` ni chemin par IntersectionObserver, `.in` ne lui étant
+// posée qu'ici. Placé après le repli, un navigateur qui a `CSS.supports` mais
+// pas `IntersectionObserver`, ou n'importe quelle exception future dans ces
+// lignes, laissait le h1, le chapeau, les lieux et les deux boutons à
+// `opacity: 0` définitivement, sur la page la plus importante du site.
 playHero();
+
+/* Repli : IntersectionObserver + scroll, pour les navigateurs sans
+   timelines de défilement natives. Si `native` est vrai, motion.css pilote
+   tout et ce bloc ne fait rien de plus.
+   Sous `try` : le héros est déjà joué au-dessus, et rien d'ici ne doit
+   pouvoir le reprendre. Ce qui est perdu si ce bloc casse est la révélation
+   progressive et la barre de progression, jamais la lisibilité. */
+try {
+  if (!native) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.14, rootMargin: '0px 0px -6% 0px' },
+    );
+    for (const el of document.querySelectorAll('.rv')) io.observe(el);
+
+    const chain = document.querySelector<HTMLElement>('#chain i');
+    if (chain) {
+      // transform, pas width : la contrainte globale n'anime que
+      // transform/opacity/clip-path/stroke-dashoffset/box-shadow. sync() posé
+      // hors de l'écouteur et appelé une première fois tout de suite, sinon
+      // une navigation arrière qui restaure un scroll profond laisse la barre
+      // à 0 % jusqu'au premier événement de scroll.
+      chain.style.width = '100%';
+      chain.style.transformOrigin = 'left';
+      const sync = () => {
+        const h = document.documentElement.scrollHeight - innerHeight;
+        chain.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
+      };
+      sync();
+      let ticking = false;
+      addEventListener(
+        'scroll',
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            sync();
+            ticking = false;
+          });
+        },
+        { passive: true },
+      );
+    }
+  }
+} catch {}

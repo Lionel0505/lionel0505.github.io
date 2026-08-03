@@ -18,6 +18,16 @@ const minOpacity = (page: Page) =>
     .locator('.rv')
     .evaluateAll((els) => Math.min(...els.map((el) => Number(getComputedStyle(el).opacity))));
 
+// Le héros est mesuré à part : #heroA et #heroB portent `.stagger`, pas `.rv`,
+// donc minOpacity ci-dessus ne les a jamais vus. Or `.stagger > *` est caché
+// par motion.css et n'est révélé que par playHero() dans motion.ts, sans
+// chemin natif ni IntersectionObserver de secours. La seule assertion qui
+// existait sur le héros était un toBeVisible(), qui ne regarde pas l'opacité.
+const minStaggerOpacity = (page: Page) =>
+  page
+    .locator('.stagger > *')
+    .evaluateAll((els) => Math.min(...els.map((el) => Number(getComputedStyle(el).opacity))));
+
 // Par paliers, et non d'un saut : un IntersectionObserver ne rapporte que ce
 // qui coupe le viewport à la frame suivante, donc un saut de 0 à 100 %
 // sauterait les blocs traversés au passage. La timeline native, elle, n'a
@@ -87,6 +97,8 @@ test('avec JavaScript : toute la page finit révélée', async ({ page }) => {
   await page.waitForTimeout(1200);
   expect(await page.locator('.rv').count()).toBeGreaterThan(5);
   expect(await minOpacity(page)).toBeGreaterThan(0.99);
+  expect(await page.locator('.stagger > *').count()).toBeGreaterThan(3);
+  expect(await minStaggerOpacity(page)).toBeGreaterThan(0.99);
 });
 
 test("à l'impression : tout le contenu reste visible", async ({ page }) => {
