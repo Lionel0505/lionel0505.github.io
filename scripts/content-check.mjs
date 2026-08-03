@@ -39,17 +39,35 @@ const FUITES = [
   // Le numéro de téléphone en clair ne doit jamais apparaître dans le HTML
   // construit ; seule sa forme encodée en base64 le peut, SiteFooter.astro la
   // fabriquant au clic.
-  { motif: /34 21 137/, quoi: 'numéro de téléphone en clair' },
+  //
+  // Cherché sur les séparateurs retirés, et non sur la forme espacée seule :
+  // une fuite s'écrirait aussi bien « +261 34 21 137 98 » que
+  // « +261342113798 », « 034 21 137 98 » ou « 34.21.137.98 », et le motif
+  // calé sur une seule de ces formes laissait passer les autres. Relevé :
+  // avant ce changement, une page contenant « +261342113798 » traversait la
+  // porte sans un mot. La suite de neuf chiffres retenue est commune au
+  // format international et au format local, et c'est la même que celle que
+  // mesure tests/flows.spec.ts.
+  //
+  // Seuls les séparateurs sont retirés, pas tous les caractères non
+  // numériques : deux nombres voisins séparés par une lettre ne peuvent donc
+  // pas se recoller en un faux positif, ce qui compte dans du CSS minifié.
+  { motif: /342113798/, quoi: 'numéro de téléphone en clair', sur: 'compact' },
   // Le lien tel: n'est créé qu'en JavaScript au clic : sa présence dans un
   // fichier construit signifierait qu'il a fui au rendu statique.
   { motif: /tel:\+261/, quoi: 'lien tel: rendu statiquement' },
 ];
 
+// Espaces, points, tirets, parenthèses et espace insécable : tout ce qui
+// s'écrit entre les chiffres d'un numéro de téléphone.
+const SEPARATEURS = /[\s.() -]/g;
+
 let fuites = 0;
 for (const f of walk('dist')) {
   const octets = readFileSync(f, 'latin1');
-  for (const { motif, quoi } of FUITES) {
-    if (motif.test(octets)) {
+  const compact = octets.replace(SEPARATEURS, '');
+  for (const { motif, quoi, sur } of FUITES) {
+    if (motif.test(sur === 'compact' ? compact : octets)) {
       console.error(`FAIL fuite   ${rel(f)} : ${quoi} (${motif})`);
       fuites++;
     }

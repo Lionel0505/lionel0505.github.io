@@ -92,7 +92,19 @@ test('sans JavaScript : tout le contenu reste visible', async ({ browser }) => {
 
 test('avec JavaScript : toute la page finit révélée', async ({ page }) => {
   await page.goto('/');
-  await page.waitForTimeout(1200);
+  // On attend que motion.ts ait tourné, et non une durée. `playHero()` est sa
+  // première instruction et pose `.in` sur #heroB : sa présence est donc la
+  // preuve que le module s'est exécuté, IntersectionObserver compris.
+  //
+  // L'attente fixe de 1200 ms qui tenait cette place était un pari, et il se
+  // perdait sous charge parallèle : le module s'exécutait après le parcours
+  // de défilement, l'observateur s'enregistrait alors sur des blocs déjà
+  // dépassés, qui ne réintersectent plus jamais, et le test rougissait avec
+  // une opacité de 0 exactement, jamais une valeur intermédiaire. Relevé en
+  // firefox, une fois sur une suite complète, et irreproductible en
+  // isolation : six parcours identiques hors charge n'ont laissé aucun bloc
+  // sous 0,99.
+  await page.locator('#heroB.in').waitFor();
   await scrollThrough(page);
   await page.waitForTimeout(1200);
   expect(await page.locator('.rv').count()).toBeGreaterThan(5);
