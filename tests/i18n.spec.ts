@@ -30,5 +30,13 @@ test('les pages anglaises servent du contenu anglais', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   // La prose vient de la collection, pas du dictionnaire : c'est elle qui
   // révélerait une entrée française rendue sous une locale anglaise.
-  await expect(page.locator('.prose')).not.toContainText(/\b(?:le|la|les|des|une)\b/i);
+  //
+  // `not.toContainText` est satisfait quand le sélecteur ne trouve rien :
+  // renommer `.prose` dans Case.astro rendrait ce test vert en ne mesurant
+  // plus rien du tout. Les deux assertions positives ancrent donc la négative
+  // sur quelque chose d'existant et de non vide, dans cet ordre.
+  const prose = page.locator('.prose');
+  await expect(prose).toHaveCount(1);
+  await expect(prose).toContainText(/\b(?:the|and|to)\b/i);
+  await expect(prose).not.toContainText(/\b(?:le|la|les|des|une)\b/i);
 });

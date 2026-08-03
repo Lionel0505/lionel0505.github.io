@@ -332,14 +332,22 @@ main > section,
   font-weight: 600;
   color: var(--role, var(--or-t));
 }
+/* scaleX, pas width : `width` est une propriété de disposition et n'est pas
+   dans la liste des propriétés animables du projet. La boîte fait donc les
+   40 px finaux en permanence, et la transformation la ramène à 22 px au repos,
+   exactement la forme que `nav a::after` (SiteHeader) et `.door::before`
+   (ContactFork) emploient déjà. La barre peinte est la même aux deux états ;
+   ce qui disparaît est le reflux de 18 px que le survol provoquait. */
 .case-link .bar {
-  width: 22px;
+  width: 40px;
   height: 1.5px;
   background: currentColor;
-  transition: width 0.38s var(--ease);
+  transform: scaleX(0.55);
+  transform-origin: left;
+  transition: transform 0.38s var(--ease);
 }
 .case-link:hover .bar {
-  width: 40px;
+  transform: scaleX(1);
 }
 
 /* Reduced motion, declared here because this file is where the transitions
