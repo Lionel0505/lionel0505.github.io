@@ -30,6 +30,15 @@ let failed = 0;
    Mêmes motifs que l'étape shell qu'ils remplacent. La lecture se fait en
    latin1 : les octets sont conservés tels quels, donc un fichier binaire est
    fouillé comme le faisait `grep -r`, sans erreur de décodage.
+
+   ANGLE MORT ASSUMÉ : ce garde lit des octets, et le texte d'un PDF est
+   compressé. Il ne voit donc RIEN de ce que contient
+   dist/cv/CV_Lionel_Ratovo.pdf, et son feu vert ne dit strictement rien sur
+   ce fichier. Vérifié le 03/08/2026 : ses vingt flux se décompressent, mais
+   sa police est sous-ensemblée avec un encodage propre, donc même une
+   extraction correcte ne rend pas de texte lisible sans sa table ToUnicode.
+   Ce qu'un PDF déposé dans public/ expose relève d'une relecture humaine,
+   pas de cette porte, et rien ici ne doit laisser croire le contraire.
    ============================================================ */
 const FUITES = [
   // Aucun lien social nulle part sur le site : Lionel n'a ni LinkedIn ni

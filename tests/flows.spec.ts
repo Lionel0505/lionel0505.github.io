@@ -1,15 +1,28 @@
 import { expect, test } from '@playwright/test';
 
-// Le fichier pointé n'existe pas encore : c'est une question ouverte posée
-// à Lionel, pas un oubli. Le test mesure donc ce qui est vrai aujourd'hui,
-// à savoir que le bouton porte l'attribut `download` et vise le bon
-// chemin. Le jour où le PDF arrive, remplace ce corps par un
-// `waitForEvent('download')` et une vérification de l'extension : la
-// panne, si le fichier reste absent, sera alors franche.
-test('le bouton du CV vise le bon fichier et demande un téléchargement', async ({ page }) => {
+// Le PDF est arrivé (03/08/2026), donc ce test ne se contente plus de lire
+// l'attribut : il clique, attend l'événement de téléchargement et vérifie
+// que le fichier reçu est un vrai PDF. Un attribut juste qui pointe vers un
+// 404 passait l'ancienne version sans un mot ; celle-ci tombe franchement.
+test('le bouton du CV télécharge bien un PDF', async ({ page }) => {
   await page.goto('/');
   const cta = page.locator('a[download]');
   await expect(cta).toHaveAttribute('href', '/cv/CV_Lionel_Ratovo.pdf');
+
+  const [dl] = await Promise.all([page.waitForEvent('download'), cta.click()]);
+  expect(dl.suggestedFilename()).toMatch(/\.pdf$/i);
+
+  // Le contenu est relu par le client HTTP de Playwright plutôt que sur le
+  // disque : lire le fichier téléchargé demanderait `node:fs`, donc
+  // `@types/node`, donc une dépendance de plus pour une assertion.
+  //
+  // On vérifie les cinq premiers octets, et non la seule extension : c'est
+  // ce qui distingue un vrai PDF d'une page d'erreur servie sous ce nom. Un
+  // attribut `href` juste qui pointe vers un 404 passait l'ancienne version
+  // de ce test sans un mot.
+  const res = await page.request.get('/cv/CV_Lionel_Ratovo.pdf');
+  expect(res.status()).toBe(200);
+  expect((await res.text()).slice(0, 5)).toBe('%PDF-');
 });
 
 test('le numéro de téléphone se révèle au clic, et jamais avant', async ({ page }) => {
