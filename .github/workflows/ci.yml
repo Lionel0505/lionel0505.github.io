@@ -13,11 +13,13 @@ jobs:
       # esbuild ; si cette étape échoue pour un autre paquet bloqué, ajoute-le
       # là, n'ajoute pas de drapeau ici pour contourner le blocage.
       - run: pnpm install --frozen-lockfile
-      # `pnpm run build` seul, avant d'installer les navigateurs : une
-      # construction cassée doit rougir ici, avec un diagnostic net, plutôt
-      # que d'échouer plus loin dans le démarrage du serveur de Playwright.
-      # `pnpm test` reconstruit déjà via `webServer` (voir playwright.config.ts) :
-      # ce doublon est voulu, ne le retire pas.
+      # La même porte qu'en local : lint, check, build, contrast, plate,
+      # budget. Elle passe avant l'installation des navigateurs, qui coûte
+      # plusieurs minutes : une faute de lint ou un dépassement de budget
+      # doit rougir tout de suite, et non après le téléchargement de deux
+      # moteurs. `pnpm test` reconstruira ensuite le site par le `webServer`
+      # de playwright.config.ts ; cette seconde construction est voulue,
+      # c'est elle qui garantit que les tests mesurent ce qui est expédié.
       - run: pnpm run verify
       - run: pnpm exec playwright install --with-deps chromium firefox
       - run: pnpm test
