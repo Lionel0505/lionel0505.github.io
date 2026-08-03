@@ -5,12 +5,12 @@ const { lang } = Astro.props as { lang: Lang };
 const s = t(lang);
 const fr = lang === 'fr';
 const email = 'lionelratovo@gmail.com';
+const projectEmail = 'nextri.mg@outlook.com';
 
 // Porte « projet » : capacité, jamais référence. NEXTRI n'a livré aucun
 // projet client à ce jour, donc le texte dit « nous sommes trois », pas une
-// liste de réalisations. Global constraint 4 (aucun lien social) s'applique
-// aussi ici : pas de lien externe vers NEXTRI, seulement le même contact
-// direct que la porte « recrutement ».
+// liste de réalisations. La porte s'adresse désormais directement à NEXTRI
+// (projectEmail), distincte du contact recrutement de Lionel.
 //
 // La maquette de référence promet « une réponse sous 24 heures » et « le CV
 // en deux pages ». Les deux sont retirées : la première est une question
@@ -47,7 +47,7 @@ const email = 'lionelratovo@gmail.com';
               : 'I can come alone. And if the project outgrows one person, we are three: NEXTRI, a collective of engineers in Antananarivo.'
           }
         </p>
-        <a class="mailto" href={`mailto:${email}`}>{email}</a>
+        <a class="mailto" href={`mailto:${projectEmail}`}>{projectEmail}</a>
       </div>
     </div>
   </section>
