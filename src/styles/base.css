@@ -256,8 +256,8 @@ a {
 /* ============================================================
    SECTIONS
    Shared scaffolding for the home page's four movements. Two of them live
-   inside a component that owns its whole movement — Offer wraps its section
-   in `.band`, ContactFork in its own scoped `.invert` — and the other two are
+   inside a component that owns its whole movement (Offer wraps its section
+   in `.band`, ContactFork in its own scoped `.invert`), and the other two are
    written directly in the page. `section` and `.sec-head` therefore have four
    users each across three files, which is why they sit here rather than being
    duplicated. `.band` has only one user today; it stays alongside them because
@@ -267,7 +267,7 @@ a {
    fills #cas with a real case study and may well nest a <section> inside it,
    which would otherwise pick up 3 to 6 rem of vertical padding with nothing
    local to explain where it came from. ContactFork is absent from the list on
-   purpose — it already declares its own, tighter padding, and leaving it out
+   purpose: it already declares its own, tighter padding, and leaving it out
    avoids a specificity race with a rule it would only ever override.
    ============================================================ */
 main > section,
@@ -300,8 +300,8 @@ main > section,
    (Case.astro): five users across three files. Scoped styles cannot cross a
    component boundary, so keeping them component-local would mean three copies
    of the same declarations, which is exactly the drift `.sec-head` above is
-   here to avoid. Everything that belongs to one layout only — the two-column
-   grid, the minor-card rules, the diagram — stays in its own component.
+   here to avoid. Everything that belongs to one layout only (the two-column
+   grid, the minor-card rules, the diagram) stays in its own component.
 
    `.case-link` takes its colour from `--role` and falls back to the orange text
    token. Every role token it is ever set to (--or-t, --tl-t, --yw-t, --lv-t)

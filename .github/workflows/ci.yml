@@ -14,7 +14,7 @@ jobs:
       # là, n'ajoute pas de drapeau ici pour contourner le blocage.
       - run: pnpm install --frozen-lockfile
       # La même porte qu'en local : lint, check, build, contrast, plate,
-      # budget. Elle passe avant l'installation des navigateurs, qui coûte
+      # budget, content. Elle passe avant l'installation des navigateurs, qui coûte
       # plusieurs minutes : une faute de lint ou un dépassement de budget
       # doit rougir tout de suite, et non après le téléchargement de deux
       # moteurs. `pnpm test` reconstruira ensuite le site par le `webServer`
@@ -23,15 +23,9 @@ jobs:
       - run: pnpm run verify
       - run: pnpm exec playwright install --with-deps chromium firefox
       - run: pnpm test
-      - name: Aucun lien social, aucune métrique de vanité, aucun numéro en clair
-        shell: bash
-        run: |
-          # linkedin.com et github.com/lionel (ou Lionel) : aucun lien social
-          # nulle part sur le site.
-          # 34 21 137 : le numéro de téléphone en clair ne doit jamais
-          # apparaître dans le HTML construit, seule sa forme encodée en
-          # base64 le peut (SiteFooter.astro la fabrique au clic).
-          # tel:+261 : le lien tel: n'est créé qu'en JavaScript au clic ;
-          # sa présence dans un fichier construit signifierait qu'il a fui
-          # au rendu statique.
-          ! grep -rqiE "linkedin\.com|github\.com/[Ll]ionel|34 21 137|tel:\+261" dist/
+      # L'étape shell qui cherchait les liens sociaux et le numéro en clair
+      # dans dist/ a disparu d'ici : elle est devenue scripts/content-check.mjs,
+      # branchée dans `verify` ci-dessus. Elle ne protégeait pas
+      # .github/workflows/deploy.yml, qui passe `verify` justement pour ne rien
+      # publier qui rate une porte ; une régression aurait donc été publiée
+      # avant que ce fichier ne rougisse.

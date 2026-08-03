@@ -2,7 +2,7 @@
 // Le contour est fixe, les divisions sont calculées : l'aire de chaque parcelle
 // vaut sa durée en mois. La parcelle du SIF grossit donc d'elle-même tant que la
 // mission dure, et corriger une date suffit à redessiner le plan.
-// Exécuté au build uniquement — la page ne reçoit que du SVG.
+// Exécuté au build uniquement : la page ne reçoit que du SVG.
 
 export const HEX = [
   [60, 34],
@@ -115,7 +115,7 @@ export function fitLabel(P, cx, cy, nom, sub) {
   const size = (t) => bw / (t.length * CW);
   // Le plancher à 6,4 px prime sur la largeur : sous ce corps le libellé n'est
   // plus lisible, alors on préfère déborder un peu que rendre illisible. Aucune
-  // parcelle actuelle n'y touche — toutes butent sur le plafond.
+  // parcelle actuelle n'y touche : toutes butent sur le plafond.
   const fs = Math.max(6.4, Math.min(11.5, size(nom)));
   const ss = Math.max(5.2, Math.min(fs * 0.79, size(sub)));
   return { fs, ss, tight: bh < fs * 3.6 }; // trop plat pour deux lignes

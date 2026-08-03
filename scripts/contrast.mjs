@@ -70,7 +70,7 @@ for (const theme of ['light', 'dark']) {
 // La planche cadastrale pose son texte sur l'aplat de chaque parcelle, pas sur
 // --bg : la couleur du rôle composée à son opacité. Sans ce bloc, un aplat plus
 // dense ou une nouvelle mission peut faire tomber le libellé sous 4,5:1 sans
-// que rien ne le signale — c'est exactement ce qui était arrivé.
+// que rien ne le signale, et c'est exactement ce qui était arrivé.
 const compose = (bg, fg, a) =>
   '#' +
   rgb(bg)

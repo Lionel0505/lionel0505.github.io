@@ -12,8 +12,9 @@
     "contrast": "node scripts/contrast.mjs",
     "plate": "node scripts/plate-check.mjs",
     "budget": "node scripts/js-budget.mjs",
+    "content": "node scripts/content-check.mjs",
     "test": "playwright test",
-    "verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate && pnpm run budget"
+    "verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate && pnpm run budget && pnpm run content"
   },
   "packageManager": "pnpm@11.5.2",
   "dependencies": {
