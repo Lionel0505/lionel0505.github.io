@@ -11,8 +11,9 @@
     "format": "biome check --write .",
     "contrast": "node scripts/contrast.mjs",
     "plate": "node scripts/plate-check.mjs",
+    "budget": "node scripts/js-budget.mjs",
     "test": "playwright test",
-    "verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate"
+    "verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate && pnpm run budget"
   },
   "packageManager": "pnpm@11.5.2",
   "dependencies": {

@@ -1,0 +1,35 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      # pnpm 11 bloque par défaut les scripts d'installation des dépendances
+      # et sort à 1 quand il en bloque un. pnpm-workspace.yaml autorise déjà
+      # esbuild ; si cette étape échoue pour un autre paquet bloqué, ajoute-le
+      # là, n'ajoute pas de drapeau ici pour contourner le blocage.
+      - run: pnpm install --frozen-lockfile
+      # `pnpm run build` seul, avant d'installer les navigateurs : une
+      # construction cassée doit rougir ici, avec un diagnostic net, plutôt
+      # que d'échouer plus loin dans le démarrage du serveur de Playwright.
+      # `pnpm test` reconstruit déjà via `webServer` (voir playwright.config.ts) :
+      # ce doublon est voulu, ne le retire pas.
+      - run: pnpm run verify
+      - run: pnpm exec playwright install --with-deps chromium firefox
+      - run: pnpm test
+      - name: Aucun lien social, aucune métrique de vanité, aucun numéro en clair
+        shell: bash
+        run: |
+          # linkedin.com et github.com/lionel (ou Lionel) : aucun lien social
+          # nulle part sur le site.
+          # 34 21 137 : le numéro de téléphone en clair ne doit jamais
+          # apparaître dans le HTML construit, seule sa forme encodée en
+          # base64 le peut (SiteFooter.astro la fabrique au clic).
+          # tel:+261 : le lien tel: n'est créé qu'en JavaScript au clic ;
+          # sa présence dans un fichier construit signifierait qu'il a fui
+          # au rendu statique.
+          ! grep -rqiE "linkedin\.com|github\.com/[Ll]ionel|34 21 137|tel:\+261" dist/
