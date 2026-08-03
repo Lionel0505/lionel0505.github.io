@@ -42,8 +42,15 @@ const en = t('en');
     gap: 0.6rem;
     padding-block: clamp(3rem, 10vw, 6rem);
   }
+  /* Deux corrections au même endroit. La couleur : `--tx3` mesure 2,04:1 sur
+     `--bg` en thème clair, sous les deux seuils AA, et c'est ici du texte
+     servi. La taille : `<h1 class="mono nf-code">` prenait celle de `.mono`
+     (base.css, 0,66 rem, spécificité 0-1-0) et non celle de `h1`
+     (spécificité 0-0-1), donc le titre de la page d'erreur sortait en
+     capitales de 0,66 rem. La taille de `h1` est reprise telle quelle. */
   .nf-code {
-    color: var(--tx3);
+    color: var(--tx2);
+    font-size: clamp(2.1rem, 1.15rem + 3.5vw, 3.85rem);
     margin-bottom: 0.4rem;
   }
 </style>

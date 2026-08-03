@@ -17,6 +17,12 @@
   --bg3: #e6dbc0;
   --tx: #1c2318;
   --tx2: #685f52;
+  /* --tx3 ne porte jamais de texte : mesuré à 2,04:1 sur --bg en thème clair,
+     soit moins de la moitié du seuil AA de 4,5:1, et sous les 3:1 du grand
+     texte. Il reste au jeu pour les traits et les ornements, où aucun seuil de
+     contraste de texte ne s'applique. Pour un gris tertiaire porteur de texte,
+     prendre --tx2. Absent de PAIRS dans scripts/contrast.mjs à dessein : une
+     paire qui échoue exprès dans la porte ne veut rien dire. */
   --tx3: #b0a898;
   --bd: #cfc5a8;
   --bd2: #b8ae90;

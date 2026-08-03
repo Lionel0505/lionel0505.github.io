@@ -25,9 +25,13 @@ const year = new Date().getFullYear();
     gap: 1rem;
     padding-block: 1.5rem;
   }
+  /* `--tx2`, et non `--tx3` : c'est du texte servi. `--tx3` mesure 2,04:1 sur
+     `--bg` en thème clair, sous les deux seuils AA. SiteHeader colore la même
+     chaîne « S. M. » avec `--tx2` (SiteHeader.astro, `.sig i`) ; l'en-tête et
+     le pied rendaient donc le même texte de deux couleurs, dont une illisible. */
   .sig i {
     font-style: normal;
-    color: var(--tx3);
+    color: var(--tx2);
     font-weight: 400;
   }
   .reveal {
