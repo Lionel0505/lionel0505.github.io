@@ -1,0 +1,122 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import CaseDiagram from '../components/CaseDiagram.astro';
+import { t, type Lang } from '../i18n/utils';
+import Base from './Base.astro';
+
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'cases'>;
+}
+
+const { lang, entry } = Astro.props as Props;
+const s = t(lang);
+const base = lang === 'fr' ? '' : '/en';
+const slug = entry.id.replace(/^(?:fr|en)\//, '');
+const d = entry.data;
+// `sourceRefs` est une provenance interne. Elle est lue par la revue, jamais
+// par la page : rien ici ne doit la rendre, aujourd'hui ou plus tard.
+---
+
+<Base title={`${d.title} · Lionel Ratovo`} description={d.teaser}>
+  {/* Base n'enveloppe pas son slot : chaque page pose son propre <main id="main">,
+      et c'est lui que vise le lien d'évitement. */}
+  <main id="main">
+    <article class="case wrap" style={`--role:var(--${d.role}-t);--fill:var(--${d.role})`}>
+      <a class="back" href={`${base}/#cas`}>{s.cases.back}</a>
+      <header class="case-head">
+        <h1>{d.title}</h1>
+        <p class="lead">{d.teaser}</p>
+        <div class="case-meta">
+          <div><span class="mono">{s.cases.client}</span><span class="v">{d.client}</span></div>
+          <div><span class="mono">{s.cases.period}</span><span class="v">{d.period}</span></div>
+          <div>
+            <span class="mono">{s.cases.stack}</span><span class="v">{d.stack.join(' · ')}</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Un bloc dans le flux, pas une colonne : quand CaseDiagram ne rend rien
+          (cas `data` et `web`), la prose remonte d'un cran. Ni trou, ni bordure
+          orpheline, ni colonne vide. L'enveloppe tient sur une seule ligne pour
+          qu'elle soit réellement vide, et donc écartée par `.dg-page:empty` :
+          un simple nœud texte d'indentation laisserait sa marge dans le vide. */}
+      <div class="dg-page"><CaseDiagram slug={slug} lang={lang} /></div>
+
+      <div class="prose"><slot /></div>
+    </article>
+  </main>
+</Base>
+
+<style>
+  /* `main > section` porte le rythme vertical des sections de l'accueil. Cette
+     page n'est pas une section, donc elle déclare son propre rythme plutôt que
+     d'élargir ce sélecteur-là. */
+  .case {
+    padding-block: clamp(2.2rem, 5vw, 3.6rem) clamp(3.2rem, 7.5vw, 6rem);
+  }
+  .back {
+    font-family: var(--ffm);
+    font-size: 0.7rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--tx2);
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    border-bottom: 1px solid transparent;
+  }
+  .back:hover {
+    color: var(--tx);
+    border-bottom-color: var(--tx);
+  }
+  .case-head {
+    margin-top: 0.8rem;
+    border-top: 2.5px solid var(--fill);
+    padding-top: 1.4rem;
+  }
+  .case-head h1 {
+    max-width: 20ch;
+  }
+  .case-head .lead {
+    margin-top: 1rem;
+    max-width: 56ch;
+  }
+  .case-head .case-meta {
+    margin: 1.3rem 0 0;
+  }
+  /* Le schéma tient sa lisibilité de sa taille : plein cadre sur une page de
+     1240 px, les libellés de 6,2 px du SVG deviendraient des banderoles. */
+  .dg-page {
+    margin-top: clamp(1.8rem, 4vw, 2.6rem);
+    max-width: 560px;
+  }
+  .dg-page:empty {
+    display: none;
+  }
+  .prose {
+    margin-top: clamp(1.8rem, 4vw, 2.8rem);
+    max-width: 66ch;
+  }
+  /* Le contenu vient du Markdown rendu par la collection : il n'a pas la classe
+     de portée d'Astro, d'où :global(). */
+  .prose :global(h2) {
+    font-size: clamp(1.02rem, 0.96rem + 0.3vw, 1.18rem);
+    font-family: var(--ffm);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--role);
+    margin: clamp(1.7rem, 3.5vw, 2.4rem) 0 0.7rem;
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose :global(p) {
+    color: var(--tx2);
+    max-width: none;
+  }
+  .prose :global(p + p) {
+    margin-top: 0.85rem;
+  }
+</style>

@@ -1,0 +1,366 @@
+/*
+ * Weight axis only. Nothing in the design uses wdth or opsz.
+ * Each woff2 is Google's standard "latin" subset (the plain CSS2 query,
+ * no text=/subset= override), one file per family, chosen for stability:
+ * it is a fixed named subset, not a snapshot of today's copy, so a future
+ * case study can use any character in it without silently falling back to
+ * a system font. latin-ext was dropped: it does not add any French
+ * character latin already lacks (every French diacritic is in Latin-1
+ * Supplement, and œ/Œ sit at U+0152-0153, inside latin's own range), it
+ * only adds Central/Eastern European letters this site never uses, and it
+ * costs real KB for zero benefit here. unicode-range below is copied
+ * verbatim from Google's response for the latin block: U+0000-00FF,
+ * U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+ * U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+ * U+FEFF, U+FFFD. Verified with fontTools against the full set the design
+ * actually uses: œ à ç é è ê î ô û (and uppercase), & @ · – ’ « » … €.
+ * `→` (U+2192) and `∝` (U+221D) fall outside this range and fall back to
+ * a system font by design ("2024 →", "AIRE ∝ DURÉE"); accepted, not a bug.
+ */
+@font-face {
+  font-family: "Archivo";
+  src: url("/fonts/Archivo.woff2") format("woff2-variations");
+  font-weight: 400 600;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/Bricolage.woff2") format("woff2-variations");
+  font-weight: 700 800;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono.woff2") format("woff2-variations");
+  font-weight: 500 700;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Clears SiteHeader's sticky bar (58px, see SiteHeader.astro's .hdr) for
+     every in-page anchor jump, including the skip link's #main target. */
+  scroll-padding-top: 58px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--tx);
+  font-family: var(--ff);
+  font-size: clamp(0.96rem, 0.93rem + 0.17vw, 1.045rem);
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition:
+    background 0.45s var(--ease),
+    color 0.45s var(--ease);
+}
+
+/* Suppresses the cross-fade smear during a theme switch. */
+.no-tr,
+.no-tr *,
+.no-tr *::before,
+.no-tr *::after {
+  transition: none !important;
+  animation-duration: 0.001ms !important;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--ffd);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.03;
+}
+h1 {
+  font-size: clamp(2.1rem, 1.15rem + 3.5vw, 3.85rem);
+  line-height: 1;
+  letter-spacing: -0.038em;
+  font-weight: 760;
+  text-wrap: balance;
+}
+h2 {
+  font-size: clamp(1.6rem, 1.05rem + 1.9vw, 2.6rem);
+}
+h3 {
+  font-size: clamp(1.08rem, 0.98rem + 0.48vw, 1.32rem);
+  letter-spacing: -0.022em;
+}
+p {
+  margin: 0;
+  max-width: 64ch;
+}
+
+.lead {
+  font-size: clamp(1rem, 0.95rem + 0.42vw, 1.2rem);
+  color: var(--tx2);
+  line-height: 1.52;
+  max-width: 48ch;
+}
+.mono {
+  font-family: var(--ffm);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--tx2);
+}
+a {
+  color: var(--or-t);
+  text-decoration: none;
+}
+.wrap {
+  max-width: var(--max);
+  margin-inline: auto;
+  padding-inline: var(--gut);
+}
+
+.btn {
+  font: inherit;
+  font-size: 0.895rem;
+  font-weight: 560;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.3rem;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  min-height: 44px;
+  transition:
+    background 0.24s var(--ease),
+    border-color 0.24s var(--ease),
+    transform 0.24s var(--ease),
+    box-shadow 0.24s var(--ease);
+}
+.btn-1 {
+  background: var(--or-t);
+  color: var(--bg);
+}
+.btn-1:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px color-mix(in oklab, var(--or) 34%, transparent);
+}
+.btn-2 {
+  background: transparent;
+  color: var(--tx);
+  border-color: var(--bd2);
+}
+.btn-2:hover {
+  border-color: var(--tx);
+  background: color-mix(in oklab, var(--tx) 5%, transparent);
+  transform: translateY(-2px);
+}
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--or-t);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.skip {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+}
+.skip:focus {
+  left: var(--gut);
+  top: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--tx);
+  border-radius: 3px;
+}
+
+#grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9996;
+  mix-blend-mode: var(--grain-mode);
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+/* Fond décoratif, donc derrière le contenu. À `z-index: 0` il était positionné
+   et peignait après le flux des descendants non positionnés : le voile passait
+   au-dessus du texte de toute la page. À -1 il reste au-dessus du fond du
+   canevas, qui vient de `body`, donc il reste visible. Le grain, lui, garde
+   son `z-index: 9996` : le voile au-dessus de l'image est l'effet voulu. */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  color: var(--tx);
+  opacity: 0.045;
+  background:
+    repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 36px),
+    repeating-linear-gradient(to bottom, currentColor 0 1px, transparent 1px 36px);
+  mask-image: radial-gradient(ellipse 130% 70% at 62% 6%, #000 22%, transparent 72%);
+}
+
+/* Chaîne d'arpenteur : progression de lecture. Visible et utile immobile
+   (repli sans JS ou sans timeline), c'est pourquoi elle vit ici plutôt que
+   dans motion.css : le mouvement (tâche 11) ne fait que la piloter. */
+#chain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 60;
+  background: linear-gradient(to right, var(--bd) 0 1px, transparent 1px) repeat-x;
+  background-size: 24px 3px;
+}
+#chain i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--or);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--or) 55%, transparent);
+}
+
+/* ============================================================
+   SECTIONS
+   Shared scaffolding for the home page's four movements. Two of them live
+   inside a component that owns its whole movement (Offer wraps its section
+   in `.band`, ContactFork in its own scoped `.invert`), and the other two are
+   written directly in the page. `section` and `.sec-head` therefore have four
+   users each across three files, which is why they sit here rather than being
+   duplicated. `.band` has only one user today; it stays alongside them because
+   the selector below names it.
+
+   The padding is scoped to those parents, never to `section` bare: task 10
+   fills #cas with a real case study and may well nest a <section> inside it,
+   which would otherwise pick up 3 to 6 rem of vertical padding with nothing
+   local to explain where it came from. ContactFork is absent from the list on
+   purpose: it already declares its own, tighter padding, and leaving it out
+   avoids a specificity race with a rule it would only ever override.
+   ============================================================ */
+main > section,
+.band > section {
+  padding-block: clamp(3.2rem, 7.5vw, 6rem);
+}
+.band {
+  background: var(--bg2);
+  border-block: 1px solid var(--bd);
+}
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.05rem;
+  margin-bottom: clamp(1.7rem, 3.6vw, 2.8rem);
+}
+.sec-head .n {
+  font-family: var(--ffm);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--or-t);
+  padding-top: 0.4rem;
+  flex: none;
+}
+
+/* ============================================================
+   ÉTUDES DE CAS
+   Two primitives shared by the major case card (CaseCard.astro), the two
+   minor cards written inline in index.astro, and the case pages themselves
+   (Case.astro): five users across three files. Scoped styles cannot cross a
+   component boundary, so keeping them component-local would mean three copies
+   of the same declarations, which is exactly the drift `.sec-head` above is
+   here to avoid. Everything that belongs to one layout only (the two-column
+   grid, the minor-card rules, the diagram) stays in its own component.
+
+   `.case-link` takes its colour from `--role` and falls back to the orange text
+   token. Every role token it is ever set to (--or-t, --tl-t, --yw-t, --lv-t)
+   is already checked against --bg, --bg2 and --bg3 by `pnpm run contrast`.
+   ============================================================ */
+.case-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.3rem;
+  margin-bottom: 1.05rem;
+}
+.case-meta div {
+  display: flex;
+  gap: 0.42rem;
+  align-items: baseline;
+}
+.case-meta .v {
+  font-size: 0.78rem;
+  color: var(--tx2);
+  font-weight: 520;
+}
+.case-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.3rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--role, var(--or-t));
+}
+/* scaleX, pas width : `width` est une propriété de disposition et n'est pas
+   dans la liste des propriétés animables du projet. La boîte fait donc les
+   40 px finaux en permanence, et la transformation la ramène à 22 px au repos,
+   exactement la forme que `nav a::after` (SiteHeader) et `.door::before`
+   (ContactFork) emploient déjà. La barre peinte est la même aux deux états ;
+   ce qui disparaît est le reflux de 18 px que le survol provoquait. */
+.case-link .bar {
+  width: 40px;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0.55);
+  transform-origin: left;
+  transition: transform 0.38s var(--ease);
+}
+.case-link:hover .bar {
+  transform: scaleX(1);
+}
+
+/* Reduced motion, declared here because this file is where the transitions
+   above are declared. motion.css gates the scroll timelines separately, but
+   the theme fade and the button hovers live in base.css and would otherwise
+   be governed by nobody. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

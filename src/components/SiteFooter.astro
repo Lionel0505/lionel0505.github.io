@@ -1,0 +1,84 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="ftr wrap">
+    <p class="mono sig">© {year} Ratovo <i>S. M.</i> Lionel</p>
+    <button id="phone-reveal" class="mono reveal" type="button">{s.phone.reveal}</button>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--bd);
+  }
+  .ftr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.5rem;
+  }
+  /* `--tx2`, et non `--tx3` : c'est du texte servi. `--tx3` mesure 2,04:1 sur
+     `--bg` en thème clair, sous les deux seuils AA. SiteHeader colore la même
+     chaîne « S. M. » avec `--tx2` (SiteHeader.astro, `.sig i`) ; l'en-tête et
+     le pied rendaient donc le même texte de deux couleurs, dont une illisible. */
+  .sig i {
+    font-style: normal;
+    color: var(--tx2);
+    font-weight: 400;
+  }
+  .reveal {
+    background: transparent;
+    border: 1px solid var(--bd2);
+    border-radius: 2px;
+    padding: 0.6rem 0.9rem;
+    min-height: 44px;
+    cursor: pointer;
+    transition:
+      border-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .reveal:hover {
+    border-color: var(--tx);
+    color: var(--tx);
+  }
+  /* Created client-side after the reveal click, so it never carries this
+     component's scope attribute: styled with :global instead. */
+  :global(.phone-live) {
+    color: var(--tx);
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('phone-reveal');
+  btn?.addEventListener(
+    'click',
+    () => {
+      // Obfuscation contre les moissonneurs, pas un secret : qui lit la source le
+      // trouve en dix secondes, et c'est très bien. Ce qui compte est qu'aucune
+      // suite de chiffres reconstituable ne parte dans le HTML indexé.
+      const tel = atob('KzI2MSAzNCAyMSAxMzcgOTg=').split(' ');
+      const a = document.createElement('a');
+      a.href = `tel:${tel.join('')}`;
+      a.rel = 'nofollow';
+      a.textContent = `(${tel[0]}) ${tel.slice(1).join(' ')}`;
+      a.className = 'mono phone-live';
+      btn.replaceWith(a);
+      // Le bouton quitte le document : sans ce transfert, le focus retombe sur
+      // <body>, la tabulation suivante repart du haut de la page, et le lien
+      // qui porte le numéro demandé n'est ni atteint ni annoncé. `tabIndex` à
+      // -1 le rend focalisable par script sans l'ajouter à l'ordre de
+      // tabulation, où il figure déjà en tant que lien.
+      a.tabIndex = -1;
+      a.focus();
+    },
+    { once: true },
+  );
+</script>

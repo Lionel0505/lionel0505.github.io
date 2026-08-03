@@ -1,0 +1,272 @@
+/* ============================================================
+   MOUVEMENT LIÉ AU DÉFILEMENT
+   Timelines CSS natives (Chrome/Edge) ; motion.ts prend le relais ailleurs
+   (IntersectionObserver + scroll pour #chain). Tout est neutralisé par
+   prefers-reduced-motion : le bloc ci-dessous ne s'applique que si le
+   visiteur n'a rien demandé de plus calme ET que le navigateur sait faire
+   des timelines de défilement.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Indirection nécessaire : Lightning CSS (via le plugin Vite de Tailwind)
+       replie `animation-timeline` dans le raccourci `animation` à la
+       minification, une syntaxe que Chrome refuse encore d'admettre en un
+       seul bloc (la déclaration entière est alors rejetée, silencieusement :
+       tout .rv restait invisible pour de bon). Passer par une propriété
+       personnalisée est opaque pour ce replieur, donc `animation-timeline`
+       reste une déclaration séparée, telle que les navigateurs l'exigent. */
+    :root {
+      --anim-tl-view: view();
+      --anim-tl-scroll: scroll(root block);
+    }
+
+    /* La chaîne d'arpenteur devient purement CSS : plus d'écouteur de scroll */
+    #chain i {
+      width: 100%;
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: chain linear both;
+      animation-timeline: var(--anim-tl-scroll);
+    }
+    @keyframes chain {
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    /* Révélations : jouées sur la position de défilement, pas sur un seuil */
+    .rv {
+      animation: rise linear both;
+      animation-timeline: var(--anim-tl-view);
+      animation-range: entry 6% cover 34%;
+    }
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* La planche dérive et pivote imperceptiblement pendant la traversée du hero */
+    .plate svg {
+      animation: plate linear both;
+      animation-timeline: var(--anim-tl-view);
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes plate {
+      from {
+        transform: translateY(26px) rotate(-0.7deg) scale(0.985);
+      }
+      to {
+        transform: translateY(-26px) rotate(0.5deg) scale(1.005);
+      }
+    }
+
+    /* Bandeau d'autorité : chaque nom monte sur sa propre plage */
+    .auth-list > span {
+      animation: rise linear both;
+      animation-timeline: var(--anim-tl-view);
+      animation-range: entry 0% cover 40%;
+    }
+    .auth-list > span:nth-child(2) {
+      animation-range: entry 4% cover 46%;
+    }
+    .auth-list > span:nth-child(3) {
+      animation-range: entry 8% cover 52%;
+    }
+    .auth-list > span:nth-child(4) {
+      animation-range: entry 12% cover 58%;
+    }
+
+    /* Titres de section : essuyage au trait, comme un calque qu'on découvre */
+    .sec-head h2 {
+      animation: wipe linear both;
+      animation-timeline: var(--anim-tl-view);
+      animation-range: entry 10% cover 38%;
+    }
+    @keyframes wipe {
+      from {
+        clip-path: inset(0 100% 0 0);
+        opacity: 0.2;
+      }
+      to {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+      }
+    }
+
+    /* Cartouche : les cellules se remplissent de gauche à droite */
+    .cell {
+      animation: cellIn linear both;
+      animation-timeline: var(--anim-tl-view);
+    }
+    .cell:nth-child(1) {
+      animation-range: entry 6% cover 26%;
+    }
+    .cell:nth-child(2) {
+      animation-range: entry 10% cover 30%;
+    }
+    .cell:nth-child(3) {
+      animation-range: entry 14% cover 34%;
+    }
+    .cell:nth-child(4) {
+      animation-range: entry 18% cover 38%;
+    }
+    .cell:nth-child(5) {
+      animation-range: entry 22% cover 42%;
+    }
+    .cell:nth-child(6) {
+      animation-range: entry 26% cover 46%;
+    }
+    @keyframes cellIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Offre : le filet de rôle se trace au défilement */
+    .of::before {
+      transform: scaleX(0);
+      animation: bar linear both;
+      animation-timeline: var(--anim-tl-view);
+      animation-range: entry 18% cover 52%;
+      transition: none;
+    }
+    @keyframes bar {
+      to {
+        transform: scaleX(1);
+      }
+    }
+    .th-items > span {
+      animation: rise linear both;
+      animation-timeline: var(--anim-tl-view);
+      animation-range: entry 8% cover 42%;
+    }
+    .th-items > span:nth-child(2) {
+      animation-range: entry 12% cover 48%;
+    }
+    .th-items > span:nth-child(3) {
+      animation-range: entry 16% cover 54%;
+    }
+
+    /* Schéma du cas : les liaisons se tracent quand le bloc entre dans le champ */
+    .dg-l {
+      stroke-dasharray: 120;
+      stroke-dashoffset: 120;
+      animation: draw linear both;
+      animation-timeline: var(--anim-tl-view);
+      animation-range: entry 15% cover 55%;
+    }
+    @keyframes draw {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    /* .door::before n'entre pas dans ce bloc : sous timeline native, l'origine
+       d'animation qui piloterait son transform l'emporterait sur la règle
+       :hover (ContactFork.astro), seule porteuse du survol depuis que la
+       tâche 9 a retiré l'aplat de fond (contraste, voir ce fichier lignes
+       96-102). Passé le défilement de la section, le survol resterait inerte
+       en Chrome. La section contact porte déjà deux mouvements (.fork via
+       .rv, .sec-head h2 via wipe) : l'interaction prime sur cette fioriture. */
+
+    /* En-tête : se compacte légèrement dès qu'on quitte le haut de page.
+       body > header, pas header nu : Case.astro imbrique aussi un
+       <header class="case-head"> dans <main>, qui n'est pas collant et ne
+       doit pas prendre cette ombre. */
+    body > header {
+      animation: shrink linear both;
+      animation-timeline: var(--anim-tl-scroll);
+      animation-range: 0 160px;
+    }
+    @keyframes shrink {
+      to {
+        box-shadow:
+          0 1px 0 var(--bd),
+          0 10px 26px var(--sh);
+      }
+    }
+  }
+}
+
+/* ============================================================
+   ÉTAT CACHÉ, réservé aux navigateurs qui vont le révéler
+   .js-motion est posée avant le premier rendu par le script bloquant du thème
+   (Base.astro), et seulement si prefers-reduced-motion n'est pas "reduce".
+   Sans elle, .rv et .stagger restent à l'état de repos visible déclaré par
+   chaque composant : rien ici ne cache quoi que ce soit sans garantie qu'un
+   navigateur va le remontrer, que ce soit par la timeline native ci-dessus ou
+   par le repli IntersectionObserver de motion.ts. Une seule classe suffit
+   pour les deux : sous timeline native, `animation: rise … both` l'emporte
+   sur l'`opacity: 0` déclaré ici, donc `.in` n'a jamais besoin d'être posée.
+   ============================================================ */
+.js-motion .rv {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.js-motion .rv.in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.85s var(--ease),
+    transform 0.85s var(--ease);
+}
+.js-motion .stagger > * {
+  opacity: 0;
+  transform: translateY(13px);
+}
+.js-motion .stagger.in > * {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.75s var(--ease),
+    transform 0.75s var(--ease);
+}
+.js-motion .stagger.in > *:nth-child(1) {
+  transition-delay: 0ms;
+}
+.js-motion .stagger.in > *:nth-child(2) {
+  transition-delay: 70ms;
+}
+.js-motion .stagger.in > *:nth-child(3) {
+  transition-delay: 140ms;
+}
+.js-motion .stagger.in > *:nth-child(4) {
+  transition-delay: 210ms;
+}
+.js-motion .stagger.in > *:nth-child(5) {
+  transition-delay: 280ms;
+}
+.js-motion .stagger.in > *:nth-child(6) {
+  transition-delay: 350ms;
+}
+
+/* ============================================================
+   IMPRESSION
+   Une feuille de papier ne défile pas. Ni la timeline native ni
+   l'IntersectionObserver n'atteignent donc jamais leur état final, et
+   `both` retient les blocs sur leur image de départ : mesuré le 02/08/2026
+   sur `dist`, les douze `.rv` sortent à `opacity: 0` sous media print, dans
+   Chromium comme dans Firefox, avec ou sans JavaScript. Un portfolio
+   imprimé rendait le hero puis douze pages blanches.
+   Les tests de `tests/motion.spec.ts` ne le voyaient pas : ils mesurent tous
+   sous media screen.
+   ============================================================ */
+@media print {
+  .rv,
+  .stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

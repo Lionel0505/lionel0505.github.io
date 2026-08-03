@@ -1,0 +1,31 @@
+{
+  "name": "lionel-ratovo-portfolio",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "contrast": "node scripts/contrast.mjs",
+    "plate": "node scripts/plate-check.mjs",
+    "budget": "node scripts/js-budget.mjs",
+    "content": "node scripts/content-check.mjs",
+    "test": "playwright test",
+    "verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate && pnpm run budget && pnpm run content"
+  },
+  "packageManager": "pnpm@11.5.2",
+  "dependencies": {
+    "astro": "^7.1.6"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@biomejs/biome": "^2.5.6",
+    "@playwright/test": "^1.62.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  }
+}

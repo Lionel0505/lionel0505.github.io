@@ -1,0 +1,91 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const fr = lang === 'fr';
+
+// « Reprendre l'existant » n'est pas un quatrième cas : BICI, deux mois, ne
+// porterait pas une étude à lui seul. C'est ce qui traverse les trois cas
+// déjà racontés, ce qui en fait l'affirmation honnête (brief, Step 1b).
+const items = [
+  {
+    role: 'or',
+    label: 'SGFH → SIF',
+    text: fr
+      ? "migrer une application foncière en service, sans l'arrêter"
+      : 'migrating a live land-registry application into a service without stopping it',
+  },
+  {
+    role: 'tl',
+    label: 'Cartier',
+    text: fr
+      ? 'reprendre des flux Salesforce en place, sans les refaire'
+      : 'taking over Salesforce flows already in place, without rebuilding them',
+  },
+  {
+    role: 'lv',
+    label: 'BICI',
+    text: fr
+      ? 'quatre applications sous framework interne, sans documentation'
+      : 'four applications on an internal framework, without documentation',
+  },
+];
+---
+
+<div class="thread rv">
+  <div class="th-head">
+    <span class="mono">{s.thread.kicker}</span>
+    <h3>{s.thread.heading}</h3>
+  </div>
+  <div class="th-items">
+    {
+      items.map((item) => (
+        <span style={`--fill:var(--${item.role})`}>
+          <b>{item.label}</b>
+          {item.text}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .thread {
+    margin-top: clamp(2rem, 4.5vw, 3.2rem);
+    border: 1px solid var(--bd);
+    border-radius: 3px;
+    background: var(--bg2);
+    padding: clamp(1.2rem, 2.6vw, 1.8rem);
+  }
+  .th-head h3 {
+    margin-top: 0.35rem;
+  }
+  .th-items {
+    margin-top: 1.1rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.1rem;
+  }
+  @media (max-width: 780px) {
+    .th-items {
+      grid-template-columns: 1fr;
+    }
+  }
+  .th-items > span {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.845rem;
+    color: var(--tx2);
+    padding-top: 0.7rem;
+    border-top: 2px solid var(--fill);
+  }
+  .th-items b {
+    font-family: var(--ffm);
+    font-size: 0.63rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--tx);
+  }
+</style>

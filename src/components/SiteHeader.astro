@@ -1,0 +1,104 @@
+---
+import { t, type Lang } from '../i18n/utils';
+import LangSwitch from './LangSwitch.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const base = lang === 'fr' ? '' : '/en';
+---
+
+<header>
+  <div class="hdr wrap">
+    <a class="sig" href={`${base}/`}>Ratovo <i>S. M.</i> Lionel</a>
+    <nav aria-label={lang === 'fr' ? 'Navigation principale' : 'Main navigation'}>
+      <a href={`${base}/#qui`}>{s.nav.who}</a>
+      <a href={`${base}/#offre`}>{s.nav.offer}</a>
+      <a href={`${base}/#cas`}>{s.nav.cases}</a>
+      <a href={`${base}/#contact`}>{s.nav.contact}</a>
+      <LangSwitch />
+      <ThemeToggle labelPrefix={s.themeLabel} states={s.themeStates} />
+    </nav>
+  </div>
+</header>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    border-bottom: 1px solid var(--bd);
+    background: var(--mb);
+    backdrop-filter: blur(8px) saturate(1.2);
+  }
+  .hdr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 58px;
+  }
+  .sig {
+    font-family: var(--ffm);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--tx);
+  }
+  .sig i {
+    font-style: normal;
+    color: var(--tx2);
+    font-weight: 400;
+  }
+  nav {
+    display: flex;
+    gap: clamp(0.8rem, 2vw, 1.8rem);
+    align-items: center;
+  }
+  nav a {
+    color: var(--tx2);
+    font-size: 0.845rem;
+    font-weight: 500;
+    position: relative;
+    padding-block: 3px;
+  }
+  nav a::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 1.5px;
+    background: var(--or);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s var(--ease);
+  }
+  nav a:hover {
+    color: var(--tx);
+  }
+  nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  @media (max-width: 800px) {
+    /* Scrolling already serves as the nav for who/offer/cases on this
+       one-page site, so hiding those three anchors costs a mobile visitor
+       almost nothing. Contact is the one exception: it's the whole
+       conversion path, and making someone scroll four sections to find it
+       is the one place hiding a link would actually hurt. LangSwitch stays
+       visible on mobile too, deliberately: it is the only route to the
+       other language, whereas the three hidden anchors stay reachable by
+       scrolling. `#lang-switch` is excluded explicitly here even though the
+       component's own scope id already keeps this selector from reaching
+       it (Astro scopes styles per component): that protection would break
+       silently if LangSwitch were ever inlined into this file. */
+    nav a:not([href$="#contact"]):not(#lang-switch) {
+      display: none;
+    }
+    nav a[href$="#contact"] {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+  }
+</style>

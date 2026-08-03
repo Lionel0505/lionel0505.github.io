@@ -1,0 +1,45 @@
+---
+const { labelPrefix, states } = Astro.props as {
+  labelPrefix: string;
+  states: { system: string; light: string; dark: string };
+};
+---
+
+{/* Un attribut `data-` par état, nommé d'après la valeur de `data-theme-pref`
+    qu'il traduit : theme.ts n'a alors qu'à lire `btn.dataset[pref]`, sans
+    table de correspondance. Même transport que `data-label-prefix`.
+    L'état rendu au serveur est « système », valeur par défaut du sélecteur
+    tant que rien n'est stocké. */}
+<button
+  id="theme-toggle"
+  class="chip"
+  type="button"
+  data-label-prefix={labelPrefix}
+  data-system={states.system}
+  data-light={states.light}
+  data-dark={states.dark}
+  aria-label={`${labelPrefix} ${states.system}`}>⌁</button>
+
+<style>
+  .chip {
+    font-family: var(--ffm);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--bd);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--tx2);
+    cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-grid;
+    place-items: center;
+    transition:
+      border-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .chip:hover {
+    border-color: var(--tx);
+    color: var(--tx);
+  }
+</style>

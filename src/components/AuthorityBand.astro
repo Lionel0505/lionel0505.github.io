@@ -1,0 +1,87 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const fr = lang === 'fr';
+// BICI est volontairement absente : une mission de deux mois ne porte pas
+// l'autorité, et un cinquième nom faible dilue les quatre forts.
+const items = [
+  {
+    kicker: "Côte d'Ivoire",
+    name: fr ? "Ministère de l'Urbanisme" : 'Ministry of Urban Planning',
+  },
+  { kicker: fr ? 'Compte data' : 'Data account', name: 'GlaxoSmithKline' },
+  { kicker: fr ? 'Compte data' : 'Data account', name: 'Cartier' },
+  { kicker: fr ? 'Production web' : 'Web production', name: 'Mercedes-Benz' },
+];
+---
+
+<div class="authority rv">
+  <div class="auth-in">
+    <span class="mono">{s.authority.label}</span>
+    <div class="auth-list">
+      {
+        items.map((item) => (
+          <span>
+            <em>{item.kicker}</em>
+            <b>{item.name}</b>
+          </span>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .authority {
+    border-block: 1px solid var(--bd);
+    background: var(--bg2);
+  }
+  .auth-in {
+    max-width: var(--max);
+    margin-inline: auto;
+    padding: clamp(1.5rem, 3.4vw, 2.4rem) var(--gut);
+  }
+  .auth-in > .mono {
+    display: block;
+    margin-bottom: 1.05rem;
+  }
+  .auth-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1.1rem clamp(1.4rem, 3.4vw, 3rem);
+  }
+  .auth-list > span {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .auth-list b {
+    font-family: var(--ffd);
+    font-weight: 700;
+    letter-spacing: -0.032em;
+    color: var(--tx);
+    font-size: clamp(1.1rem, 0.72rem + 1.42vw, 1.95rem);
+    line-height: 1.05;
+    /* Reference value (.62) measures 4.20:1 on --bg2 in light theme, below
+       WCAG AA. .65 clears it: 4.58:1 light, 6.06:1 dark. */
+    opacity: 0.65;
+    transition:
+      opacity 0.35s var(--ease),
+      color 0.35s var(--ease);
+  }
+  .auth-list > span:hover b {
+    opacity: 1;
+    color: var(--or-t);
+  }
+  .auth-list em {
+    font-style: normal;
+    font-family: var(--ffm);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    color: var(--tx2);
+    text-transform: uppercase;
+  }
+</style>

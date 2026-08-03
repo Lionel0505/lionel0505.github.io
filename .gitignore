@@ -12,3 +12,4 @@ playwright-report/
 # public (GitHub Pages) : ces fichiers ne doivent jamais y entrer.
 .unwanted/
 *.stackdump
+.superpowers/

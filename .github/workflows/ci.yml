@@ -1,0 +1,31 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      # pnpm 11 bloque par défaut les scripts d'installation des dépendances
+      # et sort à 1 quand il en bloque un. pnpm-workspace.yaml autorise déjà
+      # esbuild ; si cette étape échoue pour un autre paquet bloqué, ajoute-le
+      # là, n'ajoute pas de drapeau ici pour contourner le blocage.
+      - run: pnpm install --frozen-lockfile
+      # La même porte qu'en local : lint, check, build, contrast, plate,
+      # budget, content. Elle passe avant l'installation des navigateurs, qui coûte
+      # plusieurs minutes : une faute de lint ou un dépassement de budget
+      # doit rougir tout de suite, et non après le téléchargement de deux
+      # moteurs. `pnpm test` reconstruira ensuite le site par le `webServer`
+      # de playwright.config.ts ; cette seconde construction est voulue,
+      # c'est elle qui garantit que les tests mesurent ce qui est expédié.
+      - run: pnpm run verify
+      - run: pnpm exec playwright install --with-deps chromium firefox
+      - run: pnpm test
+      # L'étape shell qui cherchait les liens sociaux et le numéro en clair
+      # dans dist/ a disparu d'ici : elle est devenue scripts/content-check.mjs,
+      # branchée dans `verify` ci-dessus. Elle ne protégeait pas
+      # .github/workflows/deploy.yml, qui passe `verify` justement pour ne rien
+      # publier qui rate une porte ; une régression aurait donc été publiée
+      # avant que ce fichier ne rougisse.

@@ -1,0 +1,56 @@
+---
+import { t } from '../i18n/utils';
+import Base from '../layouts/Base.astro';
+
+// GitHub Pages sert ce fichier, et lui seul, pour tout chemin inconnu, y
+// compris sous /en/ (relevé du 02/08/2026, correction B) : la page est
+// donc bilingue en elle-même plutôt que traduite par locale, et Astro la
+// rend ici en français (currentLocale indéfini hors réécriture i18n).
+const fr = t('fr');
+const en = t('en');
+---
+
+<Base title={`${fr.notFound.title} · ${en.notFound.title}`} indexable={false}>
+  <main id="main" class="nf">
+    <h1 class="mono nf-code">404</h1>
+    {
+      /* Les deux sorties sont des liens, et toutes deux dans le corps. Le
+         logo de l'en-tête ramène bien vers « / », mais c'est un élément de
+         navigation présent sur toutes les pages : sur celle-ci, la sortie
+         doit être là où le visiteur lit qu'il s'est perdu. Le lien anglais
+         n'existe de toute façon nulle part ailleurs ici, LangSwitch pointant
+         vers /en/404/ et non vers /en/. */
+    }
+    {
+      /* Les deux paragraphes déclarent leur langue, aucun ne l'hérite. Ce
+         fichier est rendu deux fois : en français à la racine, qui est le
+         seul rendu que GitHub Pages sert, et en anglais sous /en/404/ que
+         la réécriture produit au passage. Un paragraphe qui hériterait de
+         <html lang> serait donc juste d'un côté et faux de l'autre. */
+    }
+    <p lang="fr">{fr.notFound.lead} <a href="/">{fr.notFound.home}</a>.</p>
+    <p lang="en">
+      {en.notFound.lead} <a href="/en/">{en.notFound.home}</a>
+    </p>
+  </main>
+</Base>
+
+<style>
+  .nf {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-block: clamp(3rem, 10vw, 6rem);
+  }
+  /* Deux corrections au même endroit. La couleur : `--tx3` mesure 2,04:1 sur
+     `--bg` en thème clair, sous les deux seuils AA, et c'est ici du texte
+     servi. La taille : `<h1 class="mono nf-code">` prenait celle de `.mono`
+     (base.css, 0,66 rem, spécificité 0-1-0) et non celle de `h1`
+     (spécificité 0-0-1), donc le titre de la page d'erreur sortait en
+     capitales de 0,66 rem. La taille de `h1` est reprise telle quelle. */
+  .nf-code {
+    color: var(--tx2);
+    font-size: clamp(2.1rem, 1.15rem + 3.5vw, 3.85rem);
+    margin-bottom: 0.4rem;
+  }
+</style>

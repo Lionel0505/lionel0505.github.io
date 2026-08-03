@@ -1,0 +1,166 @@
+---
+import { t, type Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const s = t(lang);
+const fr = lang === 'fr';
+
+// La règle mécanique du brief (Step 1) : chaque service est prouvé par une
+// mission DIFFÉRENTE. C'est ce qui empêche la page de redevenir un
+// monologue sur le SIF, qui était l'objection [F5] de Lionel sur l'ancienne
+// version « cadrer · construire · livrer », qui décrivait trois fois la même
+// mission.
+const services = [
+  {
+    num: '01',
+    role: 'or',
+    title: fr ? 'API et backend métier' : 'APIs and business backend',
+    body: fr
+      ? "Java, Node.js, C#, PHP. Des règles métier qui vivent dans le système, pas dans la tête de celui qui l'a écrit."
+      : 'Java, Node.js, C#, PHP. Business rules that live in the system, not in the head of whoever wrote them.',
+    proof: fr
+      ? "SIF · chaque écriture passe par un moteur de règles Drools avant d'atteindre la base."
+      : 'SIF: every write passes through a Drools rules engine before it reaches the database.',
+  },
+  {
+    num: '02',
+    role: 'tl',
+    title: fr ? 'Modélisation et optimisation SQL' : 'SQL modelling and optimisation',
+    body: fr
+      ? "PostgreSQL, Oracle, MySQL, SQL Server, MongoDB. Modéliser d'abord, puis faire tenir les requêtes quand le volume arrive."
+      : 'PostgreSQL, Oracle, MySQL, SQL Server, MongoDB. Model first, then make the queries hold once the volume arrives.',
+    proof: fr
+      ? 'GSK · transformation et analyse des données marketing du groupe, requêtes optimisées dont les résultats portent sur des milliers de lignes.'
+      : "GSK: transforming and analysing the group's marketing data, with optimised queries whose results span thousands of rows.",
+  },
+  {
+    num: '03',
+    role: 'lv',
+    title: fr ? "Reprise de l'existant" : 'Taking over legacy systems',
+    body: fr
+      ? "Entrer dans un système qu'on n'a pas écrit, souvent sans documentation, et le faire évoluer sans casser ce qui tourne."
+      : 'Stepping into a system you did not write, often without documentation, and evolving it without breaking what runs.',
+    proof: fr
+      ? 'Cartier · flux Salesforce repris tels quels. BICI · quatre applications sous framework interne.'
+      : 'Cartier: Salesforce flows taken over as they stood. BICI: four applications on an internal framework.',
+  },
+  {
+    num: '04',
+    role: 'yw',
+    title: fr ? 'Conduite technique' : 'Technical project leadership',
+    body: fr
+      ? "Cadrage, chiffrage, estimation, suivi des livrables. L'interface entre ceux qui décident et ceux qui développent."
+      : 'Scoping, costing, estimation, delivery tracking. The interface between those who decide and those who build.',
+    proof: fr
+      ? "Mercedes-Benz · coordination interne de l'équipe de Madagascar, sur une production répartie entre deux pays."
+      : 'Mercedes-Benz: internal coordination of the Madagascar team, on production split across two countries.',
+  },
+];
+---
+
+<div class="band">
+  <section id="offre" class="wrap">
+    <div class="sec-head rv">
+      <span class="n">02</span><h2>{s.offer.heading}</h2>
+    </div>
+    <div class="offer rv">
+      {
+        services.map((svc) => (
+          <article class="of" style={`--role:var(--${svc.role}-t);--fill:var(--${svc.role})`}>
+            <span class="num">{svc.num}</span>
+            <h3>{svc.title}</h3>
+            <p>{svc.body}</p>
+            <p class="proof">
+              <span class="mono">{s.offer.proof}</span>
+              {svc.proof}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</div>
+
+<style>
+  .offer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--bd);
+  }
+  @media (max-width: 820px) {
+    .offer {
+      grid-template-columns: 1fr;
+    }
+  }
+  .of {
+    padding: clamp(1.3rem, 2.6vw, 1.9rem) clamp(1.2rem, 2.4vw, 1.9rem) clamp(1.5rem, 3vw, 2.1rem) 0;
+    border-bottom: 1px solid var(--bd);
+    position: relative;
+  }
+  .of:nth-child(2n) {
+    padding-left: clamp(1.2rem, 2.4vw, 1.9rem);
+    border-left: 1px solid var(--bd);
+  }
+  @media (max-width: 820px) {
+    .of:nth-child(2n) {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+  /* The reference mock-up draws this rule in on scroll: it starts at
+     scaleX(0) and an IntersectionObserver adds the class that reveals it.
+     This build ships no JS to add that class, so the rule would stay
+     invisible forever if that resting state were kept. The resting state
+     here is the only state this build has, so it is drawn already; Task 11
+     may animate *into* it from inside its guarded reveal block. */
+  .of::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 44px;
+    height: 2px;
+    background: var(--fill);
+  }
+  /* `left: 0` vise la boîte de padding : dans la colonne de droite, le texte
+     est décalé de son padding-left et le trait restait collé au filet de
+     séparation, 30 px plus à gauche que le titre qu'il souligne. */
+  .of:nth-child(2n)::before {
+    left: clamp(1.2rem, 2.4vw, 1.9rem);
+  }
+  @media (max-width: 820px) {
+    .of:nth-child(2n)::before {
+      left: 0;
+    }
+  }
+  .of .num {
+    font-family: var(--ffm);
+    font-size: 0.66rem;
+    letter-spacing: 0.11em;
+    color: var(--role);
+    font-weight: 700;
+  }
+  .of h3 {
+    margin: 0.5rem 0 0.55rem;
+  }
+  .of > p {
+    color: var(--tx2);
+    max-width: 44ch;
+    font-size: 0.925rem;
+  }
+  .of .proof {
+    margin-top: 0.9rem;
+    font-size: 0.82rem;
+    color: var(--tx2);
+    max-width: 44ch;
+    padding-left: 0.85rem;
+    border-left: 1px solid color-mix(in oklab, var(--fill) 55%, transparent);
+  }
+  .of .proof .mono {
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.57rem;
+    color: var(--role);
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import type { Lang } from '../../i18n/utils';
+import Case from '../../layouts/Case.astro';
+
+export async function getStaticPaths() {
+  // Les slugs sont identiques dans les deux langues, donc une seule liste
+  // suffit et c'est la française qui la porte. getStaticPaths ne tourne
+  // qu'une fois par module de route : il ne connaît pas la locale et n'a
+  // pas à la connaître.
+  const all = await getCollection('cases', (e) => e.id.startsWith('fr/'));
+  return all.map((entry) => ({ params: { slug: entry.id.replace(/^fr\//, '') } }));
+}
+
+const lang = (Astro.currentLocale ?? 'fr') as Lang;
+const { slug } = Astro.params;
+// L'entrée ne peut pas venir des props : /en/cas/sif/ est une réécriture de
+// /cas/sif/ et reçoit les mêmes props, donc l'entrée française. Relevé le
+// 02/08/2026. Elle se relit donc ici, où la locale est enfin connue.
+const entry = await getEntry('cases', `${lang}/${slug}`);
+// Une traduction manquante doit faire échouer la construction, pas se
+// rabattre en silence sur le français : le rabattement livrerait une page
+// anglaise en français sans que rien ne le signale.
+if (!entry) throw new Error(`Cas manquant : ${lang}/${slug}`);
+const { Content } = await render(entry);
+---
+
+<Case lang={lang} entry={entry}><Content /></Case>

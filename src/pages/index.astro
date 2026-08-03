@@ -1,0 +1,171 @@
+---
+import { getCollection } from 'astro:content';
+import AuthorityBand from '../components/AuthorityBand.astro';
+import Cartouche from '../components/Cartouche.astro';
+import CaseCard from '../components/CaseCard.astro';
+import ContactFork from '../components/ContactFork.astro';
+import Hero from '../components/Hero.astro';
+import Offer from '../components/Offer.astro';
+import Thread from '../components/Thread.astro';
+import Timeline from '../components/Timeline.astro';
+import { t, type Lang } from '../i18n/utils';
+import Base from '../layouts/Base.astro';
+
+const lang = (Astro.currentLocale ?? 'fr') as Lang;
+const s = t(lang);
+const fr = lang === 'fr';
+const base = fr ? '' : '/en';
+
+// `order` porte le classement, donc rien d'autre n'a à le porter : le cas
+// majeur est celui d'ordre 1, les mineurs sont ceux qui suivent.
+const cases = (await getCollection('cases', (e) => e.id.startsWith(`${lang}/`))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const [major, ...minors] = cases;
+
+const who2 = fr
+  ? {
+      pre: "Ma force n'est pas la technique pure, et je ne la vends pas comme telle. C'est de comprendre ce que le métier demande vraiment, puis les contraintes techniques que ça implique. Je viens seul quand le chantier tient dans une personne. Quand il dépasse, nous sommes trois : ",
+      link: 'NEXTRI',
+      post: ", collectif d'ingénieurs à Antananarivo.",
+    }
+  : {
+      pre: 'My strength is not pure technique, and I do not sell it as such. It is understanding what the business actually needs, then the technical constraints that follow from it. I come alone when the job fits one person. When it does not, we are three: ',
+      link: 'NEXTRI',
+      post: ', a collective of engineers in Antananarivo.',
+    };
+---
+
+<Base
+  title="Lionel Ratovo"
+  description={fr ? 'Portfolio de Lionel Ratovo.' : "Lionel Ratovo's portfolio."}
+>
+  <main id="main">
+    <Hero lang={lang} />
+
+    <section id="qui" class="wrap">
+      <div class="sec-head rv">
+        <span class="n">01</span><h2>{s.who.heading}</h2>
+      </div>
+      <div class="who rv">
+        <p>
+          {
+            fr
+              ? "Lionel Ratovo, depuis Antananarivo. Je travaille sur des systèmes qu'on ne peut pas arrêter pour les réparer : un cadastre national en service, des flux de données marketing en production, des applications métier reprises sans documentation."
+              : 'Lionel Ratovo, based in Antananarivo. I work on systems that cannot be stopped to be fixed: a national land registry in service, marketing data pipelines in production, business applications taken over without documentation.'
+          }
+        </p>
+        <p>
+          {who2.pre}<a href="#contact">{who2.link}</a>{who2.post}
+        </p>
+      </div>
+      <Cartouche lang={lang} />
+    </section>
+
+    <Offer lang={lang} />
+    <AuthorityBand lang={lang} />
+
+    <section id="cas" class="wrap">
+      <div class="sec-head rv">
+        <span class="n">03</span><h2>{s.cases.heading}</h2>
+      </div>
+
+      <CaseCard lang={lang} entry={major} />
+
+      {/* Les deux cas mineurs sont écrits ici, et pas dans un composant : six
+          lignes de balisage, un seul consommateur, et une prop de variante
+          aurait coûté plus que la duplication qu'elle évitait. */}
+      <div class="case-minor rv">
+        {
+          minors.map((c) => (
+            <article class="cm" style={`--role:var(--${c.data.role}-t);--fill:var(--${c.data.role})`}>
+              <div class="case-meta">
+                <div>
+                  <span class="mono">{c.data.client}</span>
+                  <span class="v">{c.data.period}</span>
+                </div>
+              </div>
+              <h3>{c.data.title}</h3>
+              <p>{c.data.teaser}</p>
+              {/* « Lire » seul donnerait trois liens au même nom sur la page :
+                  le titre du cas complète le nom accessible sans encombrer. */}
+              <a class="case-link" href={`${base}/cas/${c.id.replace(/^(?:fr|en)\//, '')}/`}>
+                {s.cases.readShort}
+                <span class="sr-only"> : {c.data.title}</span>
+                <i class="bar" />
+              </a>
+            </article>
+          ))
+        }
+      </div>
+
+      <Thread lang={lang} />
+      <Timeline lang={lang} />
+    </section>
+
+    <ContactFork lang={lang} />
+  </main>
+</Base>
+
+<style>
+  .who {
+    max-width: 62ch;
+    margin-bottom: clamp(1.8rem, 3.6vw, 2.8rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+  }
+  .who p {
+    font-size: clamp(0.99rem, 0.95rem + 0.3vw, 1.12rem);
+    color: var(--tx2);
+    line-height: 1.62;
+    max-width: none;
+  }
+  /* --or-t et --tx2 ont beau différer de teinte, ils sont à 1,01:1 l'un de
+     l'autre en luminance : dans le fil du paragraphe, le lien NEXTRI ne se
+     distingue pas par la couleur. Le soulignement porte donc seul le repère
+     (WCAG G183) et doit être franc, pas un lavis à 45 %. */
+  .who a {
+    border-bottom: 1px solid var(--or-t);
+  }
+  .who a:hover {
+    border-bottom-width: 2px;
+  }
+  .case-minor {
+    margin-top: clamp(1.6rem, 3.6vw, 2.6rem);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 780px) {
+    .case-minor {
+      grid-template-columns: 1fr;
+    }
+  }
+  .cm {
+    border-top: 2.5px solid var(--fill);
+    padding: 1.3rem 1.5rem 1.4rem 0;
+  }
+  .cm:last-child {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--bd);
+  }
+  @media (max-width: 780px) {
+    .cm:last-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+  .cm h3 {
+    font-size: 1.05rem;
+    margin: 0.45rem 0 0.5rem;
+  }
+  .cm p {
+    font-size: 0.875rem;
+    color: var(--tx2);
+    max-width: 40ch;
+  }
+  .cm .case-link {
+    margin-top: 0.85rem;
+    font-size: 0.8rem;
+  }
+</style>

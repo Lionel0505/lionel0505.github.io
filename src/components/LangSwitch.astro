@@ -1,0 +1,51 @@
+---
+import { bothPaths, t, type Lang } from '../i18n/utils';
+
+const lang = (Astro.currentLocale ?? 'fr') as Lang;
+const s = t(lang);
+
+const { frPath, enPath } = bothPaths(Astro.url.pathname);
+const target = lang === 'fr' ? enPath : frPath;
+const targetLang: Lang = lang === 'fr' ? 'en' : 'fr';
+---
+
+{
+  /* Un <a>, pas un bouton : les huit pages sont statiques, un lien ne coûte
+     rien au budget JS. hreflang reste sur l'<a> : HTML ne l'autorise que sur
+     a/area/link, et `astro check` le refuse sur un <span> (HTMLAttributes).
+     `lang`, lui, ne peut PAS rester sur l'<a> (WCAG 3.1.2) : l'<a> enveloppe
+     aussi le .sr-only, écrit dans la locale COURANTE (s.langSwitch, depuis
+     t(lang)). Un `lang` posé sur l'<a> déclarerait donc cette phrase
+     française comme anglaise sur la page française, et un lecteur d'écran la
+     prononcerait avec une phonétique anglaise. `lang` est donc posé sur un
+     <span> qui n'enveloppe que le code visible ("EN"/"FR"), la seule partie
+     réellement dans la langue de destination. Le nom accessible complet vient
+     du dictionnaire de la locale courante, qui décrit correctement la
+     destination puisqu'il n'y a que deux locales. */
+}
+<a id="lang-switch" class="lang-switch" href={target} hreflang={targetLang}>
+  <span lang={targetLang}>{targetLang.toUpperCase()}</span>
+  <span class="sr-only"> · {s.langSwitch}</span>
+</a>
+
+<style>
+  .lang-switch {
+    font-family: var(--ffm);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--bd);
+    border-radius: 2px;
+    color: var(--tx2);
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-grid;
+    place-items: center;
+    transition:
+      border-color 0.25s var(--ease),
+      color 0.25s var(--ease);
+  }
+  .lang-switch:hover {
+    border-color: var(--tx);
+    color: var(--tx);
+  }
+</style>

@@ -1,0 +1,108 @@
+---
+import type { Lang } from '../i18n/utils';
+
+const { lang } = Astro.props as { lang: Lang };
+const fr = lang === 'fr';
+
+// Faits verbatim du brief (Step 2), lui-même tracé sur
+// CV_Lionel_Ratovo_MASTER.md : rôle, employeur, lieu, dates. Rien n'est
+// déduit ici ; ce fichier ne fait que présenter la table.
+const entries = [
+  {
+    role: fr ? 'Développeur & Appui technique' : 'Developer & Technical Support',
+    employer: fr ? 'Consultant IGN FI' : 'Consultant, IGN FI',
+    place: "Abidjan, Côte d'Ivoire",
+    dates: fr ? 'Janvier 2024 – Présent' : 'January 2024 – Present',
+  },
+  {
+    role: fr ? 'Data Engineer, puis Webmaster' : 'Data Engineer, then Webmaster',
+    employer: fr ? 'Consultant RAPP IO Mauritius' : 'Consultant, RAPP IO Mauritius',
+    place: fr ? 'Madagascar & Maurice' : 'Madagascar & Mauritius',
+    dates: fr ? 'Décembre 2021 – Janvier 2024' : 'December 2021 – January 2024',
+  },
+  {
+    role: fr ? 'Développeur applicatif' : 'Application Developer',
+    employer: fr ? 'Consultant BICI' : 'Consultant, BICI',
+    place: 'Antananarivo',
+    dates: fr ? 'Novembre 2021 – Décembre 2021' : 'November 2021 – December 2021',
+  },
+  {
+    role: fr
+      ? 'Master MIAGE MBDS · Licence informatique'
+      : "Master's MIAGE MBDS · Bachelor's in Computer Science",
+    employer: "Université Côte d'Azur & IT University",
+    place: 'Antananarivo',
+    dates: '2022–2023 · 2019–2021',
+  },
+];
+---
+
+<div class="timeline">
+  <p class="mono tl-kicker">{fr ? 'Parcours' : 'Career path'}</p>
+  <ol class="tl-list">
+    {
+      entries.map((e) => (
+        <li>
+          <span class="tl-dates mono">{e.dates}</span>
+          <div class="tl-body">
+            <span class="tl-role">{e.role}</span>
+            <span class="tl-where">
+              {e.employer} · {e.place}
+            </span>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style>
+  .timeline {
+    margin-top: clamp(2rem, 4.5vw, 3.2rem);
+  }
+  .tl-kicker {
+    margin-bottom: 0.9rem;
+  }
+  .tl-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--bd);
+  }
+  .tl-list li {
+    display: grid;
+    /* 12,5rem, pas 11 : « Décembre 2021 – Janvier 2024 » et « Novembre 2021
+       – Décembre 2021 » passaient sur deux lignes. Les dates viennent du CV,
+       elles ne raccourciront pas. */
+    grid-template-columns: 12.5rem 1fr;
+    gap: 0.25rem 1.3rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--bd);
+  }
+  @media (max-width: 620px) {
+    .tl-list li {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+  }
+  .tl-dates {
+    color: var(--tx2);
+    padding-top: 0.15rem;
+  }
+  .tl-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .tl-role {
+    font-family: var(--ffd);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--tx);
+    font-size: 0.98rem;
+  }
+  .tl-where {
+    color: var(--tx2);
+    font-size: 0.85rem;
+  }
+</style>

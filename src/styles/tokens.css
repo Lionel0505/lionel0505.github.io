@@ -1,0 +1,76 @@
+:root {
+  --ff: "Archivo", system-ui, sans-serif;
+  --ffd: "Bricolage Grotesque", "Archivo", sans-serif;
+  --ffm: "JetBrains Mono", ui-monospace, monospace;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --gut: clamp(1.15rem, 4vw, 3.5rem);
+  --max: 1240px;
+}
+
+/* Two accent sets per theme:
+   --or   graphic colour (fills, strokes, washes). NEXTRI identity, untouched.
+   --or-t text colour, darkened until it clears 4.5:1 on the worst surface. */
+[data-theme="light"] {
+  --bg: #f4eee0;
+  --bg2: #ede4cc;
+  --bg3: #e6dbc0;
+  --tx: #1c2318;
+  --tx2: #685f52;
+  /* --tx3 ne porte jamais de texte : mesuré à 2,04:1 sur --bg en thème clair,
+     soit moins de la moitié du seuil AA de 4,5:1, et sous les 3:1 du grand
+     texte. Il reste au jeu pour les traits et les ornements, où aucun seuil de
+     contraste de texte ne s'applique. Pour un gris tertiaire porteur de texte,
+     prendre --tx2. Absent de PAIRS dans scripts/contrast.mjs à dessein : une
+     paire qui échoue exprès dans la porte ne veut rien dire. */
+  --tx3: #b0a898;
+  --bd: #cfc5a8;
+  --bd2: #b8ae90;
+  --sh: rgba(28, 35, 24, 0.1);
+  --or: #c84e0a;
+  --tl: #1a9e93;
+  --yw: #d4a800;
+  --lv: #7b6ec8;
+  --or-t: #a64108;
+  --tl-t: #116a62;
+  --yw-t: #775e00;
+  --lv-t: #61579e;
+  --or-inv: #e8621a;
+  --tl-inv: #2bbfb3;
+  --mb: rgba(244, 238, 224, 0.9);
+  --inv-bg: #1c2318;
+  --inv-tx: #f4eee0;
+  --inv-tx2: #9e9880;
+  --inv-bd: #3a4736;
+  --grain: 0.05;
+  --grain-mode: multiply;
+}
+
+[data-theme="dark"] {
+  --bg: #1c2318;
+  --bg2: #252e21;
+  --bg3: #181e14;
+  --tx: #f4eee0;
+  --tx2: #9e9880;
+  --tx3: #96918a;
+  --bd: #3a4736;
+  --bd2: #4d5f49;
+  --sh: rgba(0, 0, 0, 0.5);
+  --or: #e8621a;
+  --tl: #2bbfb3;
+  --yw: #f5c842;
+  --lv: #9b8fd9;
+  --or-t: #ea6e2b;
+  --tl-t: #2bbfb3;
+  --yw-t: #f5c842;
+  --lv-t: #9b8fd9;
+  --or-inv: #a64108;
+  --tl-inv: #126d65;
+  --mb: rgba(20, 27, 17, 0.9);
+  --inv-bg: #f4eee0;
+  --inv-tx: #1c2318;
+  --inv-tx2: #685f52;
+  --inv-bd: #cfc5a8;
+  --grain: 0.055;
+  --grain-mode: overlay;
+}
