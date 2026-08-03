@@ -83,7 +83,6 @@ function playHero() {
     const el = document.querySelector(sel);
     if (el) setTimeout(() => el.classList.add('in'), 70 + i * 100);
   });
-  drawPlate();
 }
 
 // Appelé directement, pas sur `load` : le script est un module différé, donc
@@ -100,6 +99,17 @@ function playHero() {
 // lignes, laissait le h1, le chapeau, les lieux et les deux boutons à
 // `opacity: 0` définitivement, sur la page la plus importante du site.
 playHero();
+
+// La planche est isolée, et ne fait plus partie de playHero(). Elle touche
+// du SVG et appelle getTotalLength() : c'est la seule chose ici qui puisse
+// jeter sur une page mal formée. Laissée dans playHero(), sa chute
+// emportait le module avant le repli ci-dessous, donc laissait tous les
+// `.rv` à opacity:0 dans un moteur sans timelines natives, c'est-à-dire
+// firefox. Le héros est déjà joué au-dessus ; ce qui se perd ici, si cela
+// se perd, est le tracé animé de la planche, et rien d'autre.
+try {
+  drawPlate();
+} catch {}
 
 /* Repli : IntersectionObserver + scroll, pour les navigateurs sans
    timelines de défilement natives. Si `native` est vrai, motion.css pilote
