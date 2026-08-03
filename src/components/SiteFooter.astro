@@ -71,6 +71,13 @@ const year = new Date().getFullYear();
       a.textContent = `(${tel[0]}) ${tel.slice(1).join(' ')}`;
       a.className = 'mono phone-live';
       btn.replaceWith(a);
+      // Le bouton quitte le document : sans ce transfert, le focus retombe sur
+      // <body>, la tabulation suivante repart du haut de la page, et le lien
+      // qui porte le numéro demandé n'est ni atteint ni annoncé. `tabIndex` à
+      // -1 le rend focalisable par script sans l'ajouter à l'ordre de
+      // tabulation, où il figure déjà en tant que lien.
+      a.tabIndex = -1;
+      a.focus();
     },
     { once: true },
   );

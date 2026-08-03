@@ -31,3 +31,19 @@ test('le numéro de téléphone se révèle au clic, et jamais avant', async ({ 
   await page.click('#phone-reveal');
   await expect(page.locator('.phone-live')).toHaveAttribute('href', /^tel:\+261/);
 });
+
+// Le bouton quitte le document au clic. Sans transfert explicite, le focus
+// retombe sur <body> : un visiteur au clavier qui tabule jusqu'à « Afficher le
+// numéro » et appuie sur Entrée voit sa tabulation suivante repartir du haut de
+// la page, et le lien qu'il vient de demander n'est ni atteint ni annoncé.
+// Sans ce test, le défaut revient à la première réécriture du composant.
+test('la révélation du numéro pose le focus sur le lien créé', async ({ page }) => {
+  await page.goto('/');
+  await page.click('#phone-reveal');
+  const actif = await page.evaluate(() => ({
+    balise: document.activeElement?.tagName,
+    classes: document.activeElement?.className,
+  }));
+  expect(actif.balise).toBe('A');
+  expect(actif.classes).toContain('phone-live');
+});
