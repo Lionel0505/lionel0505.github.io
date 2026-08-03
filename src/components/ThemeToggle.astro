@@ -1,8 +1,24 @@
 ---
-const { labelPrefix } = Astro.props as { labelPrefix: string };
+const { labelPrefix, states } = Astro.props as {
+  labelPrefix: string;
+  states: { system: string; light: string; dark: string };
+};
 ---
 
-<button id="theme-toggle" class="chip" type="button" data-label-prefix={labelPrefix} aria-label={labelPrefix}>⌁</button>
+{/* Un attribut `data-` par état, nommé d'après la valeur de `data-theme-pref`
+    qu'il traduit : theme.ts n'a alors qu'à lire `btn.dataset[pref]`, sans
+    table de correspondance. Même transport que `data-label-prefix`.
+    L'état rendu au serveur est « système », valeur par défaut du sélecteur
+    tant que rien n'est stocké. */}
+<button
+  id="theme-toggle"
+  class="chip"
+  type="button"
+  data-label-prefix={labelPrefix}
+  data-system={states.system}
+  data-light={states.light}
+  data-dark={states.dark}
+  aria-label={`${labelPrefix} ${states.system}`}>⌁</button>
 
 <style>
   .chip {

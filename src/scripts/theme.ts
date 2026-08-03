@@ -23,7 +23,11 @@ function label() {
   if (!btn) return;
   const pref = (root.dataset.themePref ?? 'system') as Pref;
   btn.textContent = pref === 'light' ? '☀' : pref === 'dark' ? '☾' : '⌁';
-  btn.setAttribute('aria-label', `${btn.dataset.labelPrefix} ${pref}`);
+  // `btn.dataset[pref]`, et non `pref` : la valeur brute vaut « system »,
+  // « light » ou « dark », et un lecteur d'écran annonçait « Thème system »
+  // sur les pages françaises. ThemeToggle pose un attribut `data-` par état,
+  // nommé d'après la valeur qu'il traduit.
+  btn.setAttribute('aria-label', `${btn.dataset.labelPrefix} ${btn.dataset[pref]}`);
 }
 
 document

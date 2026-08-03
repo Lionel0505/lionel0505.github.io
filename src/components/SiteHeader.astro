@@ -17,7 +17,7 @@ const base = lang === 'fr' ? '' : '/en';
       <a href={`${base}/#cas`}>{s.nav.cases}</a>
       <a href={`${base}/#contact`}>{s.nav.contact}</a>
       <LangSwitch />
-      <ThemeToggle labelPrefix={s.themeLabel} />
+      <ThemeToggle labelPrefix={s.themeLabel} states={s.themeStates} />
     </nav>
   </div>
 </header>

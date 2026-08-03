@@ -14,6 +14,7 @@ const en: Widen<typeof fr> = {
   nav: { who: 'Who I am', offer: 'What I offer', cases: 'Work', contact: 'Contact' },
   skip: 'Skip to content',
   themeLabel: 'Theme',
+  themeStates: { system: 'system', light: 'light', dark: 'dark' },
   langSwitch: 'French version',
   status: 'Open to opportunities',
   hero: {

@@ -2,6 +2,12 @@ export default {
   nav: { who: 'Qui je suis', offer: "Ce que j'offre", cases: 'Réalisations', contact: 'Contact' },
   skip: 'Aller au contenu',
   themeLabel: 'Thème',
+  // Les trois états du sélecteur, annoncés à la suite de `themeLabel` :
+  // « Thème système », « Thème clair », « Thème sombre ». Sans eux, theme.ts
+  // concaténait la valeur brute de `data-theme-pref` et un lecteur d'écran
+  // français annonçait « Thème system ». Le contenu visible du bouton étant
+  // un glyphe, ce nom est le seul retour d'état qu'il donne.
+  themeStates: { system: 'système', light: 'clair', dark: 'sombre' },
   langSwitch: 'Version anglaise',
   status: 'Ouvert aux opportunités',
   hero: {
