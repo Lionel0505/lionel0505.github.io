@@ -14,7 +14,8 @@
     "budget": "node scripts/js-budget.mjs",
     "content": "node scripts/content-check.mjs",
     "test": "playwright test",
-    "verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate && pnpm run budget && pnpm run content"
+    "verify": "pnpm run lint && pnpm run check && pnpm run build && pnpm run contrast && pnpm run plate && pnpm run budget && pnpm run content",
+    "icons": "node scripts/icons.mjs"
   },
   "packageManager": "pnpm@11.5.2",
   "dependencies": {

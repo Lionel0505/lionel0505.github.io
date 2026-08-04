@@ -59,6 +59,13 @@ const person = {
          (security.csp dans astro.config.mjs). -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>{title}</title>
+    <!-- Rendues par scripts/icons.mjs ; ne pas les retoucher à la main. Le
+         .ico d'abord, pour les navigateurs qui ne lisent que lui. -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {description && <meta name="description" content={description} />}
     {
       indexable ? (

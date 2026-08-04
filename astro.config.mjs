@@ -26,8 +26,8 @@ export default defineConfig({
   // GitHub Pages ne sait pas émettre d'en-tête HTTP : la seule politique de
   // sécurité que ce site peut poser est celle qu'Astro écrit dans un
   // `<meta http-equiv="content-security-policy">` de chaque page. Les
-  // directives qui n'existent qu'en en-tête — `frame-ancestors`,
-  // `X-Frame-Options`, `X-Content-Type-Options`, `Permissions-Policy` — sont
+  // directives qui n'existent qu'en en-tête (`frame-ancestors`,
+  // `X-Frame-Options`, `X-Content-Type-Options`, `Permissions-Policy`) sont
   // hors de portée tant que l'hébergeur ne change pas, et securityheaders.com
   // ne lira jamais ce meta. Ce qui suit protège le navigateur, pas la note.
   //
