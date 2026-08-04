@@ -1,11 +1,11 @@
-# Portfolio — Lionel Ratovo
+# Portfolio · Lionel Ratovo
 
 Site statique, bilingue français / anglais, publié sur GitHub Pages à l'adresse
 <https://lionel0505.github.io>.
 
 Direction artistique : **la planche cadastrale**. Le vocabulaire visuel est
-dérivé du terrain réel de Lionel — un système d'information foncier national,
-pour le bras international de l'IGN — et non d'un registre générique de
+dérivé du terrain réel de Lionel (un système d'information foncier national,
+pour le bras international de l'IGN) et non d'un registre générique de
 développeur : papier millimétré, cartouche, repères de planche, schémas au
 trait.
 
@@ -44,13 +44,12 @@ rougit.
 /404/                                     servie par GitHub Pages
 ```
 
-**Huit pages indexables**, plus la 404 dans chaque langue — dix fichiers HTML
-construits, huit entrées au plan du site, ce que `seo.spec.ts` vérifie.
+**Huit pages indexables**, plus la 404 dans chaque langue : dix fichiers HTML
+construits, et huit entrées au plan du site, ce que `seo.spec.ts` vérifie.
 
-**Les slugs sont identiques dans les deux langues** : les
-traduire n'apporterait rien en référencement sur un site de cette taille, et
-imposerait une table de correspondance qui finirait par diverger des noms de
-fichiers.
+**Les slugs sont identiques dans les deux langues.** Les traduire n'apporterait
+rien en référencement sur un site de cette taille, et imposerait une table de
+correspondance qui finirait par diverger des noms de fichiers.
 
 ## Ce qui est particulier ici
 
@@ -60,7 +59,7 @@ extérieur est découpé par dichotomie sur la position de chaque droite, jusqu'
 ce que l'aire découpée atteigne la durée visée. Deux conséquences qui valent le
 code : la parcelle du SIF grossit d'elle-même tant que la mission dure, et
 corriger une date suffit à redessiner la planche. Les normales des droites sont
-inclinées et toutes différentes — sinon on obtient un treemap, pas un plan
+inclinées et toutes différentes, sinon on obtient un treemap, pas un plan
 cadastral.
 
 `pnpm plate` vérifie les six parcelles et la conformité de la légende au
@@ -68,7 +67,7 @@ cartouche, dans les deux langues.
 
 **Le budget JavaScript est tenu par mesure, pas par intention.**
 `scripts/js-budget.mjs` extrait le corps de chaque `<script>` de chaque page et
-le gzippe — tout le JS du site étant inséré dans le HTML, un budget mesuré sur
+le gzippe. Tout le JS du site étant inséré dans le HTML, un budget mesuré sur
 des fichiers `.js` serait vert par construction et ne mesurerait rien. Mesuré :
 **2,1 Kio** sur un budget de 6 Kio, pour le thème, la couche de mouvement, le
 défilement amorti et le décodage du numéro.
@@ -78,7 +77,7 @@ d'animation. Le défilement amorti est une implémentation maison d'une
 quarantaine de lignes, souris uniquement, coupée par `prefers-reduced-motion`.
 
 **Les polices sont auto-hébergées, sous-ensemble `latin` seul**, un fichier et
-un axe par famille — Bricolage Grotesque, Archivo, JetBrains Mono. Mesuré :
+un axe par famille : Bricolage Grotesque, Archivo, JetBrains Mono. Mesuré :
 **105 Kio**. Demander un axe `wdth` ou `opsz` coûterait 20 à 40 Kio par axe pour
 rien. Aucun appel à Google Fonts en production.
 
@@ -97,11 +96,12 @@ retirés, dans tout `dist/`.
 Chaque fait affiché trace vers `CV_Lionel_Ratovo_MASTER.md` et vers les retours
 du 01/08/2026. Les règles du CV maître s'appliquent au site sans exception :
 
-1. Aucun chiffre indéfendable en entretien technique — la latence « ~2 s » du
+1. Aucun chiffre indéfendable en entretien technique : la latence « ~2 s » du
    SIF a été retirée du CV pour cette raison, elle ne revient pas ici.
 2. Aucune capture d'écran du SIF, du SIGFU, ni des comptes GSK, Cartier ou
-   Mercedes-Benz — systèmes d'État et comptes clients d'agence. **Les schémas
-   SVG au trait les remplacent au lieu de laisser un trou.**
+   Mercedes-Benz : ce sont des systèmes d'État et des comptes clients
+   d'agence. **Les schémas SVG au trait les remplacent au lieu de laisser un
+   trou.**
 3. Aucun projet fictif, aucune démo simulée, **aucun lien social** : Lionel n'a
    ni GitHub ni LinkedIn, c'est un choix assumé et le site ne le contredit pas.
 4. Aucun compteur de vanité.
@@ -140,7 +140,7 @@ le repli par `IntersectionObserver`.
 | `seo.spec.ts` | Le plan du site liste les huit pages indexables et rien de plus · le JSON-LD est valide et ne déclare aucun profil social |
 
 **Pas de tests unitaires.** Il n'y a pas de logique à tester sur un site de
-contenu, hors la géométrie de la planche — et celle-là a sa propre porte.
+contenu, hors la géométrie de la planche, et celle-là a sa propre porte.
 
 ## Déploiement
 
@@ -156,8 +156,10 @@ changement de polices ou de planche.
 
 ## Documents
 
-- `docs/superpowers/specs/2026-07-31-portfolio-lionel-ratovo-design.md` — le
+- `docs/superpowers/specs/2026-07-31-portfolio-lionel-ratovo-design.md` :
+  le
   super-PRD : thèse, audiences, direction artistique, jetons, jalons,
   traçabilité de chaque fait affiché.
-- `docs/superpowers/plans/2026-07-31-portfolio-lionel-ratovo.md` — le plan
+- `docs/superpowers/plans/2026-07-31-portfolio-lionel-ratovo.md` :
+  le plan
   d'implémentation.
