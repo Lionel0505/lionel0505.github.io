@@ -42,6 +42,13 @@ const who2 = fr
    de Base.astro : le traduire ici les ferait diverger. Les études de cas
    gardent leur propre titre, où le nom sert de suffixe (Case.astro). */
 const TITLE = 'Lionel Ratovo · Backend & Data Engineer';
+
+/* Le seul lien sortant du site, et le seul dont ce dépôt ne contrôle pas la
+   cible. Le collectif est passé d'un dépôt de projet
+   (nextrimg.github.io/nextri_portfolio/) à un site d'utilisateur servi à la
+   racine du domaine : l'ancienne adresse rend une 404. Nommé plutôt qu'écrit
+   dans le balisage, pour que la prochaine correction tienne en une ligne. */
+const NEXTRI = 'https://nextrimg.github.io/';
 ---
 
 <Base
@@ -64,7 +71,7 @@ const TITLE = 'Lionel Ratovo · Backend & Data Engineer';
           }
         </p>
         <p>
-          {who2.pre}<a href="https://nextrimg.github.io/nextri_portfolio/" target="_blank" rel="noopener noreferrer">{who2.link}</a>{who2.post}
+          {who2.pre}<a href={NEXTRI} target="_blank" rel="noopener noreferrer">{who2.link}</a>{who2.post}
         </p>
       </div>
       <Cartouche lang={lang} />
