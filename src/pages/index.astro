@@ -34,10 +34,18 @@ const who2 = fr
       link: 'NEXTRI',
       post: ', a collective of engineers in Antananarivo.',
     };
+
+/* L'intitulé suit le nom dans l'onglet : « Lionel Ratovo » seul ne dit rien à
+   un recruteur qui a douze onglets ouverts, et c'est aussi la première ligne
+   que rend un moteur de recherche. Il n'est pas traduit, parce que c'est la
+   forme qu'emploient déjà le CV maître, la fiche NEXTRI et le JSON-LD Person
+   de Base.astro : le traduire ici les ferait diverger. Les études de cas
+   gardent leur propre titre, où le nom sert de suffixe (Case.astro). */
+const TITLE = 'Lionel Ratovo · Backend & Data Engineer';
 ---
 
 <Base
-  title="Lionel Ratovo"
+  title={TITLE}
   description={fr ? 'Portfolio de Lionel Ratovo.' : "Lionel Ratovo's portfolio."}
 >
   <main id="main">

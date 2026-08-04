@@ -1,18 +1,18 @@
-# Portfolio Lionel Ratovo — Implementation Plan
+# Portfolio Lionel Ratovo · Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Build a bilingual static portfolio site for Lionel Ratovo that argues one thesis — he translates complex business needs into systems that hold in production — using a cadastral-plan visual system in place of the screenshots his confidential work forbids.
+**Goal:** Build a bilingual static portfolio site for Lionel Ratovo that argues one thesis (he translates complex business needs into systems that hold in production) using a cadastral-plan visual system in place of the screenshots his confidential work forbids.
 
-**Architecture:** Astro 7 static site, zero UI framework, zero runtime dependencies. Content lives in Zod-typed collections (one Markdown file per case per language) so a missing field breaks the build rather than the live page. French is the default locale with no prefix; English lives under `/en/` and falls back to French when absent, so the site ships in French alone. Three motion layers — an entry animation, CSS scroll-driven timelines, and a hand-rolled damped scroll — each independently disabled by `prefers-reduced-motion`.
+**Architecture:** Astro 7 static site, zero UI framework, zero runtime dependencies. Content lives in Zod-typed collections (one Markdown file per case per language) so a missing field breaks the build rather than the live page. French is the default locale with no prefix; English lives under `/en/` and falls back to French when absent, so the site ships in French alone. Three motion layers (an entry animation, CSS scroll-driven timelines, and a hand-rolled damped scroll) each independently disabled by `prefers-reduced-motion`.
 
 **Tech Stack:** Astro 7 · Tailwind 4 (via `@tailwindcss/vite`) · TypeScript (strict) · Biome · Playwright · GitHub Actions → GitHub Pages
 
 **Spec:** `docs/superpowers/specs/2026-07-31-portfolio-lionel-ratovo-design.md`
-**Visual reference:** `docs/superpowers/reference/preview.html` (**v4, validated 2026-08-01 by Lionel** — the source of truth for tokens, plate geometry, diagrams, and motion values)
+**Visual reference:** `docs/superpowers/reference/preview.html` (**v4, validated 2026-08-01 by Lionel**: the source of truth for tokens, plate geometry, diagrams, and motion values)
 **Fact sources:** `.unwanted/sources/`. Two tiers: the master CVs of 21/07/2026, and
 `RETOURS-LIONEL-2026-08-01.md` (markers `[F1]`–`[F12]`) **which overrides them** wherever they
-disagree. Where the master is silent, ask — do not infer. Four claims in the v3 mock-up came from
+disagree. Where the master is silent, ask, do not infer. Four claims in the v3 mock-up came from
 inference, not sources, and all four were wrong.
 
 ---
@@ -21,10 +21,10 @@ inference, not sources, and all four were wrong.
 
 Every task's requirements implicitly include this section.
 
-**Content rules — these override any aesthetic consideration:**
+**Content rules, these override any aesthetic consideration:**
 1. No number that could not be defended in a technical interview. Delete rather than estimate.
 2. No screenshots of SIF, SIGFU, GSK, Cartier, or Mercedes-Benz work.
-3. No fictional projects, no invented repos, **no social links whatsoever** — Lionel has neither GitHub nor LinkedIn, by choice.
+3. No fictional projects, no invented repos, **no social links whatsoever**: Lionel has neither GitHub nor LinkedIn, by choice.
 4. Nothing implying NEXTRI has delivered client projects. It has delivered none.
 5. No vanity counters ("+120 projects", "98% satisfaction").
 6. Every displayed fact traces to a source file via a non-empty `sourceRefs` array.
@@ -33,8 +33,8 @@ Every task's requirements implicitly include this section.
 9. **Parcel areas are proportional to time spent** `[F10]`. The plate is computed, never hand-drawn.
 
 **Copy rules:**
-- Site copy contains **no em dashes** (`—`) and no `--`. Use commas, colons, semicolons, periods, or parentheses.
-- French copy uses `·` as a separator, never `—`.
+- Site copy contains **no em dashes** (U+2014) and no `--`. Use commas, colons, semicolons, periods, or parentheses.
+- French copy uses `·` as a separator, never an em dash (U+2014).
 
 **Technical constraints:**
 - **Astro 7.** Not 5. Two API changes bind every content task: collections use `loader: glob(...)` (there is no `type: 'content'`), the config file is `src/content.config.ts` (not `src/content/config.ts`), and rendering is `await render(entry)` imported from `astro:content` (not `entry.render()`).
@@ -87,9 +87,9 @@ Every task's requirements implicitly include this section.
 | `tests/*.spec.ts` | Four Playwright scenarios |
 
 **Testing philosophy for this project.** There is no business logic to unit-test; a content site's unit tests would be theatre. The real verification harness is three-fold, and every task below ends in at least one of them:
-- `node scripts/contrast.mjs` — accessibility, mechanically checkable
-- `pnpm exec playwright test` — the four flows that break silently
-- `pnpm run build && pnpm exec astro check` — type and schema integrity
+- `node scripts/contrast.mjs`: accessibility, mechanically checkable
+- `pnpm exec playwright test`: the four flows that break silently
+- `pnpm run build && pnpm exec astro check`: type and schema integrity
 
 No unit tests, no link checker, no Lighthouse in CI. Each was weighed and cut: see Tasks 10, 14 and 15 for the reasoning.
 
@@ -238,7 +238,7 @@ This is the one place where a real failing-test cycle applies: the checker is wr
 **Interfaces:**
 - Produces: `node scripts/contrast.mjs` exits `0` on success, `1` with a per-token report on failure. Consumed by CI in Task 23.
 
-- [ ] **Step 1: Write the failing test — `scripts/contrast.mjs`**
+- [ ] **Step 1: Write the failing test, `scripts/contrast.mjs`**
 
 ```js
 #!/usr/bin/env node
@@ -297,7 +297,7 @@ process.exit(failed ? 1 : 0);
 - [ ] **Step 2: Run it to verify it fails**
 
 Run: `node scripts/contrast.mjs`
-Expected: FAIL — `Error: ENOENT ... src/styles/tokens.css`. The tokens do not exist yet.
+Expected: FAIL, `Error: ENOENT ... src/styles/tokens.css`. The tokens do not exist yet.
 
 - [ ] **Step 3: Write `src/styles/tokens.css`**
 
@@ -510,7 +510,7 @@ Reimplements NEXTRI's `next-themes` contract without React: same `data-theme` at
 **Interfaces:**
 - Produces: `<html data-theme="light|dark" data-theme-pref="system|light|dark">`; `Base.astro` accepts `{ title, description, lang, path }`
 
-- [ ] **Step 1: Write the failing test — `tests/theme.spec.ts`**
+- [ ] **Step 1: Write the failing test, `tests/theme.spec.ts`**
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -575,7 +575,7 @@ export default defineConfig({
 - [ ] **Step 3: Run to verify it fails**
 
 Run: `pnpm exec playwright test tests/theme.spec.ts --project=chromium`
-Expected: FAIL — no `#theme-toggle`, no `data-theme` attribute.
+Expected: FAIL, no `#theme-toggle`, no `data-theme` attribute.
 
 - [ ] **Step 4: Write `src/scripts/theme.ts`**
 
@@ -699,7 +699,7 @@ git commit -m "feat: three-state theme system matching NEXTRI's next-themes cont
 
 ---
 
-## Task 5: Page shell — header, footer, phone reveal
+## Task 5: Page shell · header, footer, phone reveal
 
 **Files:**
 - Create: `src/components/SiteHeader.astro`, `src/components/SiteFooter.astro`, `src/i18n/fr.ts`, `src/i18n/en.ts`, `src/i18n/utils.ts`
@@ -949,9 +949,9 @@ const base = lang === 'fr' ? '' : '/en';
 Run:
 ```bash
 pnpm run build
-grep -rc "XX XX XXX" dist/ || echo "0 occurrences — correct"
+grep -rc "XX XX XXX" dist/ || echo "0 occurrences, correct"
 ```
-Expected: `0 occurrences — correct`. **If the number appears in `dist/`, the obfuscation has failed and must be fixed before proceeding.**
+Expected: `0 occurrences, correct`. **If the number appears in `dist/`, the obfuscation has failed and must be fixed before proceeding.**
 
 - [ ] **Step 7: Commit**
 
@@ -1029,7 +1029,7 @@ Expected: FAIL with `Cannot find module '../src/lib/plate.mjs'`.
 // Le contour est fixe, les divisions sont calculées : l'aire de chaque parcelle
 // vaut sa durée en mois. La parcelle du SIF grossit donc d'elle-même tant que la
 // mission dure, et corriger une date suffit à redessiner le plan.
-// Exécuté au build uniquement — la page ne reçoit que du SVG.
+// Exécuté au build uniquement, la page ne reçoit que du SVG.
 
 export const HEX = [[60, 34], [541, 62], [572, 296], [498, 470], [118, 492], [28, 258]];
 
@@ -1152,7 +1152,7 @@ export function buildPlate() {
 Run: `node scripts/plate-check.mjs`
 Expected: `planche : 6 parcelles, aires conformes aux durées`
 
-Then wire it into the gate — `package.json`:
+Then wire it into the gate, `package.json`:
 
 ```json
 "plate": "node scripts/plate-check.mjs",
@@ -1232,7 +1232,7 @@ const parcels = buildPlate().map(p => {
 Scoped styles copy `.parcel`, `.pgroup:hover`, `.line`, `.plbl`, `.anno`, `.tick`, `.free-ring`,
 `.free-key`, `.plate-key` verbatim from `docs/superpowers/reference/preview.html`.
 
-- [ ] **Step 6: Resolve risk #1 — the plate is unreadable at 390 px**
+- [ ] **Step 6: Resolve risk #1, the plate is unreadable at 390 px**
 
 **Mandatory in this task, not deferred.** Add to the scoped styles:
 
@@ -1269,7 +1269,7 @@ git commit -m "feat: cadastral plate with areas computed from mission durations"
 
 **Interfaces:**
 - Consumes: `Plate.astro` (Task 6), `t(lang)` (Task 5)
-- Produces: `<Hero lang portrait?={ImageMetadata} />` — when `portrait` is absent the plate occupies the right column; when present the portrait takes that column and the plate moves full-width below the hero.
+- Produces: `<Hero lang portrait?={ImageMetadata} />`, when `portrait` is absent the plate occupies the right column; when present the portrait takes that column and the plate moves full-width below the hero.
 
 - [ ] **Step 1: Write `Hero.astro` with the two-faced layout**
 
@@ -1339,7 +1339,7 @@ numbers move into the SIF case study (Task 9), where they have one.
 | Langues | Malagasy · Français · Anglais | D3 |
 | Disponibilité | Ouvert aux opportunités | décision |
 
-The first two carry `--or-t` in Bricolage Grotesque 760 — they anchor the perception of scale
+The first two carry `--or-t` in Bricolage Grotesque 760, they anchor the perception of scale
 before any scrutiny.
 
 **« 2021 », not « 5 ans ».** November 2021 to August 2026 is four years and nine months; a start
@@ -1373,14 +1373,14 @@ git commit -m "feat: hero with optional portrait, authority band, cartouche"
 - Consumes: every component from Tasks 6–7
 - Produces: a complete French home page at `/`
 
-- [ ] **Step 1: Write `Offer.astro`** — four services in a two-column grid, each carrying
+- [ ] **Step 1: Write `Offer.astro`**: four services in a two-column grid, each carrying
 `--role` (text colour) and `--fill` (bar colour), with a 44 px rule that draws in on scroll.
 
 This replaces the three « cadrer · construire · livrer » panels. Lionel's objection `[F5]` was that
 all three described the SIF, so the page argued one mission and called it a method.
 
 **The binding rule: each service is proved by a different mission.** It is mechanical, not
-editorial — it is what keeps the page from sliding back into a monologue.
+editorial, it is what keeps the page from sliding back into a monologue.
 
 | # | Service | Rôle | Preuve « sur le terrain » |
 |---|---|---|---|
@@ -1392,7 +1392,7 @@ editorial — it is what keeps the page from sliding back into a monologue.
 Body copy verbatim from `docs/superpowers/reference/preview.html`. **Check every string for em
 dashes before committing.**
 
-- [ ] **Step 1b: Write `Thread.astro`** — the bordered block that closes movement 03.
+- [ ] **Step 1b: Write `Thread.astro`**: the bordered block that closes movement 03.
 
 « Reprendre l'existant » is not a fourth case study: BICI is two months and would not carry one.
 It is what runs through all three, which is the honest and stronger claim.
@@ -1403,7 +1403,7 @@ It is what runs through all three, which is the honest and stronger claim.
 | Cartier | `tl` | reprendre des flux Salesforce en place, sans les refaire |
 | BICI | `lv` | quatre applications sous framework interne, sans documentation |
 
-- [ ] **Step 2: Write `Timeline.astro`** — four entries, facts from `CV_Lionel_Ratovo_MASTER.md`:
+- [ ] **Step 2: Write `Timeline.astro`**: four entries, facts from `CV_Lionel_Ratovo_MASTER.md`:
 
 | Role | Employer | Place | Dates |
 |---|---|---|---|
@@ -1414,7 +1414,7 @@ It is what runs through all three, which is the honest and stronger claim.
 
 - [ ] **Step 3: Write `ContactFork.astro`** on the inverted surface, two doors with `--role` set to `--or-inv` and `--tl-inv`.
 
-The project door reads: *"Je peux venir seul. Et si le chantier dépasse une personne, nous sommes trois : NEXTRI, collectif d'ingénieurs à Antananarivo."* — capacity, never references. Global constraint 4.
+The project door reads: *"Je peux venir seul. Et si le chantier dépasse une personne, nous sommes trois : NEXTRI, collectif d'ingénieurs à Antananarivo."*, capacity, never references. Global constraint 4.
 
 - [ ] **Step 4: Assemble `src/pages/index.astro`**
 
@@ -1455,7 +1455,7 @@ git commit -m "feat: approach, timeline, contact fork, French home page assemble
 **Interfaces:**
 - Produces: `getCollection('cases')` returning entries typed by the schema below. Consumed by Task 10.
 
-- [ ] **Step 1: Write the failing test — a case file missing `sourceRefs`**
+- [ ] **Step 1: Write the failing test, a case file missing `sourceRefs`**
 
 Create `src/content/cases/fr/sif.md` with frontmatter deliberately lacking `sourceRefs`, then write `src/content.config.ts`.
 
@@ -1541,15 +1541,15 @@ La mise en production de novembre 2024. C'était le défi du projet, et il est
 réussi.
 ```
 
-`data.md` — `order: 2`, `role: tl`, `sourceRefs: ["B1","B3","F5","F6"]`,
+`data.md`, `order: 2`, `role: tl`, `sourceRefs: ["B1","B3","F5","F6"]`,
 `client: "RAPP IO · GSK · Cartier"`, `period: "2022 · 2024"`,
 `stack: ["SQL", "Salesforce"]`.
 
-**Title: « Deux comptes data, des flux qu'on ne peut pas casser »** — two, not three. The v3
+**Title: « Deux comptes data, des flux qu'on ne peut pas casser »**: two, not three. The v3
 mock-up said three; Mercedes-Benz is webmastering and owns case 3 `[F6]`. This correction is
 mandatory and CI guards it (Step 5).
 
-`web.md` — `order: 3`, `role: yw`, `sourceRefs: ["B2","F6","F7"]`,
+`web.md`, `order: 3`, `role: yw`, `sourceRefs: ["B2","F6","F7"]`,
 `client: "RAPP IO · Mercedes-Benz"`, `period: "2021 · 2022"`, `stack: ["AEM"]`.
 
 **Title: « Publier du web à l'échelle d'un constructeur »**. Production and publication of web
@@ -1613,7 +1613,7 @@ const { Content } = await render(entry);   // not entry.render(), removed in Ast
 <Case lang="fr" entry={entry}><Content /></Case>
 ```
 
-- [ ] **Step 2: Write `CaseDiagram.astro`** — dispatch on the case slug, one SVG per case. No frontmatter field is needed: three cases, three slugs, three diagrams.
+- [ ] **Step 2: Write `CaseDiagram.astro`**: dispatch on the case slug, one SVG per case. No frontmatter field is needed: three cases, three slugs, three diagrams.
 
 The `sif` diagram is copied verbatim from `docs/superpowers/reference/preview.html`, where it was
 redrawn from Lionel's own hand-drawn schema `[F2]`, `[F3]`, `[F4]`. It has three parts, and the
@@ -1671,7 +1671,7 @@ Copy the entire `@media (prefers-reduced-motion:no-preference) { @supports (anim
 
 **Do not copy the `@media (prefers-reduced-motion: reduce)` reset block.** It already lives in `src/styles/base.css`, next to the transitions it governs. Task 3's review caught that the split had left it ownerless: the mock-up carried it in one stylesheet, and neither this task nor Task 3 had claimed it. Duplicating it here would give two copies to keep in step.
 
-- [ ] **Step 2: Write `motion.ts` — fallback only**
+- [ ] **Step 2: Write `motion.ts`, fallback only**
 
 ```ts
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1844,7 +1844,7 @@ git commit -m "feat: dependency-free damped scrolling, pointer-fine only"
 **Files:**
 - Create: `src/pages/en/index.astro`, `src/pages/en/cas/[slug].astro`, `src/content/cases/en/*.md`, `src/components/LangSwitch.astro`, `tests/i18n.spec.ts`
 
-- [ ] **Step 1: Write the failing test — `tests/i18n.spec.ts`**
+- [ ] **Step 1: Write the failing test, `tests/i18n.spec.ts`**
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -1874,7 +1874,7 @@ test('every page declares reciprocal hreflang', async ({ page }) => {
 - [ ] **Step 2: Run to verify it fails**
 
 Run: `pnpm exec playwright test tests/i18n.spec.ts --project=chromium`
-Expected: FAIL — no `#lang-switch`, no `hreflang`.
+Expected: FAIL, no `#lang-switch`, no `hreflang`.
 
 - [ ] **Step 3: Write `LangSwitch.astro`** using `altPath()` from Task 5, and emit `hreflang` links in `Base.astro`, with `x-default` pointing to the French URL.
 
@@ -1950,7 +1950,7 @@ git commit -m "feat: SEO metadata, sitemap, 404 page"
 **Files:**
 - Create: `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, `tests/flows.spec.ts`
 
-- [ ] **Step 1: Write `tests/flows.spec.ts` — the remaining critical flow**
+- [ ] **Step 1: Write `tests/flows.spec.ts`, the remaining critical flow**
 
 ```ts
 import { test, expect } from '@playwright/test';
@@ -2038,7 +2038,7 @@ The two shell steps are the content and performance constraints enforced by CI r
 
 **No `linkinator`.** A dependency to check ten links that are all generated from a typed dictionary, on a build that already fails when `getStaticPaths` is wrong.
 
-- [ ] **Step 3: Write `.github/workflows/deploy.yml`** — build then `actions/deploy-pages@v4` on `main`.
+- [ ] **Step 3: Write `.github/workflows/deploy.yml`**: build then `actions/deploy-pages@v4` on `main`.
 
 - [ ] **Step 4: Run the full gate locally**
 
@@ -2066,7 +2066,7 @@ git push -u origin main
 
 **1. Spec coverage.** Every spec section maps to a task: §1.5 → T2 · §1.6 → T3 · §1.7 → T11, T12 · §1.8 → T4 · §1.9 → T3, T4, T11 · §2.1 → T8, T10, T13, T14 · §2.3 → T6, T7, T8 · §2.4/2.5 → T9, T10 · §2.6 → T4 (no-JS), T6 (mobile), T11 (reduced motion, Firefox), T13 (EN fallback), T14 (404) · §3.3 → T9 · §3.4 → T5, T13 · §3.7 → T15 · §3.8 → T5, T14 · §3.9/3.10 → T15. Risk #1 is resolved inside T6 rather than deferred.
 
-**2. Placeholder scan.** No TBD, no "handle edge cases", no "similar to Task N". Two components (`AuthorityBand`, `Approach`) are specified by their data tables and copy rather than by full markup, because their markup is mechanical given the data — the values themselves are all present.
+**2. Placeholder scan.** No TBD, no "handle edge cases", no "similar to Task N". Two components (`AuthorityBand`, `Approach`) are specified by their data tables and copy rather than by full markup, because their markup is mechanical given the data, the values themselves are all present.
 
 **3. Type consistency.** `Lang`, `t()`, `getLang()` and the one-argument `altPath()` are defined in T5 and used identically in T6, T7, T13. `Smooth.to()` is exported in T12 and used only there. Collection field names in T9 match their consumption in T10. `sourceRefs` is spelled identically in the spec, the schema, and the case files.
 
@@ -2076,6 +2076,6 @@ git push -u origin main
 
 **Plan complete and saved to `docs/superpowers/plans/2026-07-31-portfolio-lionel-ratovo.md`. Two execution options:**
 
-**1. Subagent-Driven (recommended)** — a fresh subagent per task, review between tasks, fast iteration
+**1. Subagent-Driven (recommended)**: a fresh subagent per task, review between tasks, fast iteration
 
-**2. Inline Execution** — execute tasks in this session using executing-plans, batch execution with checkpoints
+**2. Inline Execution**: execute tasks in this session using executing-plans, batch execution with checkpoints

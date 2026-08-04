@@ -1,4 +1,4 @@
-# Portfolio Lionel Ratovo — super-PRD
+# Portfolio Lionel Ratovo · super-PRD
 
 **Date** : 31 juillet 2026 · **révisé le 1er août 2026** après retours de Lionel
 **Statut** : conception validée, prêt pour le plan d'implémentation
@@ -30,7 +30,7 @@ contredit. Là où le master est muet, on demande : on n'y comble pas les silenc
 
 ---
 
-# PARTIE I — DESIGN BRIEF
+# PARTIE I · DESIGN BRIEF
 
 ## 1.1 La thèse
 
@@ -59,7 +59,7 @@ Elle vient de Lionel lui-même, via la note `[E2]` de son CV maître : *« plus 
 
 Une seule page de fond, deux sorties. Personne ne lit un contenu qui ne lui est pas destiné.
 
-## 1.3 Règles de contenu — non négociables
+## 1.3 Règles de contenu · non négociables
 
 Reprises des CV maîtres et étendues au site. Elles priment sur toute considération esthétique.
 
@@ -152,8 +152,8 @@ Jetons **hérités de NEXTRI**, avec leurs noms, pour que le portfolio de Lionel
 
 Chaque accent est donc dédoublé :
 
-- `--or` — couleur **graphique** : aplats, traits, lavis. Identité NEXTRI intacte.
-- `--or-t` — couleur **texte**, assombrie jusqu'au franchissement du seuil.
+- `--or` : couleur **graphique**, pour les aplats, les traits et les lavis. Identité NEXTRI intacte.
+- `--or-t` : couleur **texte**, assombrie jusqu'au franchissement du seuil.
 
 Les valeurs `-t` sont **calculées contre le fond le plus défavorable de chaque thème** (`--bg`, `--bg2` et `--bg3`), pas choisies à l'œil.
 
@@ -271,7 +271,7 @@ Le repli n'est pas une dégradation visible : le site reste complet, seule la co
 
 Contrat repris de NEXTRI (`next-themes` : `attribute="data-theme"`, `defaultTheme="system"`, `enableSystem`, `disableTransitionOnChange`), réimplémenté en vanilla puisque le site est statique.
 
-- Attribut `data-theme` sur `<html>`, clé `localStorage` nommée `theme` — **identiques à NEXTRI**.
+- Attribut `data-theme` sur `<html>`, clé `localStorage` nommée `theme`, **identiques à NEXTRI**.
 - Trois états cycliques : **système → clair → sombre → système**. Sur « système », la clé est effacée et l'OS reprend la main en direct.
 - **Script bloquant dans le `<head>`**, avant toute feuille de style : le thème est posé avant le premier rendu, donc aucun flash.
 - Classe `.no-tr` posée pendant deux images à la bascule, pour supprimer le fondu croisé disgracieux.
@@ -292,7 +292,7 @@ Contrat repris de NEXTRI (`next-themes` : `attribute="data-theme"`, `defaultThem
 
 ---
 
-# PARTIE II — APPFLOW
+# PARTIE II · APPFLOW
 
 ## 2.1 Arborescence
 
@@ -335,7 +335,7 @@ Contrat repris de NEXTRI (`next-themes` : `attribute="data-theme"`, `defaultThem
 
 **Deux paragraphes**, pas une biographie : ce sur quoi il travaille, puis ce qu'il vend vraiment (« ma force n'est pas la technique pure ») `[E2]`. La passerelle NEXTRI est ici, dès le premier mouvement `[F12]`, et non plus seulement en pied de page.
 
-**Cartouche.** Bloc-titre bordé de 1,5 px. **Portée unique : tout ce qu'il contient vaut pour la carrière entière.** C'était le défaut relevé par Lionel `[F8]` — l'ancien cartouche mêlait trois portées, et « 9 schémas » sans contexte ne veut rien dire. Les chiffres du SIF descendent dans son étude de cas.
+**Cartouche.** Bloc-titre bordé de 1,5 px. **Portée unique : tout ce qu'il contient vaut pour la carrière entière.** C'était le défaut relevé par Lionel `[F8]`, l'ancien cartouche mêlait trois portées, et « 9 schémas » sans contexte ne veut rien dire. Les chiffres du SIF descendent dans son étude de cas.
 
 | Cellule | Valeur | Source |
 |---|---|---|
@@ -367,7 +367,7 @@ Remplace les trois volets « cadrer · construire · livrer », dont Lionel nota
 
 **Études de cas.** Une majeure en deux colonnes avec son schéma collant, deux compactes côte à côte séparées par un filet. Poids délibérément dissemblables. Les chiffres du SIF vivent dans la majeure, en rangée de faits.
 
-**Le fil.** Un bloc bordé referme le mouvement : « reprendre l'existant » n'est pas un quatrième cas, c'est ce qui traverse les trois — SGFH → SIF, les flux Salesforce de Cartier, les quatre applications non documentées de BICI.
+**Le fil.** Un bloc bordé referme le mouvement : « reprendre l'existant » n'est pas un quatrième cas, c'est ce qui traverse les trois, SGFH → SIF, les flux Salesforce de Cartier, les quatre applications non documentées de BICI.
 
 **Parcours.** Frise verticale, un poste par entrée : intitulé, employeur, lieu, dates, puces sourcées. Formation et langues en fin.
 
@@ -380,16 +380,16 @@ Surface inversée (`--inv-bg`). Deux portes bordées, chacune avec son filet de 
 Gabarit unique pour les trois :
 
 1. **En-tête factuel** en mono : client · rôle · période · stack
-2. **L'enjeu** — le problème métier, en langue de décideur
-3. **La contrainte** — ce qui rendait la chose difficile techniquement
-4. **Ce que j'ai fait** — 3 à 5 blocs, verbe d'action + fait tracé
-5. **Ce qui a tenu** — le résultat, factuel, sans chiffre inventé
+2. **L'enjeu** : le problème métier, en langue de décideur
+3. **La contrainte** : ce qui rendait la chose difficile techniquement
+4. **Ce que j'ai fait** : 3 à 5 blocs, verbe d'action + fait tracé
+5. **Ce qui a tenu** : le résultat, factuel, sans chiffre inventé
 6. **Schéma SVG** au trait, dessiné pour ce cas
 7. **Navigation** : cas suivant + rappel de contact
 
 ## 2.5 Contenu des trois études de cas
 
-### Cas 1 — SIF · SIGFU (majeur)
+### Cas 1 · SIF · SIGFU (majeur)
 
 - **Client** : Ministère de l'Urbanisme, du Logement et du Cadre de Vie, Côte d'Ivoire, via IGN FI
 - **Période** : janvier 2024 → présent · **Équipe** : 9 développeurs, 3 testeurs
@@ -399,7 +399,7 @@ Gabarit unique pour les trois :
 - **Contrainte** : 9 schémas **PostgreSQL** `[F1]`, dont `innola` à 150 tables et `public` à 59 ; **lecture et écriture** dans les bases d'autres services de l'État `[F4]` ; chaque action CRUD passe par des règles métier validées via Drools
 - **Fait** : conception et développement des interfaces métier des gestionnaires fonciers et du portail public ouvert à plus de 100 usagers ; portage des attentes du client en atelier ; estimation des tâches et suivi du calendrier en appui au chef d'équipe
 - **Ce qui a tenu** : mise en production réussie en novembre 2024, qui était le défi du projet
-- **Schéma** `[F2]`, `[F3]`, `[F4]` — redessiné d'après le croquis de Lionel. Le portail est une **application distincte**, pas un client du même backend :
+- **Schéma** `[F2]`, `[F3]`, `[F4]`, redessiné d'après le croquis de Lionel. Le portail est une **application distincte**, pas un client du même backend :
 
 ```
 PORTAIL SIGFU (public)              SIF
@@ -412,7 +412,7 @@ PORTAIL SIGFU (public)              SIF
                                     BDD autres services de l'État
 ```
 
-### Cas 2 — Comptes data internationaux
+### Cas 2 · Comptes data internationaux
 
 - **Client** : RAPP IO Mauritius · **Période** : 2022 → 2024 · **Stack** : SQL · Salesforce
 - **Titre** : « Deux comptes data, des flux qu'on ne peut pas casser »
@@ -421,7 +421,7 @@ PORTAIL SIGFU (public)              SIF
 
 Deux marques, pas trois `[F6]`. Mercedes-Benz relève du cas 3 : c'est du webmastering, pas de la data.
 
-### Cas 3 — Webmastering et coordination
+### Cas 3 · Webmastering et coordination
 
 - **Client** : Mercedes-Benz via RAPP IO Mauritius · **Période** : décembre 2021 → septembre 2022 · **Stack** : AEM
 - **Titre** : « Publier du web à l'échelle d'un constructeur »
@@ -449,7 +449,7 @@ BICI ne tient pas une étude de cas : deux mois. Mais « reprendre l'existant »
 
 ---
 
-# PARTIE III — ENGINEERING PLAN
+# PARTIE III · ENGINEERING PLAN
 
 ## 3.1 Stack
 
@@ -514,7 +514,7 @@ const cases = defineCollection({
     stack: z.array(z.string()).min(1),
     title: z.string().max(80),
     teaser: z.string().max(280),
-    sourceRefs: z.array(z.string()).min(1),       // ex. ['A1','A2'] — traçabilité obligatoire
+    sourceRefs: z.array(z.string()).min(1),       // ex. ['A1','A2'], traçabilité obligatoire
   }),
 });
 ```
@@ -547,13 +547,13 @@ export const MISSIONS = [
 - `hreflang` réciproque sur chaque paire, `x-default` → FR.
 - Le sélecteur de langue mène à la page équivalente, jamais à l'accueil.
 
-## 3.5 Thème — implémentation
+## 3.5 Thème · implémentation
 
 1. **Script bloquant** en tête de `<head>` : lit `localStorage.theme`, sinon `matchMedia('(prefers-color-scheme: dark)')`, pose `data-theme` et `data-theme-pref`.
 2. Module `theme.ts` : cycle des trois états, écriture ou effacement de la clé, classe `.no-tr` sur deux images, écoute de `change` sur la media query tant que la préférence est « système ».
 3. Sans JavaScript : `data-theme="light"` étant écrit en dur dans le markup, le site s'affiche en clair, qui passe l'AA intégralement. **On ne duplique pas les jetons sombres dans un `@media (prefers-color-scheme: dark)`** : une valeur recopiée diverge dès la première modification de l'une des deux copies. Le coût est le thème sombre pour une fraction de pour cent de visiteurs, le gain est quinze lignes qui ne peuvent plus se contredire.
 
-## 3.6 Mouvement — implémentation
+## 3.6 Mouvement · implémentation
 
 - `motion.css` : tout le bloc `@media (prefers-reduced-motion: no-preference) { @supports (animation-timeline: view()) { … } }`.
 - `motion.ts` : détection, et **uniquement en repli**, `IntersectionObserver` + `rAF`.
@@ -575,7 +575,7 @@ Moyens : polices en `woff2` sous-ensemblées avec préchargement du seul poids c
 ## 3.8 SEO et données personnelles
 
 - Balises meta par page, OpenGraph avec image générée par langue.
-- JSON-LD `Person` : nom, intitulé, lieu, `knowsLanguage`, `alumniOf`. **Sans `sameAs`** — Lionel n'a ni LinkedIn ni GitHub, et la règle n°3 s'applique.
+- JSON-LD `Person` : nom, intitulé, lieu, `knowsLanguage`, `alumniOf`. **Sans `sameAs`** : Lionel n'a ni LinkedIn ni GitHub, et la règle n°3 s'applique.
 - `sitemap.xml`, `robots.txt`.
 - **Email** : obfusqué, reconstruit en JavaScript.
 - **Téléphone** : jamais présent dans le HTML servi. Reconstruit en JavaScript au clic, puis exposé en `tel:`. Un numéro en clair sur une page indexée finit dans les bases de démarchage ; un visiteur humain l'obtient en un clic. *Décision validée le 31/07/2026.*
@@ -648,7 +648,7 @@ Les jalons ① à ④ produisent un site **livrable en français**. L'anglais es
 
 ---
 
-## Annexe A — Traçabilité
+## Annexe A · Traçabilité
 
 Chaque fait affiché renvoie à `CV_Lionel_Ratovo_MASTER.md`, à ses réponses de questionnaire, ou à `RETOURS-LIONEL-2026-08-01.md` pour les repères `[F*]`.
 
@@ -680,7 +680,7 @@ Chaque fait affiché renvoie à `CV_Lionel_Ratovo_MASTER.md`, à ses réponses d
 
 **Trois vérifications en attente de Lionel** : le trou d'août 2025 à avril 2026 mentionné dans `sources/README.md` sans nom de porteur (s'il est de lui, la parcelle du SIF perd 8 mois) ; sa présence physique à Maurice ; la tenue de la promesse « réponse sous 24 heures ».
 
-## Annexe B — Hors périmètre
+## Annexe B · Hors périmètre
 
 **Correctif de contraste du site NEXTRI** (`E:\Dev\nextri_portfolio`). La campagne du 31/07/2026 a établi que la palette du collectif ne franchit pas le seuil AA sur du petit texte : `--tx3` à 2,04:1 en thème clair, `--or` en texte à 3,49:1. Le dédoublement graphique / texte décrit en §1.5 s'y applique tel quel, avec les mêmes valeurs calculées.
 
