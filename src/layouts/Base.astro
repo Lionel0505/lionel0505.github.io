@@ -51,6 +51,13 @@ const person = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Le seul en-tête de sécurité que GitHub Pages laisse poser depuis le
+         document : `<meta name="referrer">` est lu par les navigateurs, là où
+         X-Frame-Options, X-Content-Type-Options et Permissions-Policy n'ont
+         pas d'équivalent en balise et resteront hors de portée tant que le
+         site est servi par Pages. La CSP, elle, est écrite par Astro
+         (security.csp dans astro.config.mjs). -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {
