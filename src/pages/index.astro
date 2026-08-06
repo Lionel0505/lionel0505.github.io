@@ -38,10 +38,17 @@ const who2 = fr
 /* L'intitulé suit le nom dans l'onglet : « Lionel Ratovo » seul ne dit rien à
    un recruteur qui a douze onglets ouverts, et c'est aussi la première ligne
    que rend un moteur de recherche. Il n'est pas traduit, parce que c'est la
-   forme qu'emploient déjà le CV maître, la fiche NEXTRI et le JSON-LD Person
-   de Base.astro : le traduire ici les ferait diverger. Les études de cas
-   gardent leur propre titre, où le nom sert de suffixe (Case.astro). */
-const TITLE = 'Lionel Ratovo · Backend & Data Engineer';
+   forme qu'emploient déjà la fiche NEXTRI et le JSON-LD Person de Base.astro :
+   le traduire ici les ferait diverger. Les études de cas gardent leur propre
+   titre, où le nom sert de suffixe (Case.astro).
+
+   « Développeur full-stack Java », et non plus « Backend & Data Engineer » :
+   revendiquer « Data Engineer » amenait un recruteur data sur une étude de cas
+   qui parle de segmentation SQL et de Salesforce Marketing Cloud, et lui
+   faisait perdre confiance dans le reste de la page, SIF compris. Le titre
+   est celui du CV maître (.unwanted/new-cv-content.md) : les deux documents
+   arrivent ensemble chez le recruteur et ne peuvent pas se contredire. */
+const TITLE = 'Lionel Ratovo · Développeur full-stack Java';
 
 /* Le seul lien sortant du site, et le seul dont ce dépôt ne contrôle pas la
    cible. Le collectif est passé d'un dépôt de projet

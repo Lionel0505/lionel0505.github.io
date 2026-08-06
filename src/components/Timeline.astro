@@ -4,27 +4,82 @@ import type { Lang } from '../i18n/utils';
 const { lang } = Astro.props as { lang: Lang };
 const fr = lang === 'fr';
 
-// Faits verbatim du brief (Step 2), lui-même tracé sur
-// CV_Lionel_Ratovo_MASTER.md : rôle, employeur, lieu, dates. Rien n'est
-// déduit ici ; ce fichier ne fait que présenter la table.
-const entries = [
+// Faits verbatim de .unwanted/new-cv-content.md et .unwanted/parcours.md, les
+// deux référentiels que Lionel désigne comme faisant foi : rôle, employeur,
+// lieu, dates. Rien n'est déduit ici ; ce fichier ne fait que présenter la
+// table.
+//
+// DEUX employeurs, pas trois. La version précédente listait « Consultant
+// BICI », « Consultant RAPP IO Mauritius » et « Consultant IGN FI » côte à
+// côte : on y lisait trois postes de deux mois, deux ans et deux ans, quand
+// BICI était l'employeur de bout en bout de juillet 2021 à janvier 2024 et
+// RAPP IO le client chez qui il était mis à disposition. Présentée ainsi, la
+// stabilité, qui est un point fort, se lisait comme de l'instabilité.
+//
+// Les missions vivent donc SOUS leur employeur, dans `missions`. Elles portent
+// les trois comptes internationaux, qui sont l'argument : Mercedes-Benz,
+// Cartier et GSK ne se devinent pas depuis la ligne « BICI Madagascar ».
+// `missions` est optionnelle et une seule entrée la porte : sans ce type, le
+// tableau s'infère en union et `e.missions` n'existe pas sur les membres qui
+// s'en passent, ce qu'`astro check` refuse.
+type Entry = {
+  role: string;
+  employer: string;
+  place: string;
+  dates: string;
+  missions?: { name: string; detail: string }[];
+};
+
+const entries: Entry[] = [
   {
-    role: fr ? 'Développeur & Appui technique' : 'Developer & Technical Support',
-    employer: fr ? 'Consultant IGN FI' : 'Consultant, IGN FI',
+    role: fr
+      ? 'Consultant · SIF et portail public SIGFU'
+      : 'Consultant · SIF and SIGFU public portal',
+    employer: fr ? "IGN FI · Ministère de l'Urbanisme" : 'IGN FI · Ministry of Urban Planning',
     place: "Abidjan, Côte d'Ivoire",
     dates: fr ? 'Janvier 2024 – Présent' : 'January 2024 – Present',
   },
   {
-    role: fr ? 'Data Engineer, puis Webmaster' : 'Data Engineer, then Webmaster',
-    employer: fr ? 'Consultant RAPP IO Mauritius' : 'Consultant, RAPP IO Mauritius',
+    // L'ordre était inversé : « Data Engineer, puis Webmaster » alors que le
+    // webmastering Mercedes précède les comptes data de dix mois. Un recruteur
+    // qui recoupe les dates le voit tout de suite.
+    role: fr
+      ? 'Consultant · développeur, puis webmaster, puis data engineer'
+      : 'Consultant · developer, then webmaster, then data engineer',
+    employer: fr
+      ? 'BICI Madagascar · mises à disposition auprès de RAPP IO Mauritius'
+      : 'BICI Madagascar · seconded to RAPP IO Mauritius',
     place: fr ? 'Madagascar & Maurice' : 'Madagascar & Mauritius',
-    dates: fr ? 'Décembre 2021 – Janvier 2024' : 'December 2021 – January 2024',
-  },
-  {
-    role: fr ? 'Développeur applicatif' : 'Application Developer',
-    employer: fr ? 'Consultant BICI' : 'Consultant, BICI',
-    place: 'Antananarivo',
-    dates: fr ? 'Novembre 2021 – Décembre 2021' : 'November 2021 – December 2021',
+    dates: fr ? 'Juillet 2021 – Janvier 2024' : 'July 2021 – January 2024',
+    missions: [
+      {
+        name: 'GSK',
+        detail: fr
+          ? 'Mars 2023 – Janvier 2024 · data engineer, compte international'
+          : 'March 2023 – January 2024 · data engineer, international account',
+      },
+      {
+        name: 'Cartier',
+        detail: fr
+          ? 'Septembre 2022 – Mars 2023 · data engineer, trois mois sur site à Maurice'
+          : 'September 2022 – March 2023 · data engineer, three months on site in Mauritius',
+      },
+      {
+        name: 'Mercedes-Benz',
+        detail: fr
+          ? 'Décembre 2021 – Septembre 2022 · webmaster, production répartie Maurice / Madagascar'
+          : 'December 2021 – September 2022 · webmaster, production split Mauritius / Madagascar',
+      },
+      {
+        name: fr ? 'Phô Resto & 3 applications métier' : 'Phô Resto & 3 business applications',
+        // Le stage est nommé, et pas fondu dans le poste : il couvre juillet à
+        // octobre 2021, et le passer sous silence ouvrirait un trou de quatre
+        // mois juste sous une ligne employeur qui commence en juillet 2021.
+        detail: fr
+          ? "Juillet 2021 – Décembre 2021 · stage de fin d'études, puis développeur et assistant chef de projet"
+          : 'July 2021 – December 2021 · final-year internship, then developer and assistant project manager',
+      },
+    ],
   },
   {
     role: fr
@@ -49,6 +104,16 @@ const entries = [
             <span class="tl-where">
               {e.employer} · {e.place}
             </span>
+            {e.missions && (
+              <ul class="tl-missions">
+                {e.missions.map((m) => (
+                  <li>
+                    <b>{m.name}</b>
+                    <span>{m.detail}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </li>
       ))
@@ -69,7 +134,12 @@ const entries = [
     padding: 0;
     border-top: 1px solid var(--bd);
   }
-  .tl-list li {
+  /* `>` et non un descendant : les <li> de .tl-missions sont imbriqués dans
+     ces <li>-ci, et un sélecteur descendant leur collait la grille à deux
+     colonnes, le padding et le filet de séparation des entrées de premier
+     niveau. Chaque mission se dessinait alors comme un employeur de plus,
+     soit exactement le contresens que cette refonte corrige. */
+  .tl-list > li {
     display: grid;
     /* 12,5rem, pas 11 : « Décembre 2021 – Janvier 2024 » et « Novembre 2021
        – Décembre 2021 » passaient sur deux lignes. Les dates viennent du CV,
@@ -80,7 +150,7 @@ const entries = [
     border-bottom: 1px solid var(--bd);
   }
   @media (max-width: 620px) {
-    .tl-list li {
+    .tl-list > li {
       grid-template-columns: 1fr;
       gap: 0.35rem;
     }
@@ -104,5 +174,33 @@ const entries = [
   .tl-where {
     color: var(--tx2);
     font-size: 0.85rem;
+  }
+  /* Les missions sont subordonnées à leur employeur, et le filet à gauche est
+     ce qui le dit : sans lui, quatre lignes de plus sous « BICI Madagascar »
+     se relisent comme quatre postes de plus, ce qui est exactement le
+     contresens que cette refonte corrige. */
+  .tl-missions {
+    list-style: none;
+    margin: 0.55rem 0 0;
+    padding: 0 0 0 0.85rem;
+    border-left: 1px solid var(--bd);
+    display: flex;
+    flex-direction: column;
+    gap: 0.32rem;
+  }
+  .tl-missions li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.55rem;
+    font-size: 0.78rem;
+    color: var(--tx2);
+  }
+  .tl-missions b {
+    font-family: var(--ffm);
+    font-size: 0.63rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--tx);
   }
 </style>

@@ -20,10 +20,14 @@ import type { Lang } from '../i18n/utils';
 // le cas majeur, et dans Case.astro le schéma est un bloc dans le flux, pas
 // une colonne.
 const { slug, lang } = Astro.props as { slug: string; lang: Lang };
+// Le nœud Camunda manquait, alors que c'est la brique la moins substituable du
+// dossier : un moteur de processus BPM sur un système d'État en production. Le
+// détail « innola · 150 tables » a cédé la place, faute de largeur ; il reste
+// écrit dans le corps de l'étude de cas, où il a son contexte.
 const alt =
   lang === 'fr'
-    ? "Le portail SIGFU est une application distincte, en Angular, NestJS et sa propre base PostgreSQL ; il lit le SIF en lecture seule via ses API. Le SIF réunit une interface ExtJS, une API Java, un moteur de règles Drools et une base PostgreSQL de neuf schémas, qui lit et écrit dans les bases d'autres services de l'État."
-    : 'The SIGFU portal is a separate application, built on Angular, NestJS and its own PostgreSQL database; it reads the SIF read-only through its APIs. The SIF itself brings together an ExtJS interface, a Java API, a Drools rules engine and a nine-schema PostgreSQL database, which both reads from and writes to the databases of other State services.';
+    ? "Le portail SIGFU est une application distincte, en Angular, NestJS et sa propre base PostgreSQL ; il lit le SIF en lecture seule via ses API. Le SIF réunit une interface ExtJS, une API Java Spring Boot, un moteur de règles métier Drools, un moteur de workflows Camunda et une base PostgreSQL de neuf schémas, qui lit et écrit dans les bases d'autres services de l'État."
+    : 'The SIGFU portal is a separate application, built on Angular, NestJS and its own PostgreSQL database; it reads the SIF read-only through its APIs. The SIF itself brings together an ExtJS interface, a Java Spring Boot API, a Drools business-rules engine, a Camunda workflow engine and a nine-schema PostgreSQL database, which both reads from and writes to the databases of other State services.';
 ---
 
 {
@@ -47,41 +51,55 @@ const alt =
 
         <rect class="dg-frame" x="4" y="96" width="292" height="68" rx="3" style="stroke:var(--or)" />
         <text class="dg-lbl" x="11" y="109" style="fill:var(--or-t)">SIF</text>
-        <rect class="dg-node" x="11" y="116" width="56" height="40" rx="3" />
-        <text class="dg-t" x="19" y="140">Ext JS</text>
-        <rect class="dg-node" x="73" y="116" width="52" height="40" rx="3" />
-        <text class="dg-t" x="81" y="140">API Java</text>
+        {/* « Ext JS » tient en 40 là où « Spring Boot », le plus long libellé
+            de la rangée, demande 56 : les deux largeurs sont réparties selon
+            ce que le texte occupe, pas à parts égales. */}
+        <rect class="dg-node" x="11" y="116" width="40" height="40" rx="3" />
+        <text class="dg-t" x="17" y="140">Ext JS</text>
+        <rect class="dg-node" x="57" y="116" width="56" height="40" rx="3" />
+        <text class="dg-t" x="65" y="134">Java</text>
+        <text class="dg-t s" x="65" y="146">Spring Boot</text>
         <rect
           class="dg-node"
-          x="131"
+          x="119"
           y="116"
-          width="56"
+          width="48"
           height="40"
           rx="3"
           style="stroke:var(--or);stroke-width:1.6;fill:color-mix(in oklab,var(--or) 14%,transparent)"
         />
-        <text class="dg-t" x="139" y="134" style="fill:var(--tx)">Drools</text>
-        <text class="dg-t s" x="139" y="146" style="fill:var(--tx)">métier</text>
+        <text class="dg-t" x="127" y="134" style="fill:var(--tx)">Drools</text>
+        <text class="dg-t s" x="127" y="146" style="fill:var(--tx)">métier</text>
         <rect
           class="dg-node"
-          x="193"
+          x="173"
           y="116"
-          width="94"
+          width="48"
+          height="40"
+          rx="3"
+          style="stroke:var(--or);stroke-width:1.6;fill:color-mix(in oklab,var(--or) 14%,transparent)"
+        />
+        <text class="dg-t" x="181" y="134" style="fill:var(--tx)">Camunda</text>
+        <text class="dg-t s" x="181" y="146" style="fill:var(--tx)">workflows</text>
+        <rect
+          class="dg-node"
+          x="227"
+          y="116"
+          width="62"
           height="40"
           rx="3"
           style="stroke:var(--tl-t);stroke-width:1.6;fill:color-mix(in oklab,var(--tl) 12%,transparent)"
         />
-        <text class="dg-t" x="201" y="130" style="fill:var(--tx)">Postgres</text>
-        <text class="dg-t s" x="201" y="141" style="fill:var(--tx)">9 schémas</text>
-        <text class="dg-t s" x="201" y="151" style="fill:var(--tx)">innola · 150 t.</text>
-        <path class="dg-l" d="M67 136 h6 M125 136 h6 M187 136 h6" />
+        <text class="dg-t" x="235" y="134" style="fill:var(--tx)">Postgres</text>
+        <text class="dg-t s" x="235" y="146" style="fill:var(--tx)">9 schémas</text>
+        <path class="dg-l" d="M51 136 h6 M113 136 h6 M167 136 h6 M221 136 h6" />
 
-        <path class="dg-l" d="M212 164 V190" style="stroke:var(--tl-t)" />
-        <path class="dg-l" d="M208 170 l4 -6 l4 6" style="stroke:var(--tl-t)" />
-        <text class="dg-t s" x="150" y="180" style="fill:var(--tl-t)">lecture</text>
-        <path class="dg-l" d="M244 164 V190" style="stroke:var(--tl-t)" />
-        <path class="dg-l" d="M240 184 l4 6 l4 -6" style="stroke:var(--tl-t)" />
-        <text class="dg-t s" x="252" y="180" style="fill:var(--tl-t)">écriture</text>
+        <path class="dg-l" d="M237 164 V190" style="stroke:var(--tl-t)" />
+        <path class="dg-l" d="M233 170 l4 -6 l4 6" style="stroke:var(--tl-t)" />
+        <text class="dg-t s" x="195" y="180" style="fill:var(--tl-t)">lecture</text>
+        <path class="dg-l" d="M257 164 V190" style="stroke:var(--tl-t)" />
+        <path class="dg-l" d="M253 184 l4 6 l4 -6" style="stroke:var(--tl-t)" />
+        <text class="dg-t s" x="261" y="180" style="fill:var(--tl-t)">écriture</text>
 
         <rect class="dg-frame" x="140" y="190" width="156" height="32" rx="3" />
         <text class="dg-lbl" x="148" y="203">Autres services de l'État</text>
@@ -107,10 +125,13 @@ const alt =
          « SIF » de 4,90/4,54 à 4,52/4,18, en échec en sombre, et il s'empilait
          sous les deux nœuds teintés en dégradant leur texte aussi. Sans lui, le
          libellé pose sur --bg2 : 4,90 / 4,54.
-       - les textes des deux nœuds teintés passent en --tx. Sur le lavis à 14 %
+       - les textes des trois nœuds teintés passent en --tx. Sur le lavis à 14 %
          d'--or, --or-t donnait 3,87 en sombre et --tx2 4,15 ; sur le lavis à
          12 % de --tl, --tx2 donnait 3,94. --tx donne 10,74/10,38 et 11,39/9,86.
          Le nœud reste l'accent par son trait et son aplat, ce qui est leur rôle.
+         Camunda partage l'aplat d'--or de Drools : même famille (le métier
+         exécutable), donc même traitement, et les mesures ci-dessus valent
+         telles quelles.
      Et un quatrième, même cause : tout ce qui était tracé en --tl (les quatre
      traits lecture/écriture, le trait du nœud Postgres) passe en --tl-t. --tl
      sur --bg2 ne fait que 2,61:1 en clair, sous les 3:1 d'un graphique porteur

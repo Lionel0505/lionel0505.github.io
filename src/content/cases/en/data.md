@@ -3,16 +3,17 @@ order: 2
 role: tl
 client: "RAPP IO · GSK · Cartier"
 period: "2022 · 2024"
-stack: ["SQL", "Salesforce"]
+stack: ["SQL", "Salesforce Marketing Cloud"]
 title: "Two data accounts, pipelines that cannot break"
-teaser: "At GSK, transforming and analyzing the group's marketing data. At Cartier, taking over the campaign preparation pipelines where they already stood, in Salesforce."
+teaser: "At Cartier, taking over the campaign preparation pipelines where they already stood, in Salesforce. At GSK, segmenting and targeting through SQL queries, then training the people taking over."
 sourceRefs: ["B1", "B3", "F5", "F6"]
 ---
 
 ## The stakes
-As a Data Engineer consultant for RAPP IO Mauritius, based between Madagascar
-and Mauritius, two international accounts followed one another within the
-same assignment: Cartier, then GSK.
+A BICI Madagascar consultant, seconded to RAPP IO Mauritius under the mission
+title "data engineer", two international accounts followed one another:
+Cartier, then GSK. Three months on site in Mauritius, the rest from
+Madagascar.
 
 ## The constraint
 At Cartier, the data preparation processing for analytical marketing
@@ -27,8 +28,9 @@ At Cartier, from September 2022 to March 2023, took over and maintained the
 data preparation processing for analytical marketing campaigns, within the
 existing Salesforce flows.
 
-At GSK, from March 2023 to January 2024, transformed and analyzed the
-group's marketing data, and optimized the SQL queries in question.
+At GSK, from March 2023 to January 2024, segmented and analyzed the group's
+marketing data through SQL queries, targeted campaigns in Salesforce Marketing
+Cloud, and trained the incoming consultants taking over the scope.
 
 ## What held
 Cartier's Salesforce flow, taken over as is, kept running. The optimized

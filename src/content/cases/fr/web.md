@@ -10,20 +10,21 @@ sourceRefs: ["B2", "F6", "F7"]
 ---
 
 ## L'enjeu
-En tant que webmaster pour RAPP IO, sur le compte Mercedes-Benz, de décembre
-2021 à septembre 2022, la production de contenus web reposait sur une équipe
-répartie entre Maurice et Madagascar.
+Webmaster sur le compte Mercedes-Benz de décembre 2021 à septembre 2022,
+consultant BICI Madagascar mis à disposition de RAPP IO, la production de
+contenus web reposait sur un dispositif réparti entre Maurice et Madagascar.
 
 ## La contrainte
-Le programme comptait quatre équipes de neuf à douze personnes : trois basées
-à Maurice, une à Madagascar. La publication devait continuer sans rupture
-malgré cette répartition entre les deux sites.
+L'équipe locale comptait huit personnes, toutes à Madagascar, dans un
+dispositif de production dont le reste était à Maurice. La publication devait
+continuer sans rupture malgré cette répartition entre les deux sites.
 
 ## Ce que j'ai fait
-Assuré la production et la publication de contenus web sous AEM.
+Assuré la production et la publication de contenus web sous AEM, et la mise à
+jour du référencement selon les campagnes marketing définies.
 
-Coordonné en interne l'équipe de Madagascar, avec un collègue, en appui
-technique, sur une production répartie entre Maurice et Madagascar.
+Coordonné l'équipe locale de huit personnes à Madagascar, pour le contrôle
+qualité des livrables, et assuré le support technique du dispositif réparti.
 
 ## Ce qui a tenu
 La coordination entre les deux sites a tenu sur toute la durée du compte,

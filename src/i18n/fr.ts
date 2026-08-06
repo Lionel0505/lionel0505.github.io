@@ -15,17 +15,20 @@ export default {
     titleAccent: 'tiennent',
     // « au total » est load-bearing : sans lui, la phrase se lit comme cinq ans
     // sur le seul SIF, ce que Lionel a relevé [F8].
-    lead: "Backend & Data Engineer, Technical Project Lead. Près de cinq ans au total : un système d'information foncier national, deux comptes data internationaux, de la production web.",
+    lead: "Développeur full-stack Java, consultant technico-fonctionnel. Cinq ans au total : un système d'information foncier national, deux comptes data internationaux, de la production web.",
     places: ['Antananarivo', 'Abidjan', 'Maurice'],
     ctaCv: 'Télécharger le CV',
     ctaContact: 'Me contacter',
   },
   // La planche : géométrie dans plate.mjs, mots ici. Les deux ne se mélangent pas.
   plate: {
-    alt: "Plan parcellaire du parcours. L'aire de chaque parcelle est proportionnelle au temps passé : le SIF et le portail SIGFU en Côte d'Ivoire, les comptes data GSK et Cartier, la production web Mercedes-Benz, la reprise d'existant BICI, et une parcelle libre de douze mois ouverte au prochain projet.",
+    alt: "Plan parcellaire du parcours. L'aire de chaque parcelle est proportionnelle au temps passé : le SIF et le portail SIGFU en Côte d'Ivoire, les comptes data GSK et Cartier, la production web Mercedes-Benz, la reprise d'existant BICI, et une parcelle de douze mois de capacité disponible pour le prochain projet.",
     sheet: 'PLANCHE 01 · PARCOURS',
     scale: 'AIRE ∝ DURÉE · LEVÉ 2021–2026',
-    total: '58 MOIS TRAVAILLÉS · 12 LIBRES',
+    // « 12 LIBRES » se lisait spontanément comme douze mois sans emploi, alors
+    // que la parcelle libre est de la capacité à venir. Le libellé le dit
+    // maintenant, ici comme dans la légende de couleur.
+    total: '62 MOIS DE MISSION · 12 MOIS DISPONIBLES',
     hint: '→ Votre projet',
     keys: [
       ['or', 'Mission en cours'],
@@ -33,9 +36,9 @@ export default {
       ['yw', 'Production web'],
       ['lv', "Reprise d'existant"],
     ],
-    keyFree: 'Libre · 12 mois',
+    keyFree: 'Disponible · 12 mois',
     parcels: {
-      bici: { nom: 'BICI', sub: '2021 · 2 mois' },
+      bici: { nom: 'BICI', sub: '2021 · 5 mois' },
       merc: { nom: 'Mercedes-Benz', sub: '2021–2022 · 9 mois' },
       cart: { nom: 'Cartier', sub: '2022–2023 · 6 mois' },
       gsk: { nom: 'GSK', sub: '2023–2024 · 10 mois' },
@@ -72,6 +75,7 @@ export default {
     project: { kicker: 'Prestation', title: 'Un projet à livrer ?' },
   },
   phone: { reveal: 'Afficher le numéro' },
+  linkedin: 'Profil LinkedIn',
   // Servie par GitHub Pages pour tout chemin inconnu, y compris sous /en/ :
   // relevé du 02/08/2026 (correction B). Un seul fichier, donc une seule
   // page qui porte les deux langues plutôt qu'une traduction par locale.

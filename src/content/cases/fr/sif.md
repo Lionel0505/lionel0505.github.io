@@ -3,7 +3,7 @@ order: 1
 role: or
 client: "Ministère de l'Urbanisme · Côte d'Ivoire"
 period: "2024 →"
-stack: ["Java", "PostgreSQL", "Drools", "ExtJS"]
+stack: ["Java Spring Boot", "Camunda", "Drools", "PostgreSQL", "ExtJS"]
 title: "Migrer un cadastre national sans arrêter le service"
 teaser: "Le SGFH devait devenir le SIF. Neuf schémas PostgreSQL, un portail public qui ne fait que lire, et les bases d'autres services de l'État qu'il faut à la fois consulter et alimenter. La mise en production de novembre 2024 était le vrai défi du projet."
 sourceRefs: ["A1", "A2", "A3", "A4", "A6", "F1", "F2", "F3", "F4"]
@@ -19,6 +19,10 @@ Neuf schémas PostgreSQL. Le principal, innola, compte 150 tables ; le schéma
 public, 59. Le SIF lit et écrit dans les bases d'autres services de l'État, et
 chaque action CRUD passe par des contraintes métier validées via Drools.
 
+Les procédures foncières ne sont pas du code : ce sont des processus à étapes,
+avec des acteurs et des états, orchestrés sous Camunda. Une règle qui change
+se modélise, elle ne se recompile pas.
+
 Le portail SIGFU est une application distincte, en Angular et NestJS, avec sa
 propre base. Il ne touche jamais celle du SIF : il tire ce dont il a besoin par
 les API du SIF, en lecture seule.
@@ -27,6 +31,9 @@ les API du SIF, en lecture seule.
 Conçu et développé les interfaces des applications métier des gestionnaires
 fonciers, et celles du portail web ouvert au grand public, utilisé par plus de
 cent usagers.
+
+Implémenté les fonctionnalités métier en Java Spring Boot, modélisé les règles
+sous Drools et les workflows applicatifs sous Camunda.
 
 Porté en atelier les attentes du client auprès de l'équipe technique, au sein
 d'une équipe de neuf développeurs et trois testeurs.
@@ -37,3 +44,7 @@ au chef d'équipe sur la charge et les ressources.
 ## Ce qui a tenu
 La mise en production de novembre 2024. C'était le défi du projet, et il est
 réussi.
+
+L'application est en maintenance depuis novembre 2025, et j'en ai la charge.
+Un an de service, puis la maintenance confiée à celui qui l'a construite : la
+suite normale d'un système qui tient.

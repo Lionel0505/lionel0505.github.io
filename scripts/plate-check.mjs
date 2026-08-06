@@ -72,16 +72,26 @@ for (const [langue, source] of dicos) {
   );
 
   // « AIRE ∝ DURÉE · LEVÉ 2021–2026 » et son jumeau anglais. MISSIONS ne
-  // porte pas de dates, mais elle porte la durée : un levé ne peut pas couvrir
-  // moins d'années entières que le travail qu'il montre. 58 mois font 4,84
-  // années, donc 5 années révolues, et 2026 moins 2021 en fait 5. Passer la
-  // barre des 60 mois travaillés rend donc la borne haute fausse.
+  // porte pas de dates, mais elle porte la durée, et l'écart entre les deux
+  // millésimes du levé doit pouvoir la contenir.
+  //
+  // La borne était `=== ceil(mois / 12)`, ce qui n'est vrai que si le travail
+  // commence un 1er janvier. Il commence en juillet 2021 : 62 mois s'étendent
+  // de juillet 2021 à août 2026, soit 5 millésimes d'écart, quand `ceil` en
+  // exige 6. La règle refusait donc une légende exacte.
+  //
+  // L'encadrement ci-dessous est celui qui tient quel que soit le mois de
+  // départ : M mois occupent au moins floor(M/12) millésimes d'écart et jamais
+  // plus de ceil(M/12). Il attrape toujours les deux fautes visées, un levé
+  // trop court (« 2021–2022 » pour 62 mois) comme un levé gonflé
+  // (« 2021–2030 »).
   const scale = extraire(source, /scale:\s*'([^']*)'/, `plate.scale (${langue})`);
   const [debut, fin] = nombres(scale);
-  assert.equal(
-    fin - debut,
-    Math.ceil(travailles / 12),
-    `${langue} : le levé couvre ${fin - debut} années (${debut} à ${fin}), or ${travailles} mois travaillés en demandent ${Math.ceil(travailles / 12)} (« ${scale} »)`,
+  const bas = Math.floor(travailles / 12);
+  const haut = Math.ceil(travailles / 12);
+  assert.ok(
+    fin - debut >= bas && fin - debut <= haut,
+    `${langue} : le levé couvre ${fin - debut} millésimes (${debut} à ${fin}), or ${travailles} mois de mission en demandent entre ${bas} et ${haut} (« ${scale} »)`,
   );
 }
 

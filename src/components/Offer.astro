@@ -10,28 +10,35 @@ const fr = lang === 'fr';
 // monologue sur le SIF, qui était l'objection [F5] de Lionel sur l'ancienne
 // version « cadrer · construire · livrer », qui décrivait trois fois la même
 // mission.
+//
+// Chaque techno nommée ici est une techno pratiquée en mission, tracée sur
+// .unwanted/new-cv-content.md. C# et PHP (01) ainsi que MySQL, SQL Server et
+// MongoDB (02) ont été retirés : ils n'apparaissent nulle part dans le
+// parcours, et un listing de couverture tombe à la première question d'un
+// entretien technique. Camunda, à l'inverse, était absent alors que c'est la
+// compétence la moins substituable du dossier.
 const services = [
   {
     num: '01',
     role: 'or',
-    title: fr ? 'API et backend métier' : 'APIs and business backend',
+    title: fr ? 'Du serveur à l’interface' : 'From server to interface',
     body: fr
-      ? "Java, Node.js, C#, PHP. Des règles métier qui vivent dans le système, pas dans la tête de celui qui l'a écrit."
-      : 'Java, Node.js, C#, PHP. Business rules that live in the system, not in the head of whoever wrote them.',
+      ? "Java Spring Boot, Java EE, NestJS côté serveur ; Angular et Ext JS côté interface. Drools pour les règles, Camunda pour les workflows : des règles métier qui vivent dans le système, pas dans la tête de celui qui l'a écrit."
+      : 'Java Spring Boot, Java EE, NestJS on the server; Angular and Ext JS on the interface. Drools for the rules, Camunda for the workflows: business rules that live in the system, not in the head of whoever wrote them.',
     proof: fr
-      ? "SIF · chaque écriture passe par un moteur de règles Drools avant d'atteindre la base."
-      : 'SIF: every write passes through a Drools rules engine before it reaches the database.',
+      ? "SIF · les processus fonciers sont orchestrés sous Camunda, et chaque écriture passe par un moteur de règles Drools avant d'atteindre la base."
+      : 'SIF: land-management processes are orchestrated in Camunda, and every write passes through a Drools rules engine before it reaches the database.',
   },
   {
     num: '02',
     role: 'tl',
     title: fr ? 'Modélisation et optimisation SQL' : 'SQL modelling and optimisation',
     body: fr
-      ? "PostgreSQL, Oracle, MySQL, SQL Server, MongoDB. Modéliser d'abord, puis faire tenir les requêtes quand le volume arrive."
-      : 'PostgreSQL, Oracle, MySQL, SQL Server, MongoDB. Model first, then make the queries hold once the volume arrives.',
+      ? "PostgreSQL, Oracle. Modéliser d'abord, puis faire tenir les requêtes quand le volume arrive."
+      : 'PostgreSQL, Oracle. Model first, then make the queries hold once the volume arrives.',
     proof: fr
-      ? 'GSK · transformation et analyse des données marketing du groupe, requêtes optimisées dont les résultats portent sur des milliers de lignes.'
-      : "GSK: transforming and analysing the group's marketing data, with optimised queries whose results span thousands of rows.",
+      ? 'GSK · segmentation et analyse des données marketing du groupe, requêtes dont les résultats portent sur des milliers de lignes.'
+      : "GSK: segmenting and analysing the group's marketing data, with queries whose results span thousands of rows.",
   },
   {
     num: '03',
@@ -47,13 +54,13 @@ const services = [
   {
     num: '04',
     role: 'yw',
-    title: fr ? 'Conduite technique' : 'Technical project leadership',
+    title: fr ? 'Appui à la conduite technique' : 'Support to technical leadership',
     body: fr
-      ? "Cadrage, chiffrage, estimation, suivi des livrables. L'interface entre ceux qui décident et ceux qui développent."
-      : 'Scoping, costing, estimation, delivery tracking. The interface between those who decide and those who build.',
+      ? "Ateliers métier, estimation, répartition et suivi des tâches, en appui au chef d'équipe. L'interface entre ceux qui décident et ceux qui développent."
+      : 'Business workshops, estimation, task breakdown and follow-up, supporting the team lead. The interface between those who decide and those who build.',
     proof: fr
-      ? "Mercedes-Benz · coordination interne de l'équipe de Madagascar, sur une production répartie entre deux pays."
-      : 'Mercedes-Benz: internal coordination of the Madagascar team, on production split across two countries.',
+      ? "Mercedes-Benz · coordination d'une équipe locale de huit personnes, sur une production répartie entre deux pays."
+      : 'Mercedes-Benz: coordinating a local team of eight, on production split across two countries.',
   },
 ];
 ---

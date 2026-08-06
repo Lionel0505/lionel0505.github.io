@@ -24,17 +24,21 @@ const self = lang === 'en' ? enPath : frPath;
 
 /* ====== */
 // Personne unique, identique sur les huit pages : un nom et une adresse ne
-// se traduisent pas. Pas de `sameAs` : Lionel n'a aucun profil social, et en
-// inventer un serait un fait fabriqué (contrainte globale 3). Pas de
-// numéro de téléphone : il n'est jamais en clair dans le HTML servi
-// (SiteFooter.astro le décode au clic), et l'y mettre défairait cette
-// protection.
+// se traduisent pas. Pas de numéro de téléphone : il n'est jamais en clair
+// dans le HTML servi (SiteFooter.astro le décode au clic), et l'y mettre
+// défairait cette protection.
+//
+// `sameAs` porte le profil LinkedIn, qui existe désormais et figure sur le CV
+// maître. C'est le seul profil : le compte GitHub n'expose qu'un site
+// statique, donc l'y déclarer n'ajouterait aucun signal. La règle inchangée
+// reste qu'on ne déclare que ce qui existe.
 const person = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: 'Lionel Ratovo',
-  jobTitle: 'Backend & Data Engineer, Technical Project Lead',
+  jobTitle: 'Développeur full-stack Java, consultant technico-fonctionnel',
   email: 'mailto:lionelratovo@gmail.com',
+  sameAs: ['https://www.linkedin.com/in/lionel-ratovo-98a79525a'],
   address: { '@type': 'PostalAddress', addressLocality: 'Antananarivo', addressCountry: 'MG' },
   knowsLanguage: ['mg', 'fr', 'en'],
   alumniOf: [

@@ -20,16 +20,16 @@ const en: Widen<typeof fr> = {
   hero: {
     title: 'I turn complex business needs into systems that',
     titleAccent: 'hold',
-    lead: 'Backend & Data Engineer, Technical Project Lead. Close to five years in total: a national land information system, two international data accounts, web production.',
+    lead: 'Java full-stack developer, technical and functional consultant. Five years in total: a national land information system, two international data accounts, web production.',
     places: ['Antananarivo', 'Abidjan', 'Mauritius'],
     ctaCv: 'Download CV',
     ctaContact: 'Get in touch',
   },
   plate: {
-    alt: "Parcel plan of the career. Each parcel's area is proportional to time spent: the SIF and SIGFU portal in Côte d'Ivoire, the GSK and Cartier data accounts, Mercedes-Benz web production, BICI legacy work, and one free parcel of twelve months open to the next project.",
+    alt: "Parcel plan of the career. Each parcel's area is proportional to time spent: the SIF and SIGFU portal in Côte d'Ivoire, the GSK and Cartier data accounts, Mercedes-Benz web production, BICI legacy work, and one parcel of twelve months of capacity available for the next project.",
     sheet: 'SHEET 01 · CAREER',
     scale: 'AREA ∝ DURATION · SURVEYED 2021–2026',
-    total: '58 MONTHS WORKED · 12 FREE',
+    total: '62 MONTHS ON MISSION · 12 MONTHS AVAILABLE',
     hint: '→ Your project',
     keys: [
       ['or', 'Current mission'],
@@ -37,9 +37,9 @@ const en: Widen<typeof fr> = {
       ['yw', 'Web production'],
       ['lv', 'Legacy systems'],
     ],
-    keyFree: 'Free · 12 months',
+    keyFree: 'Available · 12 months',
     parcels: {
-      bici: { nom: 'BICI', sub: '2021 · 2 months' },
+      bici: { nom: 'BICI', sub: '2021 · 5 months' },
       merc: { nom: 'Mercedes-Benz', sub: '2021–2022 · 9 months' },
       cart: { nom: 'Cartier', sub: '2022–2023 · 6 months' },
       gsk: { nom: 'GSK', sub: '2023–2024 · 10 months' },
@@ -76,6 +76,7 @@ const en: Widen<typeof fr> = {
     project: { kicker: 'Consulting', title: 'A project to deliver?' },
   },
   phone: { reveal: 'Show the number' },
+  linkedin: 'LinkedIn profile',
   notFound: {
     title: 'Page not found',
     lead: 'This page does not exist.',

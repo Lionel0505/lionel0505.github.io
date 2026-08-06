@@ -10,20 +10,21 @@ sourceRefs: ["B2", "F6", "F7"]
 ---
 
 ## The stakes
-As a webmaster for RAPP IO, on the Mercedes-Benz account, from December 2021
-to September 2022, web content production relied on a team split between
-Mauritius and Madagascar.
+Webmaster on the Mercedes-Benz account from December 2021 to September 2022,
+a BICI Madagascar consultant seconded to RAPP IO, web content production
+relied on a setup split between Mauritius and Madagascar.
 
 ## The constraint
-The program had four teams of nine to twelve people: three based in
-Mauritius, one in Madagascar. Publishing had to continue without
+The local team was eight people, all in Madagascar, within a production setup
+whose remainder sat in Mauritius. Publishing had to continue without
 interruption despite this split between the two sites.
 
 ## What I did
-Handled the production and publication of web content under AEM.
+Handled the production and publication of web content under AEM, and updated
+search-engine optimisation in line with the marketing campaigns defined.
 
-Internally coordinated the Madagascar team, alongside a colleague, in
-technical support, on production split between Mauritius and Madagascar.
+Coordinated the local team of eight in Madagascar for quality control of the
+deliverables, and provided technical support across the split setup.
 
 ## What held
 Coordination between the two sites held throughout the account, until

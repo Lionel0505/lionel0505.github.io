@@ -13,15 +13,26 @@ export const HEX = [
   [28, 258],
 ];
 
-// `mois` : durées pleines, source RETOURS-LIONEL-2026-08-01.md.
+// `mois` : durées pleines, dates données par Lionel le 06/08/2026. Elles priment
+//          sur .unwanted/parcours.md et .unwanted/new-cv-content.md, qui
+//          divergeaient de deux mois sur Cartier et GSK.
 // `op`   : Cartier et GSK partagent le rôle « données » et sont mitoyennes ;
 //          deux densités d'aplat les séparent, comme sur un vrai plan.
+//
+// Intervalles semi-ouverts [début, fin) : deux missions qui se suivent partagent
+// un mois de bascule, et le compter des deux côtés gonflait le total d'autant.
+// Juillet 2021 → août 2026 fait 62 mois, et c'est ce que la somme donne.
+//   bici  [07/2021, 12/2021)   stage, puis Phô Resto & 3 applications métier
+//   merc  [12/2021, 09/2022)   Mercedes-Benz
+//   cart  [09/2022, 03/2023)   Cartier
+//   gsk   [03/2023, 01/2024)   GSK
+//   sif   [01/2024, 09/2026)   SIF & portail SIGFU
 export const MISSIONS = [
-  { id: 'bici', mois: 2, role: 'lv', op: '.30' },
+  { id: 'bici', mois: 5, role: 'lv', op: '.30' },
   { id: 'merc', mois: 9, role: 'yw', op: '.32' },
   { id: 'cart', mois: 6, role: 'tl', op: '.20' },
   { id: 'gsk', mois: 10, role: 'tl', op: '.34' },
-  { id: 'sif', mois: 31, role: 'or', op: '.32' },
+  { id: 'sif', mois: 32, role: 'or', op: '.32' },
   { id: 'free', mois: 12, role: 'tx', op: '.045' },
 ];
 

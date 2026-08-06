@@ -4,12 +4,23 @@ import { t, type Lang } from '../i18n/utils';
 const { lang } = Astro.props as { lang: Lang };
 const s = t(lang);
 const year = new Date().getFullYear();
+
+/* Le seul profil social du site, et le second lien sortant après NEXTRI. Nommé
+   plutôt qu'écrit dans le balisage, comme l'adresse de NEXTRI dans index.astro :
+   une URL de profil se corrige à un seul endroit. Il double le JSON-LD `sameAs`
+   de Base.astro, qui n'est lu que par les machines. */
+const LINKEDIN = 'https://www.linkedin.com/in/lionel-ratovo-98a79525a';
 ---
 
 <footer>
   <div class="ftr wrap">
     <p class="mono sig">© {year} Ratovo <i>S. M.</i> Lionel</p>
-    <button id="phone-reveal" class="mono reveal" type="button">{s.phone.reveal}</button>
+    <div class="ftr-actions">
+      <a class="mono ln" href={LINKEDIN} target="_blank" rel="noopener noreferrer">
+        {s.linkedin}
+      </a>
+      <button id="phone-reveal" class="mono reveal" type="button">{s.phone.reveal}</button>
+    </div>
   </div>
 </footer>
 
@@ -34,7 +45,20 @@ const year = new Date().getFullYear();
     color: var(--tx2);
     font-weight: 400;
   }
+  .ftr-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  /* Le lien reprend la boîte du bouton voisin plutôt que le soulignement des
+     liens de prose : ils sont côte à côte et forment une paire d'actions, où
+     deux traitements différents se liraient comme deux natures différentes.
+     `min-height: 44px` est la cible tactile, alignée sur `.reveal`. */
+  .ln,
   .reveal {
+    display: inline-flex;
+    align-items: center;
     background: transparent;
     border: 1px solid var(--bd2);
     border-radius: 2px;
@@ -45,6 +69,7 @@ const year = new Date().getFullYear();
       border-color 0.25s var(--ease),
       color 0.25s var(--ease);
   }
+  .ln:hover,
   .reveal:hover {
     border-color: var(--tx);
     color: var(--tx);

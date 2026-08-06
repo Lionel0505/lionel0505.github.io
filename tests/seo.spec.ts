@@ -31,12 +31,15 @@ test("la page d'erreur ne se présente pas comme un contenu indexable", async ({
   await expect(page.locator('main a[href="/en/"]')).toHaveCount(1);
 });
 
-test('le JSON-LD est valide et ne declare aucun profil social', async ({ page }) => {
+test('le JSON-LD est valide et ne declare que le profil LinkedIn', async ({ page }) => {
   await page.goto('/');
   const raw = await page.locator('script[type="application/ld+json"]').textContent();
   const data = JSON.parse(raw ?? '');
   expect(data['@type']).toBe('Person');
-  expect(data.sameAs).toBeUndefined();
+  // L'assertion etait `sameAs` absent, du temps ou Lionel n'avait aucun profil.
+  // Elle est devenue une liste fermee plutot qu'une absence : ce qui compte
+  // n'a pas change, c'est qu'on ne declare aucun profil qui n'existe pas.
+  expect(data.sameAs).toEqual(['https://www.linkedin.com/in/lionel-ratovo-98a79525a']);
   // Le numero n'est jamais en clair dans le HTML : SiteFooter le decode au
   // clic, et le JSON-LD ne doit pas defaire cette protection.
   expect(JSON.stringify(data)).not.toMatch(/\+?261/);

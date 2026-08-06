@@ -41,9 +41,12 @@ let failed = 0;
    pas de cette porte, et rien ici ne doit laisser croire le contraire.
    ============================================================ */
 const FUITES = [
-  // Aucun lien social nulle part sur le site : Lionel n'a ni LinkedIn ni
-  // GitHub, et en inventer un serait un fait fabriqué.
-  { motif: /linkedin\.com/i, quoi: 'lien LinkedIn' },
+  // Le motif LinkedIn a été retiré le 06/08/2026 : ce garde interdisait tout
+  // lien LinkedIn parce que Lionel n'en avait pas, et qu'en inventer un aurait
+  // été un fait fabriqué. Le profil existe désormais et figure sur le CV
+  // maître, donc l'interdire reviendrait à cacher un fait vrai. Le motif
+  // GitHub reste : le compte n'expose qu'un site statique, et rien sur le site
+  // ne doit laisser croire à du code public.
   { motif: /github\.com\/[Ll]ionel/, quoi: 'lien GitHub' },
   // Le numéro de téléphone en clair ne doit jamais apparaître dans le HTML
   // construit ; seule sa forme encodée en base64 le peut, SiteFooter.astro la
