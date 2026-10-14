@@ -13,3 +13,6 @@ playwright-report/
 .unwanted/
 *.stackdump
 .superpowers/
+
+# Rendus intermédiaires du CV (scripts/cv.mjs)
+cv/build/
