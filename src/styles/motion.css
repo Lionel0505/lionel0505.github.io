@@ -270,3 +270,31 @@
     animation: none !important;
   }
 }
+
+/* ============================================================
+   MODE STATIQUE (data-motion="lite", Base.astro)
+   Appareil sans accélération GPU.
+   Coupe tout ce qui force un repeint plein écran à chaque image : animations
+   (dont les timelines de défilement), grain fixe en mix-blend-mode, flou de
+   l'en-tête, barre de progression. Les transitions de survol restent.
+   ============================================================ */
+[data-motion="lite"] *,
+[data-motion="lite"] *::before,
+[data-motion="lite"] *::after {
+  animation: none !important;
+}
+/* États de départ posés hors animation, à remettre à l'état final */
+[data-motion="lite"] .of::before {
+  transform: none !important;
+}
+[data-motion="lite"] .dg-l {
+  stroke-dashoffset: 0 !important;
+}
+[data-motion="lite"] #grain,
+[data-motion="lite"] #chain {
+  display: none;
+}
+[data-motion="lite"] body > header {
+  backdrop-filter: none;
+  background: var(--bg);
+}

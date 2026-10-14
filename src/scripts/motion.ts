@@ -1,4 +1,7 @@
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Mode statique (data-motion, Base.astro) traité comme un mouvement réduit.
+const reduce =
+  matchMedia('(prefers-reduced-motion: reduce)').matches ||
+  document.documentElement.dataset.motion === 'lite';
 const native = CSS.supports('animation-timeline: view()') && !reduce;
 
 /* Planche : le contour est déjà posé par Plate.astro (tâche 6) ; ce script

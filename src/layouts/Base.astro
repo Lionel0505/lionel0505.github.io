@@ -100,9 +100,37 @@ const person = {
         var d = document.documentElement;
         d.dataset.theme = stored === "light" || stored === "dark" ? stored : sys;
         d.dataset.themePref = stored || "system";
+        // Mode animé ou statique (`data-motion`). Statique si mouvement réduit ou appareil
+        // modeste : WebGL refusé avec failIfMajorPerformanceCaveat = rendu
+        // logiciel, sans accélération GPU. Résultat gardé pour la session.
+        var weak = null;
+        try {
+          weak = sessionStorage.getItem("weak");
+        } catch (e) {}
+        if (weak === null) {
+          var n = navigator;
+          var w = (n.deviceMemory && n.deviceMemory <= 2) || (n.hardwareConcurrency && n.hardwareConcurrency <= 2);
+          if (!w) {
+            try {
+              var gl = document.createElement("canvas").getContext("webgl", { failIfMajorPerformanceCaveat: true });
+              w = !gl;
+              var lc = gl && gl.getExtension("WEBGL_lose_context");
+              if (lc) lc.loseContext();
+            } catch (e) {
+              w = true;
+            }
+          }
+          weak = w ? "1" : "0";
+          try {
+            sessionStorage.setItem("weak", weak);
+          } catch (e) {}
+        }
+        var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var lite = reduce || weak === "1";
+        d.dataset.motion = lite ? "lite" : "full";
         // Posée avant le premier rendu : .rv et .stagger ne se cachent que pour
-        // un navigateur qui va effectivement les révéler (motion.css, tâche 11).
-        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) d.classList.add("js-motion");
+        // un navigateur qui va effectivement les révéler (motion.css).
+        if (!lite && !reduce) d.classList.add("js-motion");
       })();
     </script>
   </head>

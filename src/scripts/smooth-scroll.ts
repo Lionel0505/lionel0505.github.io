@@ -1,6 +1,9 @@
 const EASE = 0.085,
   THRESHOLD = 0.35;
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Mode statique (data-motion, Base.astro) traité comme un mouvement réduit.
+const reduce =
+  matchMedia('(prefers-reduced-motion: reduce)').matches ||
+  document.documentElement.dataset.motion === 'lite';
 const fine = matchMedia('(pointer: fine)').matches;
 const active = fine && !reduce;
 
