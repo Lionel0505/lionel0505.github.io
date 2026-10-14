@@ -33,7 +33,7 @@ let failed = 0;
 
    ANGLE MORT ASSUMÉ : ce garde lit des octets, et le texte d'un PDF est
    compressé. Il ne voit donc RIEN de ce que contient
-   dist/cv/CV_Lionel_Ratovo.pdf, et son feu vert ne dit strictement rien sur
+   dist/cv/Lionel_Ratovo_CV.pdf, et son feu vert ne dit strictement rien sur
    ce fichier. Vérifié le 03/08/2026 : ses vingt flux se décompressent, mais
    sa police est sous-ensemblée avec un encodage propre, donc même une
    extraction correcte ne rend pas de texte lisible sans sa table ToUnicode.

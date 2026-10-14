@@ -7,7 +7,7 @@ import { expect, test } from '@playwright/test';
 test('le bouton du CV télécharge bien un PDF', async ({ page }) => {
   await page.goto('/');
   const cta = page.locator('a[download]');
-  await expect(cta).toHaveAttribute('href', '/cv/CV_Lionel_Ratovo.pdf');
+  await expect(cta).toHaveAttribute('href', '/cv/Lionel_Ratovo_CV.pdf');
 
   const [dl] = await Promise.all([page.waitForEvent('download'), cta.click()]);
   expect(dl.suggestedFilename()).toMatch(/\.pdf$/i);
@@ -20,7 +20,7 @@ test('le bouton du CV télécharge bien un PDF', async ({ page }) => {
   // ce qui distingue un vrai PDF d'une page d'erreur servie sous ce nom. Un
   // attribut `href` juste qui pointe vers un 404 passait l'ancienne version
   // de ce test sans un mot.
-  const res = await page.request.get('/cv/CV_Lionel_Ratovo.pdf');
+  const res = await page.request.get('/cv/Lionel_Ratovo_CV.pdf');
   expect(res.status()).toBe(200);
   expect((await res.text()).slice(0, 5)).toBe('%PDF-');
 });

@@ -14,5 +14,7 @@ playwright-report/
 *.stackdump
 .superpowers/
 
-# Rendus interm�diaires du CV (scripts/cv.mjs)
+# Rendus interm�diaires du CV (scripts/cv.mjs)
 cv/build/
+# Numéros de téléphone du CV : jamais dans un dépôt public
+cv/private.mjs

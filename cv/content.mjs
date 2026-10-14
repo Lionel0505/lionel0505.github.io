@@ -1,5 +1,9 @@
 // Contenu du CV, repris mot pour mot du CV précédent (public/cv/CV_Lionel_Ratovo.pdf
 // avant la refonte du 2026-10-14). Les gabarits (templates.mjs) ne font que la forme.
+// Les numéros ne sont pas versionnés (dépôt public) : cv/private.mjs, gitignoré,
+// sur le modèle de cv/private.example.mjs. scripts/cv.mjs refuse de rendre sans lui.
+import priv from './private.mjs';
+
 export default {
   file: 'Lionel_Ratovo',
   last: 'RATOVO',
@@ -7,7 +11,7 @@ export default {
   short: 'Lionel Ratovo',
   title: 'Développeur full-stack Java · Consultant technico-fonctionnel',
   city: 'Antananarivo, Madagascar',
-  phones: ['(+261) 34 21 137 98'],
+  phones: priv.phones,
   email: 'lionelratovo@gmail.com',
   linkedin: 'linkedin.com/in/lionel-ratovo-98a79525a',
   site: 'lionel0505.github.io',

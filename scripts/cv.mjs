@@ -8,8 +8,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { chromium } from '@playwright/test';
-import c from '../cv/content.mjs';
 import * as templates from '../cv/templates.mjs';
+
+if (!fs.existsSync('cv/private.mjs'))
+  throw new Error(
+    'cv/private.mjs manquant : copier cv/private.example.mjs et y mettre les numéros.',
+  );
+const { default: c } = await import('../cv/content.mjs');
 
 const pick = process.argv[2];
 if (pick && !(pick in templates)) throw new Error(`variante inconnue : ${pick}`);
