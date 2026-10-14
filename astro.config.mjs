@@ -17,6 +17,9 @@ export default defineConfig({
   base: '/',
   output: 'static',
   trailingSlash: 'always',
+  // GitHub Pages sert tout en max-age=600 : chaque feuille externe se revalide toutes les
+  // dix minutes. Intégrée au HTML, la CSS (quelques Ko) ne coûte plus de requête.
+  build: { inlineStylesheets: 'always' },
   i18n: {
     defaultLocale: 'fr',
     locales: ['fr', 'en'],

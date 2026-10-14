@@ -20,9 +20,11 @@ export const GET: APIRoute = async ({ site }) => {
   );
   const paths = ['/', ...slugs.map((s) => `/cas/${s}/`)];
   const all = [...paths, ...paths.map((p) => `/en${p}`)];
+  // Date du build, comme le portfolio d'Itokiana : chaque déploiement suit une modification.
+  const now = new Date().toISOString().slice(0, 10);
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${all.map((p) => `  <url><loc>${new URL(p, site)}</loc></url>`).join('\n')}
+${all.map((p) => `  <url><loc>${new URL(p, site)}</loc><lastmod>${now}</lastmod></url>`).join('\n')}
 </urlset>
 `;
   return new Response(body, { headers: { 'Content-Type': 'application/xml' } });

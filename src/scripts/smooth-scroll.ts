@@ -49,6 +49,8 @@ if (active) {
     'wheel',
     (e) => {
       if (e.ctrlKey) return; // le pinch-zoom doit rester natif
+      // Passée en statique après coup (motion-probe.ts) : défilement natif.
+      if (document.documentElement.dataset.motion === 'lite') return;
       e.preventDefault();
       const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1;
       target = clamp(target + e.deltaY * unit);

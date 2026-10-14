@@ -48,12 +48,18 @@ function drawPlate() {
   ticks.style.transition = annos.style.transition = 'none';
   ticks.style.opacity = annos.style.opacity = '0';
 
+  // Mesures, puis écritures, puis UNE mise en page : lire getTotalLength() et
+  // getBoundingClientRect() entre deux écritures forçait une mise en page par
+  // trait, environ 2 s de fil principal avant le premier affichage en mobile
+  // bridé (mesuré le 2026-10-14).
+  const lengths = lines.map((p) => p.getTotalLength());
   lines.forEach((p, i) => {
-    const L = p.getTotalLength();
     p.style.transition = 'none';
-    p.style.strokeDasharray = `${L}`;
-    p.style.strokeDashoffset = `${L}`;
-    void p.getBoundingClientRect();
+    p.style.strokeDasharray = `${lengths[i]}`;
+    p.style.strokeDashoffset = `${lengths[i]}`;
+  });
+  void document.body.offsetWidth;
+  lines.forEach((p, i) => {
     const dur = p.classList.contains('outer') ? 1000 : 700;
     p.style.transition = `stroke-dashoffset ${dur}ms cubic-bezier(0.16,1,0.3,1) ${120 + i * 95}ms`;
     p.style.strokeDashoffset = '0';

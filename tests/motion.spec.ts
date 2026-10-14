@@ -43,7 +43,13 @@ const scrollThrough = async (page: Page) => {
   }
 };
 
+// La version animée suppose un GPU : sans lui (CI, Firefox headless), Base.astro
+// pose data-motion="lite". Les tests du mouvement forcent le verdict mémorisé (motion-probe.ts).
+const animated = (page: import('@playwright/test').Page) =>
+  page.addInitScript(() => localStorage.setItem('weak', '0'));
+
 test('la chaîne suit la position de défilement', async ({ page }) => {
+  await animated(page);
   await page.goto('/');
   await page.waitForTimeout(3500);
   const at = async (pct: number) => {
@@ -113,6 +119,13 @@ test('avec JavaScript : toute la page finit révélée', async ({ page }) => {
   expect(await minStaggerOpacity(page)).toBeGreaterThan(0.99);
 });
 
+test('appareil sans GPU : version statique, tout le contenu visible', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('weak', '1'));
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-motion', 'lite');
+  expect(await minOpacity(page)).toBeGreaterThan(0.99);
+});
+
 test("à l'impression : tout le contenu reste visible", async ({ page }) => {
   await page.goto('/');
   // Le papier ne défile pas : sans le repli de motion.css, `both` retient
@@ -124,6 +137,7 @@ test("à l'impression : tout le contenu reste visible", async ({ page }) => {
 });
 
 test('wheel scrolling is damped, not instant', async ({ page }) => {
+  await animated(page);
   await page.goto('/');
   await page.waitForTimeout(3500);
   await page.evaluate(() => {

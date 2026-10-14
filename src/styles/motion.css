@@ -221,16 +221,15 @@
     opacity 0.85s var(--ease),
     transform 0.85s var(--ease);
 }
+/* Le héros porte le LCP (h1, puis le chapeau, à peine plus grand) : il entre en
+   glissant, jamais en fondu. Un élément à opacité 0 n'est pas peint, et le LCP
+   attendait la fin du fondu (3,2 s en mobile bridé, mesuré le 2026-10-14). */
 .js-motion .stagger > * {
-  opacity: 0;
   transform: translateY(13px);
 }
 .js-motion .stagger.in > * {
-  opacity: 1;
   transform: none;
-  transition:
-    opacity 0.75s var(--ease),
-    transform 0.75s var(--ease);
+  transition: transform 0.75s var(--ease);
 }
 .js-motion .stagger.in > *:nth-child(1) {
   transition-delay: 0ms;

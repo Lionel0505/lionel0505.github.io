@@ -46,6 +46,15 @@ const person = {
     { '@type': 'CollegeOrUniversity', name: 'IT University' },
   ],
 };
+// Sur l'accueil, la page EST le profil : Google documente ProfilePage, mainEntity
+// Person (developers.google.com/search/docs/appearance/structured-data/profile-page).
+// dateModified suit les changements éditoriaux du profil, pas chaque build.
+const profile = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  dateModified: '2026-10-14',
+  mainEntity: { ...person, '@context': undefined },
+};
 ---
 
 <!doctype html>
@@ -71,6 +80,21 @@ const person = {
     <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {description && <meta name="description" content={description} />}
+    <!-- Partage (Open Graph, X) : titre et description de la page, une image commune. -->
+    <meta property="og:type" content={Astro.url.pathname.includes('/cas/') ? 'article' : 'profile'} />
+    <meta property="og:site_name" content="Lionel Ratovo" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={new URL(self, Astro.site)} />
+    <meta property="og:locale" content={lang === 'fr' ? 'fr_FR' : 'en_GB'} />
+    <meta property="og:locale:alternate" content={lang === 'fr' ? 'en_GB' : 'fr_FR'} />
+    <meta property="og:image" content={new URL('/og.png', Astro.site)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Lionel Ratovo, développeur full-stack Java et consultant technico-fonctionnel" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4eee0" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1c2318" />
     {
       indexable ? (
         <>
@@ -88,7 +112,7 @@ const person = {
     <!-- The h1 carries the LCP: only Bricolage is preloaded so it does not
          contend for bandwidth with the two families that do not gate paint. -->
     <link rel="preload" href="/fonts/Bricolage.woff2" as="font" type="font/woff2" crossorigin />
-    <script type="application/ld+json" set:html={JSON.stringify(person)} is:inline />
+    <script type="application/ld+json" set:html={JSON.stringify(self === '/' || self === '/en/' ? profile : person)} is:inline />
     <!-- Blocking: sets the theme before first paint, so there is no flash. -->
     <script is:inline>
       (function () {
@@ -100,31 +124,17 @@ const person = {
         var d = document.documentElement;
         d.dataset.theme = stored === "light" || stored === "dark" ? stored : sys;
         d.dataset.themePref = stored || "system";
-        // Mode animé ou statique (`data-motion`). Statique si mouvement réduit ou appareil
-        // modeste : WebGL refusé avec failIfMajorPerformanceCaveat = rendu
-        // logiciel, sans accélération GPU. Résultat gardé pour la session.
+        // Mode animé ou statique (`data-motion`). Ici, seuls les tests instantanés :
+        // mouvement réduit, mémoire ou cœurs faibles, et le verdict GPU mémorisé.
+        // La sonde WebGL elle-même (57 à 258 ms de fil principal à la première
+        // création de contexte, mesuré le 2026-10-14) tourne après le chargement,
+        // dans scripts/motion-probe.ts, jamais avant le premier affichage.
         var weak = null;
         try {
-          weak = sessionStorage.getItem("weak");
+          weak = localStorage.getItem("weak");
         } catch (e) {}
-        if (weak === null) {
-          var n = navigator;
-          var w = (n.deviceMemory && n.deviceMemory <= 2) || (n.hardwareConcurrency && n.hardwareConcurrency <= 2);
-          if (!w) {
-            try {
-              var gl = document.createElement("canvas").getContext("webgl", { failIfMajorPerformanceCaveat: true });
-              w = !gl;
-              var lc = gl && gl.getExtension("WEBGL_lose_context");
-              if (lc) lc.loseContext();
-            } catch (e) {
-              w = true;
-            }
-          }
-          weak = w ? "1" : "0";
-          try {
-            sessionStorage.setItem("weak", weak);
-          } catch (e) {}
-        }
+        var n = navigator;
+        if ((n.deviceMemory && n.deviceMemory <= 2) || (n.hardwareConcurrency && n.hardwareConcurrency <= 2)) weak = "1";
         var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
         var lite = reduce || weak === "1";
         d.dataset.motion = lite ? "lite" : "full";
@@ -150,6 +160,9 @@ const person = {
     </script>
     <script>
       import "../scripts/smooth-scroll.ts";
+    </script>
+    <script>
+      import "../scripts/motion-probe.ts";
     </script>
   </body>
 </html>
