@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 24, cache: pnpm }
+        with: { node-version: 24, check-latest: true, cache: pnpm }
       # pnpm 11 bloque par défaut les scripts d'installation des dépendances
       # et sort à 1 quand il en bloque un. pnpm-workspace.yaml autorise déjà
       # esbuild ; si cette étape échoue pour un autre paquet bloqué, ajoute-le

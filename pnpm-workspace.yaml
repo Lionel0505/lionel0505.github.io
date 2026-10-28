@@ -4,3 +4,10 @@
 # plateforme, dont Vite depend pour builder le site.
 allowBuilds:
   esbuild: true
+
+# @astrojs/astro2tsx ne declare pas @emnapi/runtime : pnpm installe alors le
+# 2.0 alpha, incompatible avec son @emnapi/core 1.11.3, et astro check plante.
+packageExtensions:
+  "@astrojs/astro2tsx":
+    dependencies:
+      "@emnapi/runtime": 1.11.3
